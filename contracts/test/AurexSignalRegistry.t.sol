@@ -99,10 +99,10 @@ contract AurexSignalRegistryTest is Test {
     }
 
     function test_publishSignal() public {
-        bytes32 poolId = keccak256("test-pool");
+        bytes32 testPoolId = keccak256("test-pool");
         AurexSignal memory signal = AurexSignal({
             signalId: keccak256("signal-1"),
-            poolId: poolId,
+            poolId: testPoolId,
             riskScore: 45,
             alphaScore: 72,
             liquidityScore: 80,
@@ -115,11 +115,11 @@ contract AurexSignalRegistryTest is Test {
         vm.prank(publisher);
         registry.publishSignal(signal);
 
-        AurexSignal memory stored = registry.getLatestSignal(poolId);
+        AurexSignal memory stored = registry.getLatestSignal(testPoolId);
         assertEq(stored.riskScore, 45);
         assertEq(stored.alphaScore, 72);
-        assertTrue(registry.isSignalValid(poolId));
-        assertEq(registry.getSignalCount(poolId), 1);
+        assertTrue(registry.isSignalValid(testPoolId));
+        assertEq(registry.getSignalCount(testPoolId), 1);
     }
 
     function test_rejectUnregisteredPublisher() public {
@@ -142,10 +142,10 @@ contract AurexSignalRegistryTest is Test {
     }
 
     function test_expiredSignalInvalid() public {
-        bytes32 poolId = keccak256("test-pool-2");
+        bytes32 testPoolId2 = keccak256("test-pool-2");
         AurexSignal memory signal = AurexSignal({
             signalId: keccak256("signal-3"),
-            poolId: poolId,
+            poolId: testPoolId2,
             riskScore: 30,
             alphaScore: 60,
             liquidityScore: 70,
@@ -159,7 +159,7 @@ contract AurexSignalRegistryTest is Test {
         registry.publishSignal(signal);
 
         vm.warp(block.timestamp + 2 hours);
-        assertFalse(registry.isSignalValid(poolId));
+        assertFalse(registry.isSignalValid(testPoolId2));
     }
 
     function test_unregisterPublisher() public {

@@ -30,7 +30,7 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Run Forge build
-        run: forge build --sizes
+        run: forge build
 
       - name: Run Forge tests
         run: forge test -vvv
