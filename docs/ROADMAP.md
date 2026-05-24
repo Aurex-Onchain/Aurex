@@ -28,7 +28,8 @@ Layer 2 — Signal Marketplace (Open Competition)
 
 Layer 3 — Aurex Advisor (Self-hosted AI Trading App)
   └─ Auto fetch: reads signals, on-chain data, user state
-  └─ AI intelligence: LLM reasons over full context → strategy generation
+  └─ Signal engine: algorithmic scoring from on-chain data (no internal LLM)
+  └─ Strategy context: structured data for AI client's LLM to reason over
   └─ Auto push: publishes signals to SignalRegistry (Advisor is a publisher)
   └─ Behavior indicator: monitors user patterns, warns against risk anomalies
   └─ Wallet execution: user confirms → execute through Hook pools
@@ -168,7 +169,7 @@ Both interfaces share the same backend logic. No separate API service.
 - [ ] MCP Server framework setup (`apps/advisor/`)
 - [ ] HTTP API server (Express/Fastify, same process)
 - [ ] Tool: `advisor.market_status` — aggregated on-chain metrics + active signals
-- [ ] Tool: `advisor.get_strategy` — LLM-generated strategy based on full context
+- [ ] Tool: `advisor.get_strategy` — structured market context + algorithmic analysis for AI client to reason over
 - [ ] Tool: `advisor.execute` — execute strategy actions through Hook pools
 - [ ] Tool: `advisor.risk_check` — evaluate risk of a proposed action
 - [ ] Tool: `advisor.behavior_alert` — query current behavior risk status
@@ -200,19 +201,20 @@ Advisor automatically and continuously fetches:
 Advisor is itself a publisher on the protocol:
 
 - [ ] Stake management: register as publisher, maintain stake
-- [ ] Signal generation: LLM analyzes aggregated data → produces signal
+- [ ] Signal generation: algorithmic scoring from aggregated on-chain data
 - [ ] Auto publish: sign and submit signal to SignalRegistry
 - [ ] Verification tracking: monitor signal outcomes, track accuracy
 - [ ] Revenue claiming: auto-claim accumulated fee revenue
 
-### 3.4 AI Intelligence Layer
+### 3.4 Strategy Context Assembly (for AI Client)
+
+The Advisor does NOT run its own LLM. It assembles structured context that the AI client's LLM (OpenClaw, Cursor, Claude, etc.) reasons over. The `advisor.get_strategy` tool returns this context.
 
 - [ ] Context assembly: user state + active signals + on-chain data + publisher rankings + pool state
-- [ ] LLM reasoning: generates summary, confidence, actions, simulation, alternatives
-- [ ] Strategy generation: personalized based on user risk preference
+- [ ] Scoring algorithms: risk, alpha, liquidity, volatility from raw on-chain metrics
 - [ ] Action schema: swap, liquidity, wait, hedge, alert, etc. (per `docs/ADVISOR_ACTIONS.md`)
 - [ ] Simulation: before/after portfolio comparison (risk, exposure, drawdown)
-- [ ] Alternative strategies: always generate at least one alternative with tradeoff explanation
+- [ ] Structured output format for AI client consumption
 
 ### 3.5 Behavior Risk Indicator (Anti-All-In)
 

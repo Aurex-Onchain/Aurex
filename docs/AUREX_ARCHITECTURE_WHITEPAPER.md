@@ -16,7 +16,7 @@ Aurex is two things:
 2. **Aurex Advisor** — a user self-hosted AI-native trading application that completes the full execution loop:
 
 ```
-Onchain Data → AI Intelligence → Risk Analysis → Strategy Generation → Signal Publishing → Wallet Execution
+Onchain Data → Algorithmic Scoring → Strategy Generation (AI client) → Signal Publishing → Wallet Execution
 ```
 
 The protocol provides shared infrastructure. The Advisor is the recommended way to use it — a self-hosted application that automatically fetches signals from the marketplace, reasons over market context, generates and publishes trading strategies, monitors user behavior for risk anomalies, and executes through Hook-enforced pools.
@@ -60,7 +60,7 @@ An open, permissionless signal marketplace where:
 
 A user-deployed application that:
 - Automatically fetches signals from the marketplace and on-chain data
-- Uses LLM intelligence to analyze market conditions and generate strategies
+- Computes signal scores algorithmically from on-chain data (no internal LLM)
 - Automatically publishes signals back to the protocol (Advisor is itself a publisher)
 - Monitors user behavior patterns and warns against risk anomalies (anti-all-in)
 - Executes through Aurex Hook pools with wallet signing
@@ -132,7 +132,8 @@ Layer 2 — Signal Marketplace (Open Competition)
 Layer 3 — Aurex Advisor (Self-hosted AI Trading App)
   └─ The recommended way to use Aurex
   └─ Auto fetch: reads signals, on-chain data, user state
-  └─ AI intelligence: LLM reasons over full context → strategy generation
+  └─ Signal engine: algorithmic scoring from on-chain data (no internal LLM)
+  └─ Strategy context: structured data for AI client's LLM to reason over
   └─ Auto push: publishes signals to SignalRegistry (Advisor is a publisher)
   └─ Behavior indicator: monitors user patterns, warns against risk anomalies
   └─ Wallet execution: user confirms → execute through Hook pools
@@ -456,7 +457,7 @@ Standard Uniswap V4 swap interface:
 The Advisor is Aurex's flagship product — a self-hosted application that users deploy locally or on their own infrastructure. It completes the full AI trading loop:
 
 ```
-Onchain Data → AI Intelligence → Risk Analysis → Strategy Generation
+Onchain Data → Algorithmic Scoring → Risk Analysis → Strategy Generation (AI client)
   → Signal Publishing (auto push to chain)
   → Behavior Monitoring (anti-all-in indicator)
   → Wallet Execution → Proof-of-Alpha
@@ -483,7 +484,7 @@ The Advisor exposes itself as an MCP Server. AI clients connect via plugin:
 | Tool | Description |
 |------|-------------|
 | `advisor.market_status` | Current market overview + active signals + risk state |
-| `advisor.get_strategy` | AI-generated strategy with simulation |
+| `advisor.get_strategy` | Structured market context + algorithmic analysis for AI client to reason over |
 | `advisor.execute` | Confirm and execute strategy via wallet |
 | `advisor.risk_check` | Portfolio risk analysis + behavior indicator status |
 | `advisor.behavior_alert` | Current behavioral anomaly warnings |
@@ -499,7 +500,7 @@ The Advisor runs continuously in the background:
 |---------|----------|
 | Signal Fetcher | Reads all active signals from SignalRegistry, tracks publisher accuracy |
 | On-chain Monitor | Watches whale movements, liquidity changes, volume anomalies |
-| Strategy Engine | LLM analyzes context, generates trading strategies |
+| Strategy Engine | Assembles structured context for AI client's LLM to reason over |
 | Signal Publisher | Auto-publishes signals to SignalRegistry (Advisor is a publisher) |
 | Behavior Monitor | Tracks user's trading patterns, compares to historical baseline |
 | Alert Dispatcher | Pushes warnings and recommendations through connected AI clients |
@@ -513,10 +514,15 @@ The Advisor runs continuously in the background:
    - Pool state: TVL, fees, price changes
    - User state: holdings, LP positions, transaction history
 
-2. AI INTELLIGENCE
-   - LLM aggregates full context
-   - Generates strategy with reasoning chain
-   - No hardcoded logic — LLM reasons freely over data
+2. SIGNAL GENERATION (algorithmic)
+   - Score computation from on-chain metrics (risk, alpha, liquidity, volatility)
+   - Rule-based thresholds and weighted aggregation
+   - Deterministic, low-latency, no external API dependency
+
+   AI INTELLIGENCE (happens on AI client side)
+   - AI client calls advisor.get_strategy → receives structured context
+   - Client's LLM reasons over full context freely
+   - Strategy generation and natural language interaction handled by client
 
 3. RISK ANALYSIS
    - Market risk: signal marketplace riskScores
@@ -740,9 +746,9 @@ aurex/
 ```
 Runtime: Node.js
 Protocol: MCP (Model Context Protocol)
-LLM: Claude / GPT (configurable)
+Signal Engine: Algorithmic (no LLM — AI reasoning happens on client side)
 Database: SQLite (local behavior history)
-Wallet: ethers.js / viem (user's private key, local only)
+Wallet: viem (user's private key, local only)
 ```
 
 ### 10.4 Web UI Stack (Optional)

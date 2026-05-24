@@ -15,7 +15,9 @@ Aurex is two things:
 **2. Aurex Advisor** — a self-hosted AI trading application that completes the full execution loop:
 
 ```
-Onchain Data → AI Intelligence → Risk Analysis → Strategy Generation → Signal Publishing → Wallet Execution
+Onchain Data → Algorithmic Scoring → Strategy Generation (AI client) → Signal Publishing → Wallet Execution
+                                          ↕
+              AI Client (OpenClaw/Cursor/Claude) reasons over Advisor's structured context
 ```
 
 The protocol is shared infrastructure. The Advisor is the recommended way to use it — a self-hosted MCP Server application that automatically fetches signals, reasons over market context, publishes its own signals, monitors user behavior for risk anomalies, and executes through Hook-enforced pools.
@@ -266,8 +268,8 @@ A self-hosted AI trading application. Users deploy it locally — their keys, th
               │  Self-hosted by user           │
               │                               │
               │  Auto fetch signals + data     │
-              │  AI strategy generation        │
-              │  Auto publish signals          │
+              │  Algorithmic signal scoring     │
+              │  Structured context for AI     │
               │  Behavior risk monitoring      │
               │  Wallet execution              │
               │  HTTP API for Dashboard        │
@@ -284,7 +286,7 @@ A self-hosted AI trading application. Users deploy it locally — their keys, th
 | Tool | Description |
 |------|-------------|
 | `advisor.market_status` | Current market overview + active signals + risk state |
-| `advisor.get_strategy` | AI-generated strategy with simulation and alternatives |
+| `advisor.get_strategy` | Structured market context + algorithmic analysis for AI client to reason over |
 | `advisor.execute` | Confirm and execute strategy via wallet |
 | `advisor.risk_check` | Portfolio risk analysis + behavior indicator status |
 | `advisor.behavior_alert` | Current behavioral anomaly warnings |
@@ -308,7 +310,7 @@ Alerts do NOT block execution. They push warnings through connected AI clients a
 
 ### Strategy Generation
 
-The Advisor uses a flexible action set — no hardcoded logic. The LLM reasons freely over full context (user holdings, active signals, on-chain data, publisher rankings, pool state) and generates personalized strategies.
+The Advisor uses a flexible action set — no hardcoded logic. The AI client's LLM (OpenClaw, Cursor, Claude, etc.) calls `advisor.get_strategy` to receive structured market context, then reasons freely over it to generate personalized strategies. The Advisor itself does not run an LLM — it provides algorithmic signal scoring and structured data; the intelligence layer lives in whatever AI client the user connects.
 
 Available action categories:
 - **Trading**: swap, limitSwap, splitSwap
