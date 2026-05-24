@@ -157,11 +157,16 @@ The Hook now requires `AFTER_SWAP_RETURNS_DELTA_FLAG` in its address. This means
 
 **Goal**: Build the flagship Advisor application — a self-hosted MCP Server that completes the full execution loop from data aggregation to wallet execution.
 
-### 3.1 Core MCP Server
+### 3.1 Core MCP Server + HTTP API
 
-The Advisor exposes itself as an MCP Server. AI clients connect via plugin.
+The Advisor is a single application that exposes two interfaces:
+1. **MCP Server** — AI clients (OpenClaw, Cursor, Hermes) connect via plugin
+2. **HTTP API** — the web dashboard (`apps/web/`) calls this for data and actions
+
+Both interfaces share the same backend logic. No separate API service.
 
 - [ ] MCP Server framework setup (`apps/advisor/`)
+- [ ] HTTP API server (Express/Fastify, same process)
 - [ ] Tool: `advisor.market_status` — aggregated on-chain metrics + active signals
 - [ ] Tool: `advisor.get_strategy` — LLM-generated strategy based on full context
 - [ ] Tool: `advisor.execute` — execute strategy actions through Hook pools
@@ -170,6 +175,7 @@ The Advisor exposes itself as an MCP Server. AI clients connect via plugin.
 - [ ] Tool: `advisor.publish_signal` — publish signal to SignalRegistry
 - [ ] Tool: `advisor.configure` — update Advisor settings (risk thresholds, watched pools)
 - [ ] Tool: `advisor.publisher_stats` — accuracy, stake, revenue for connected publisher
+- [ ] HTTP endpoints mirroring MCP tools (GET /api/market, POST /api/execute, etc.)
 
 ### 3.2 Auto Fetch (Signal + Data Aggregation)
 
@@ -242,9 +248,19 @@ Adapters for AI clients to connect to the Advisor MCP Server:
 
 ---
 
-## Phase 4: Frontend — Signal Market Browser
+## Phase 4: Frontend — Advisor Dashboard
 
-**Goal**: Optional web dashboard showing the signal marketplace + Advisor status
+**Goal**: Web dashboard served by the Advisor itself. The Dashboard IS the Advisor's UI — no separate backend service. Users connect to their own local Advisor instance.
+
+### Architecture
+
+```
+User's browser → http://localhost:3000 → Advisor (serves both HTTP API + static frontend)
+                                           ↓
+                                    On-chain contracts (X Layer)
+```
+
+The Advisor exposes an HTTP API alongside its MCP Server. The web dashboard (`apps/web/`) is a static Next.js app that calls this API. No separate API service exists.
 
 ### 4.1 Dashboard — Signal Market Overview
 - [ ] Top Publishers leaderboard (accuracy score, signal count, stake amount, revenue earned)

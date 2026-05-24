@@ -251,7 +251,7 @@ Each pool has configurable parameters:
 
 ### Overview
 
-A self-hosted AI trading application. Users deploy it locally — their keys, their data, their AI.
+A self-hosted AI trading application. Users deploy it locally — their keys, their data, their AI. The Advisor serves both an MCP interface (for AI clients) and an HTTP API (for the web dashboard). No separate backend service needed.
 
 ```
 ┌─────────────┐  ┌─────────┐  ┌────────┐  ┌────────┐
@@ -270,6 +270,7 @@ A self-hosted AI trading application. Users deploy it locally — their keys, th
               │  Auto publish signals          │
               │  Behavior risk monitoring      │
               │  Wallet execution              │
+              │  HTTP API for Dashboard        │
               └───────────────┬───────────────┘
                               │
                               ▼

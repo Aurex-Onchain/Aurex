@@ -2,10 +2,9 @@
   "name": "aurex",
   "version": "0.1.0",
   "private": true,
-  "description": "AI-native onchain trading operating system powered by Uniswap V4 Hooks on X Layer",
+  "description": "Open Signal Marketplace Protocol + Self-hosted AI Trading App on Uniswap V4 Hooks (X Layer)",
   "scripts": {
     "dev:web": "pnpm --filter @aurex/web exec next dev",
-    "dev:api": "cd apps/api && .venv/bin/uvicorn src.main:app --reload --port 8000",
     "build:web": "pnpm --filter @aurex/web exec next build",
     "build:contracts": "cd contracts && ~/.foundry/bin/forge build",
     "test:contracts": "cd contracts && ~/.foundry/bin/forge test"
