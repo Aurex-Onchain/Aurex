@@ -1,0 +1,20 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc_version = "0.8.26"
+optimizer = true
+optimizer_runs = 200
+via_ir = false
+evm_version = "cancun"
+
+[profile.default.fmt]
+line_length = 120
+
+[rpc_endpoints]
+xlayer = "${XLAYER_RPC_URL}"
+xlayer_testnet = "${XLAYER_TESTNET_RPC_URL}"
+
+[etherscan]
+xlayer = { key = "${XLAYER_EXPLORER_API_KEY}", url = "https://www.okx.com/web3/explorer/xlayer/api" }
+xlayer_testnet = { key = "${XLAYER_EXPLORER_API_KEY}", url = "https://www.okx.com/web3/explorer/xlayer-test/api" }

@@ -1,0 +1,94 @@
+{
+  "network": "X Layer Mainnet",
+  "chainId": 196,
+  "deployer": "0x253a399B2A63b400f1e7f06f83Fbcc0F1236f62f",
+  "deployedAt": "2025-05-23",
+  "version": "v2 — Open Signal Marketplace",
+  "contracts": {
+    "PoolManager": "0x360e68faccca8ca495c1b759fd9eee466db9fb32",
+    "AurexSignalRegistry": "0x713d8C2f1983848eDFe2F1f3730d9Ff74aBa4b7f",
+    "AurexPolicyManager": "0x025774B4e49b7Cb98D90111461B69Af98c301cD7",
+    "AurexAlphaHook": "0x3D28D43FFB4ed9321B0d740B2B457E802259C0c0",
+    "AurexPoolFactory": "0x6708213b47715771e290e41599de14e45E8C4358",
+    "MockAUREX": "0x8819A7972e17C61A4eeFe0F06e4bbef521228c82",
+    "MockUSDC": "0x4229Df8c78F60D1Daf54035E01527B9B025C231d"
+  },
+  "tokens": {
+    "WETH": "0x5A77f1443D16ee5761d310e38b62f77f726bC71c",
+    "USDC": "0x74b7F16337b8972027F6196A17a631aC6dE26d22",
+    "WBTC": "0xEA034fb02eB1808C2cc3adbC15f447B93CbE08e1",
+    "USDT": "0x1E4a5963aBFD975d8c9021ce480b42188849D41d",
+    "WOKB": "0xe538905cf8410324e03A5A23C1c177a474D59b2b"
+  },
+  "pools": [
+    {
+      "name": "WETH/USDC",
+      "poolId": "0xa42ef95993739b4b4fa31f493b8e6fe2ecfdaa946a9eda3cf820d641e247bcb1",
+      "token0": "0x5A77f1443D16ee5761d310e38b62f77f726bC71c",
+      "token1": "0x74b7F16337b8972027F6196A17a631aC6dE26d22",
+      "tickSpacing": 60
+    },
+    {
+      "name": "USDC/WBTC",
+      "poolId": "0x8f902fdacc92a4a7b9c6d373a1a2692748d761b68fe9a2c9372b0713636923db",
+      "token0": "0x74b7F16337b8972027F6196A17a631aC6dE26d22",
+      "token1": "0xEA034fb02eB1808C2cc3adbC15f447B93CbE08e1",
+      "tickSpacing": 60
+    },
+    {
+      "name": "USDT/WETH",
+      "poolId": "0x5a9e74da2155ebb698b778fedaba2ef54e40b0e415e81be96682827851700eff",
+      "token0": "0x1E4a5963aBFD975d8c9021ce480b42188849D41d",
+      "token1": "0x5A77f1443D16ee5761d310e38b62f77f726bC71c",
+      "tickSpacing": 60
+    },
+    {
+      "name": "USDC/WOKB",
+      "poolId": "0xb192334b574994b2e7aea853242032a86efb5af60938d97bdbc57908e1f1d838",
+      "token0": "0x74b7F16337b8972027F6196A17a631aC6dE26d22",
+      "token1": "0xe538905cf8410324e03A5A23C1c177a474D59b2b",
+      "tickSpacing": 60
+    }
+  ],
+  "publishers": [
+    {
+      "address": "0x253a399B2A63b400f1e7f06f83Fbcc0F1236f62f",
+      "stakeAmount": "100000000000000000000",
+      "signalCount": 4
+    }
+  ],
+  "signals": [
+    {
+      "pool": "WETH/USDC",
+      "riskScore": 42,
+      "alphaScore": 81,
+      "description": "ETH breakout pattern detected"
+    },
+    {
+      "pool": "USDC/WBTC",
+      "riskScore": 28,
+      "alphaScore": 55,
+      "description": "BTC consolidation phase"
+    },
+    {
+      "pool": "USDT/WETH",
+      "riskScore": 72,
+      "alphaScore": 35,
+      "description": "Volume anomaly warning"
+    },
+    {
+      "pool": "USDC/WOKB",
+      "riskScore": 30,
+      "alphaScore": 78,
+      "description": "OKB ecosystem growth signal"
+    }
+  ],
+  "features": {
+    "stakeToPublish": true,
+    "permissionlessPoolCreation": true,
+    "signalVerification": true,
+    "slashMechanism": true,
+    "dynamicFees": true,
+    "highRiskBlocking": true
+  }
+}

@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Foundry
+contracts/cache/
+contracts/out/
+
+# Foundry broadcast (deployment logs — keep non-dry-run mainnet records)
+contracts/broadcast/**/dry-run/
+contracts/broadcast/**/31337/
+
+# Python
+__pycache__/
+.venv/
+*.egg-info/
+*.pyc
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Misc
+*.log
+coverage/
+foundry.lock
