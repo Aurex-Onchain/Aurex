@@ -19,7 +19,7 @@ Aurex is two things:
 Onchain Data → Algorithmic Scoring → Strategy Generation (AI client) → Signal Publishing → Wallet Execution
 ```
 
-The protocol provides shared infrastructure. The Advisor is the recommended way to use it — a self-hosted application that automatically fetches signals from the marketplace, reasons over market context, generates and publishes trading strategies, monitors user behavior for risk anomalies, and executes through Hook-enforced pools.
+The protocol provides shared infrastructure. The Advisor is the recommended way to use it — a self-hosted application that automatically fetches signals from the marketplace, computes algorithmic scores from on-chain data, publishes signals to the protocol, monitors user behavior for risk anomalies, and executes through Hook-enforced pools. AI clients connect via MCP and use their own LLM to reason over the Advisor's structured context.
 
 AI clients (OpenClaw, Cursor, Hermes, etc.) connect to the user's Advisor via plugin, making it accessible from any AI workflow. The Advisor pushes alerts and recommendations through these channels, and users interact with it through the same channels.
 
@@ -32,7 +32,7 @@ AI clients (OpenClaw, Cursor, Hermes, etc.) connect to the user's Advisor via pl
 │  │  (Open Infrastructure) │    │  (Self-hosted AI App)         │  │
 │  │                        │    │                               │  │
 │  │  - SignalRegistry      │◄──►│  Auto fetch + push signals    │  │
-│  │  - AlphaHook           │    │  AI intelligence + execution  │  │
+│  │  - AlphaHook           │    │  Algorithmic signal scoring   │  │
 │  │  - PolicyManager       │    │  Behavior risk indicator      │  │
 │  │  - PoolFactory         │    │  MCP Server for AI clients    │  │
 │  │  - Stake/Slash         │    │  Push notifications           │  │
@@ -165,7 +165,7 @@ Layer 4 — Third-party Agent Integration (Manual Configuration)
 │                                                                       │
 │  ┌─ Tools ──────────────────────────────────────────────────────┐   │
 │  │ advisor.market_status    — current market + signal overview    │   │
-│  │ advisor.get_strategy     — AI-generated strategy + simulation │   │
+│  │ advisor.get_strategy     — structured context for AI client        │   │
 │  │ advisor.execute          — confirm and execute via wallet      │   │
 │  │ advisor.risk_check       — portfolio risk analysis             │   │
 │  │ advisor.behavior_alert   — behavioral anomaly status          │   │
@@ -529,10 +529,10 @@ The Advisor runs continuously in the background:
    - Portfolio risk: exposure, concentration, drawdown simulation
    - Behavior risk: today's actions vs historical patterns (see Section 7.6)
 
-4. STRATEGY + PUBLISH
-   - Generate personalized actions from defined action set
-   - Simulate before/after portfolio state
-   - Auto-publish signal to SignalRegistry
+4. PUBLISH + SERVE
+   - Auto-publish signal to SignalRegistry (algorithmic scores)
+   - Serve structured context via advisor.get_strategy (for AI client)
+   - AI client's LLM generates personalized strategy from context
    - Push strategy recommendation to user via AI client
 
 5. EXECUTION (requires user confirmation)
