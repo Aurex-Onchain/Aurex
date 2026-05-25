@@ -31,6 +31,13 @@ contract AurexSignalRegistry is IAurexSignalRegistry {
     mapping(bytes32 => mapping(address => bool)) public allowedPublishers;
     mapping(bytes32 => bool) public hasPublisherWhitelist;
 
+    // Track active signal IDs per pool (bounded by active publishers)
+    mapping(bytes32 => bytes32[]) internal _activeSignalIds;
+    // Track which publisher has an active signal for a pool (one per publisher per pool)
+    mapping(bytes32 => mapping(address => bytes32)) public publisherActiveSignal;
+    // Store full signal data per signal ID for weighted computation
+    mapping(bytes32 => AurexSignal) public signalData;
+
     address public owner;
     address[] public publisherList;
 
@@ -158,6 +165,24 @@ contract AurexSignalRegistry is IAurexSignalRegistry {
             slashed: false
         });
 
+        // Track active signal per publisher per pool
+        bytes32 prevSignalId = publisherActiveSignal[signal.poolId][msg.sender];
+        if (prevSignalId == bytes32(0)) {
+            // First signal from this publisher for this pool — add to active list
+            _activeSignalIds[signal.poolId].push(signal.signalId);
+        } else {
+            // Replace existing entry in active list
+            bytes32[] storage activeIds = _activeSignalIds[signal.poolId];
+            for (uint256 i = 0; i < activeIds.length; i++) {
+                if (activeIds[i] == prevSignalId) {
+                    activeIds[i] = signal.signalId;
+                    break;
+                }
+            }
+        }
+        publisherActiveSignal[signal.poolId][msg.sender] = signal.signalId;
+        signalData[signal.signalId] = signal;
+
         emit SignalPublished(
             signal.signalId,
             signal.poolId,
@@ -270,6 +295,69 @@ contract AurexSignalRegistry is IAurexSignalRegistry {
     function isPublisherAllowed(bytes32 poolId, address publisher) external view returns (bool) {
         if (!hasPublisherWhitelist[poolId]) return true;
         return allowedPublishers[poolId][publisher];
+    }
+
+    function getWeightedSignal(bytes32 poolId) external view returns (
+        uint256 weightedRisk,
+        uint256 weightedAlpha,
+        uint24 weightedFee,
+        uint256 totalWeight
+    ) {
+        bytes32[] storage activeIds = _activeSignalIds[poolId];
+        uint256 len = activeIds.length;
+        if (len == 0) {
+            return (0, 0, 0, 0);
+        }
+
+        uint256 sumRisk;
+        uint256 sumAlpha;
+        uint256 sumFee;
+        uint256 sumWeight;
+        uint256 validCount;
+
+        for (uint256 i = 0; i < len; i++) {
+            AurexSignal storage signal = signalData[activeIds[i]];
+            // Skip expired signals
+            if (signal.expiresAt <= block.timestamp) continue;
+
+            SignalRecord storage record = signalRecords[activeIds[i]];
+            // Skip slashed signals
+            if (record.slashed) continue;
+
+            address pub = record.publisher;
+            if (!publishers[pub].active) continue;
+
+            uint256 weight = publishers[pub].accuracyScore;
+            if (weight == 0) weight = 1;
+
+            sumRisk += signal.riskScore * weight;
+            sumAlpha += signal.alphaScore * weight;
+            sumFee += uint256(signal.recommendedFee) * weight;
+            sumWeight += weight;
+            validCount++;
+        }
+
+        if (sumWeight == 0) {
+            return (0, 0, 0, 0);
+        }
+
+        // If only one valid signal, return its exact values for precision
+        if (validCount == 1) {
+            weightedRisk = sumRisk / sumWeight;
+            weightedAlpha = sumAlpha / sumWeight;
+            weightedFee = uint24(sumFee / sumWeight);
+            totalWeight = sumWeight;
+            return (weightedRisk, weightedAlpha, weightedFee, totalWeight);
+        }
+
+        weightedRisk = sumRisk / sumWeight;
+        weightedAlpha = sumAlpha / sumWeight;
+        weightedFee = uint24(sumFee / sumWeight);
+        totalWeight = sumWeight;
+    }
+
+    function getActiveSignalCount(bytes32 poolId) external view returns (uint256) {
+        return _activeSignalIds[poolId].length;
     }
 
     // --- Admin ---

@@ -5,8 +5,11 @@
   "description": "Open Signal Marketplace Protocol + Self-hosted AI Trading App on Uniswap V4 Hooks (X Layer)",
   "scripts": {
     "dev:web": "pnpm --filter @aurex/web exec next dev",
+    "dev:advisor": "pnpm --filter @aurex/advisor run dev",
     "build:web": "pnpm --filter @aurex/web exec next build",
+    "build:advisor": "pnpm --filter @aurex/advisor run build",
     "build:contracts": "cd contracts && ~/.foundry/bin/forge build",
-    "test:contracts": "cd contracts && ~/.foundry/bin/forge test"
+    "test:contracts": "cd contracts && ~/.foundry/bin/forge test",
+    "test:advisor": "pnpm --filter @aurex/advisor run test:run"
   }
 }

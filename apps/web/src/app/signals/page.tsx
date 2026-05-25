@@ -1,12 +1,17 @@
+"use client";
+
+import { SignalTable } from "@/components/signals/signal-table";
+import { useTranslation } from "@/i18n";
+import { CollapsibleHeader } from "@/components/ui/collapsible-header";
+
 export default function SignalsPage() {
+  const { t } = useTranslation();
+
   return (
-    <div className="p-8">
-      <h2 className="text-2xl font-bold mb-6">AI Signals</h2>
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
-        <p className="text-zinc-500 text-sm">
-          No AI signals generated yet. Signals will appear here once the signal worker is active.
-        </p>
+    <CollapsibleHeader title={t("signals.title")} description={t("signals.description")}>
+      <div className="px-3 sm:px-5 pb-8">
+        <SignalTable />
       </div>
-    </div>
+    </CollapsibleHeader>
   );
 }

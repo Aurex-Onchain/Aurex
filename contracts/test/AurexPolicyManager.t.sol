@@ -23,6 +23,7 @@ contract AurexPolicyManagerTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
     }

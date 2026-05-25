@@ -78,6 +78,7 @@ contract AurexSignalRegistryTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         }));
     }
@@ -391,5 +392,196 @@ contract AurexSignalRegistryTest is Test {
         assertEq(signals.length, 2);
         assertEq(signals[0].riskScore, 30);
         assertEq(signals[1].riskScore, 50);
+    }
+
+    function test_getWeightedSignal_singlePublisher() public {
+        AurexSignal memory signal = AurexSignal({
+            signalId: keccak256("weighted-1"),
+            poolId: poolId,
+            riskScore: 40,
+            alphaScore: 70,
+            liquidityScore: 80,
+            volatilityScore: 20,
+            recommendedFee: 4000,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher
+        });
+
+        vm.prank(publisher);
+        registry.publishSignal(signal);
+
+        (uint256 wRisk, uint256 wAlpha, uint24 wFee, uint256 totalWeight) = registry.getWeightedSignal(poolId);
+        assertEq(wRisk, 40);
+        assertEq(wAlpha, 70);
+        assertEq(wFee, 4000);
+        assertEq(totalWeight, 50); // publisher accuracyScore starts at 50
+    }
+
+    function test_getWeightedSignal_multiplePublishers() public {
+        // Register publisher2
+        vm.startPrank(publisher2);
+        stakeToken.approve(address(registry), type(uint256).max);
+        registry.registerPublisher(minStake);
+        vm.stopPrank();
+
+        // Publisher 1 publishes signal (accuracyScore = 50)
+        AurexSignal memory signal1 = AurexSignal({
+            signalId: keccak256("multi-w-1"),
+            poolId: poolId,
+            riskScore: 30,
+            alphaScore: 80,
+            liquidityScore: 70,
+            volatilityScore: 20,
+            recommendedFee: 3000,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher
+        });
+
+        vm.prank(publisher);
+        registry.publishSignal(signal1);
+
+        // Publisher 2 publishes signal (accuracyScore = 50)
+        AurexSignal memory signal2 = AurexSignal({
+            signalId: keccak256("multi-w-2"),
+            poolId: poolId,
+            riskScore: 70,
+            alphaScore: 40,
+            liquidityScore: 60,
+            volatilityScore: 40,
+            recommendedFee: 7000,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher2
+        });
+
+        vm.prank(publisher2);
+        registry.publishSignal(signal2);
+
+        (uint256 wRisk, uint256 wAlpha, uint24 wFee, uint256 totalWeight) = registry.getWeightedSignal(poolId);
+        // Both have accuracyScore=50, so equal weight
+        // weightedRisk = (30*50 + 70*50) / 100 = 5000/100 = 50
+        // weightedAlpha = (80*50 + 40*50) / 100 = 6000/100 = 60
+        // weightedFee = (3000*50 + 7000*50) / 100 = 500000/100 = 5000
+        assertEq(wRisk, 50);
+        assertEq(wAlpha, 60);
+        assertEq(wFee, 5000);
+        assertEq(totalWeight, 100);
+    }
+
+    function test_getWeightedSignal_skipsExpired() public {
+        // Register publisher2
+        vm.startPrank(publisher2);
+        stakeToken.approve(address(registry), type(uint256).max);
+        registry.registerPublisher(minStake);
+        vm.stopPrank();
+
+        // Publisher 1 publishes signal that expires in 30 min
+        AurexSignal memory signal1 = AurexSignal({
+            signalId: keccak256("expire-w-1"),
+            poolId: poolId,
+            riskScore: 30,
+            alphaScore: 80,
+            liquidityScore: 70,
+            volatilityScore: 20,
+            recommendedFee: 3000,
+            expiresAt: uint64(block.timestamp + 30 minutes),
+            signer: publisher
+        });
+
+        vm.prank(publisher);
+        registry.publishSignal(signal1);
+
+        // Publisher 2 publishes signal that expires in 2 hours
+        AurexSignal memory signal2 = AurexSignal({
+            signalId: keccak256("expire-w-2"),
+            poolId: poolId,
+            riskScore: 70,
+            alphaScore: 40,
+            liquidityScore: 60,
+            volatilityScore: 40,
+            recommendedFee: 7000,
+            expiresAt: uint64(block.timestamp + 2 hours),
+            signer: publisher2
+        });
+
+        vm.prank(publisher2);
+        registry.publishSignal(signal2);
+
+        // Warp past signal1's expiry but before signal2's
+        vm.warp(block.timestamp + 45 minutes);
+
+        (uint256 wRisk, uint256 wAlpha, uint24 wFee, uint256 totalWeight) = registry.getWeightedSignal(poolId);
+        // Only signal2 is valid now
+        assertEq(wRisk, 70);
+        assertEq(wAlpha, 40);
+        assertEq(wFee, 7000);
+        assertEq(totalWeight, 50);
+    }
+
+    function test_getWeightedSignal_returnsZerosWhenNoSignals() public view {
+        bytes32 emptyPoolId = keccak256("empty-pool");
+        (uint256 wRisk, uint256 wAlpha, uint24 wFee, uint256 totalWeight) = registry.getWeightedSignal(emptyPoolId);
+        assertEq(wRisk, 0);
+        assertEq(wAlpha, 0);
+        assertEq(wFee, 0);
+        assertEq(totalWeight, 0);
+    }
+
+    function test_activeSignalCount() public {
+        // Register publisher2
+        vm.startPrank(publisher2);
+        stakeToken.approve(address(registry), type(uint256).max);
+        registry.registerPublisher(minStake);
+        vm.stopPrank();
+
+        assertEq(registry.getActiveSignalCount(poolId), 0);
+
+        AurexSignal memory signal1 = AurexSignal({
+            signalId: keccak256("active-count-1"),
+            poolId: poolId,
+            riskScore: 30,
+            alphaScore: 70,
+            liquidityScore: 70,
+            volatilityScore: 20,
+            recommendedFee: 3000,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher
+        });
+
+        vm.prank(publisher);
+        registry.publishSignal(signal1);
+        assertEq(registry.getActiveSignalCount(poolId), 1);
+
+        AurexSignal memory signal2 = AurexSignal({
+            signalId: keccak256("active-count-2"),
+            poolId: poolId,
+            riskScore: 50,
+            alphaScore: 50,
+            liquidityScore: 60,
+            volatilityScore: 30,
+            recommendedFee: 5000,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher2
+        });
+
+        vm.prank(publisher2);
+        registry.publishSignal(signal2);
+        assertEq(registry.getActiveSignalCount(poolId), 2);
+
+        // Publisher 1 publishes again — should replace, not add
+        AurexSignal memory signal3 = AurexSignal({
+            signalId: keccak256("active-count-3"),
+            poolId: poolId,
+            riskScore: 35,
+            alphaScore: 65,
+            liquidityScore: 75,
+            volatilityScore: 25,
+            recommendedFee: 3500,
+            expiresAt: uint64(block.timestamp + 1 hours),
+            signer: publisher
+        });
+
+        vm.prank(publisher);
+        registry.publishSignal(signal3);
+        assertEq(registry.getActiveSignalCount(poolId), 2); // Still 2, not 3
     }
 }

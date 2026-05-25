@@ -74,6 +74,7 @@ contract CreateMultiplePools is Script {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         }));
     }

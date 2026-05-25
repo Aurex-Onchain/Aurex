@@ -39,4 +39,13 @@ interface IAurexSignalRegistry {
     function getSignalRecord(bytes32 signalId) external view returns (SignalRecord memory);
     function getPublisherList(uint256 offset, uint256 limit) external view returns (address[] memory);
     function isPublisherAllowed(bytes32 poolId, address publisher) external view returns (bool);
+
+    function getWeightedSignal(bytes32 poolId) external view returns (
+        uint256 weightedRisk,
+        uint256 weightedAlpha,
+        uint24 weightedFee,
+        uint256 totalWeight
+    );
+
+    function getActiveSignalCount(bytes32 poolId) external view returns (uint256);
 }

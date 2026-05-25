@@ -1,0 +1,29 @@
+{
+  "id": "aurex",
+  "name": "Aurex Advisor",
+  "description": "On-chain signal marketplace intelligence. Provides market analysis, trading signals, and strategy recommendations via Aurex Advisor.",
+  "version": "0.1.0",
+  "activation": {
+    "onStartup": true
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "advisorUrl": {
+        "type": "string",
+        "description": "Aurex Advisor HTTP endpoint",
+        "default": "http://localhost:3100"
+      }
+    }
+  },
+  "contracts": {
+    "tools": [
+      "aurex.get_strategy",
+      "aurex.market_status",
+      "aurex.send_message",
+      "aurex.execute_trade",
+      "aurex.get_prices"
+    ]
+  }
+}

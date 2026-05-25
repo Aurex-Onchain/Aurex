@@ -53,6 +53,7 @@ contract CreateHookPool is Script {
             publisherShareBps: 500, // 5% of fee to publisher
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: vm.addr(deployerPrivateKey)
         });
         policyManager.setPolicy(poolId, policy);

@@ -102,6 +102,7 @@ contract AurexAlphaHookTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
         policyManager.setPolicy(poolId, policy);
@@ -169,6 +170,7 @@ contract AurexAlphaHookTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
 
@@ -198,6 +200,7 @@ contract AurexAlphaHookTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
 
@@ -227,6 +230,7 @@ contract AurexAlphaHookTest is Test {
             publisherShareBps: 500,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
 
@@ -345,6 +349,7 @@ contract AurexAlphaHookTest is Test {
             publisherShareBps: 0,
             blockHighRiskTrades: true,
             allowSwapWhenSignalExpired: true,
+            useWeightedSignal: false,
             policyAdmin: admin
         });
         vm.prank(admin);
@@ -366,5 +371,41 @@ contract AurexAlphaHookTest is Test {
         (, int128 hookDelta) = hook.afterSwap(trader, poolKey, params, delta, "");
 
         assertEq(hookDelta, 0);
+    }
+
+    function test_proofOfAlpha_emitted() public {
+        _publishSignal(30, 70, 3000);
+
+        int128 amount0 = int128(int256(1 ether));
+        int128 amount1 = -int128(int256(1 ether));
+        BalanceDelta delta = BalanceDelta.wrap(
+            (int256(amount0) << 128) | int256(uint256(uint128(uint128(amount1))))
+        );
+
+        SwapParams memory params = SwapParams({
+            zeroForOne: true,
+            amountSpecified: -1 ether,
+            sqrtPriceLimitX96: TickMath.MIN_SQRT_PRICE + 1
+        });
+
+        // First call beforeSwap to set _lastAppliedFee
+        vm.prank(address(poolManager));
+        hook.beforeSwap(trader, poolKey, params, "");
+
+        uint256 expectedShare = 1 ether * 500 / 10000;
+        bytes32 signalId = signalRegistry.getLatestSignal(poolId).signalId;
+
+        vm.expectEmit(true, true, false, true);
+        emit AurexAlphaHook.ProofOfAlpha(
+            poolId,
+            trader,
+            signalId,
+            publisher,
+            3000,
+            expectedShare
+        );
+
+        vm.prank(address(poolManager));
+        hook.afterSwap(trader, poolKey, params, delta, "");
     }
 }

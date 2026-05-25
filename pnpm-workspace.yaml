@@ -1,9 +1,17 @@
 packages:
-  - "apps/web"
+  - "apps/*"
   - "packages/*"
+  - "!apps/openclaw-plugin"
 
 allowBuilds:
+  '@google/genai': set this to true or false
+  better-sqlite3: true
+  esbuild: true
+  koffi: set this to true or false
+  openclaw: set this to true or false
+  protobufjs: set this to true or false
   sharp: true
+  tree-sitter-bash: set this to true or false
   unrs-resolver: true
 
 onlyBuiltDependencies:

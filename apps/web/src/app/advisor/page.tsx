@@ -1,0 +1,55 @@
+"use client";
+
+import { PublisherStatus } from "@/components/advisor/publisher-status";
+import { BehaviorDashboard } from "@/components/advisor/behavior-dashboard";
+import { OpenClawStatus } from "@/components/advisor/openclaw-status";
+import { RecentPoolEvents } from "@/components/advisor/recent-pool-events";
+import { WatchedTokenEvents } from "@/components/advisor/watched-token-events";
+import { useTranslation } from "@/i18n";
+import { CollapsibleHeader } from "@/components/ui/collapsible-header";
+
+export default function AdvisorPage() {
+  const { t } = useTranslation();
+
+  return (
+    <CollapsibleHeader title={t("advisor.title")} description={t("advisor.description")}>
+      <div className="px-5 pb-8 space-y-8">
+        <section>
+          <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
+            {t("advisor.openclawConnection")}
+          </h3>
+          <OpenClawStatus />
+        </section>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <section>
+            <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
+              {t("advisor.publisher")}
+            </h3>
+            <PublisherStatus />
+          </section>
+          <section>
+            <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
+              {t("advisor.behaviorMonitor")}
+            </h3>
+            <BehaviorDashboard />
+          </section>
+        </div>
+
+        <section>
+          <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
+            {t("advisor.recentPoolEvents")}
+          </h3>
+          <RecentPoolEvents />
+        </section>
+
+        <section>
+          <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
+            {t("advisor.watchedTokenEvents")}
+          </h3>
+          <WatchedTokenEvents />
+        </section>
+      </div>
+    </CollapsibleHeader>
+  );
+}

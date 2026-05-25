@@ -75,7 +75,7 @@ Agent analyzes market → generates Signal → publishes on-chain → Hook appli
 
 ---
 
-## Current Status: Phase 1 & 2 Complete
+## Current Status: Phase 1–4 Complete
 
 Contracts fully implemented with open signal marketplace model. All core mechanisms operational. Revenue share redeployment complete.
 
@@ -158,95 +158,76 @@ The Hook now requires `AFTER_SWAP_RETURNS_DELTA_FLAG` in its address. This means
 
 **Goal**: Build the flagship Advisor application — a self-hosted MCP Server that completes the full execution loop from data aggregation to wallet execution.
 
-### 3.1 Core MCP Server + HTTP API
+### 3.1 Core Infrastructure (Done)
 
-The Advisor is a single application that exposes two interfaces:
-1. **MCP Server** — AI clients (OpenClaw, Cursor, Hermes) connect via plugin
-2. **HTTP API** — the web dashboard (`apps/web/`) calls this for data and actions
+- [x] Project setup (`apps/advisor/`): TypeScript, Fastify, vitest, pino
+- [x] HTTP API server (Fastify, same process as MCP)
+- [x] Chain read layer: all contract read operations via viem PublicClient
+- [x] Chain write layer: registerPublisher, publishSignal, verifySignal, claimFees, approveToken
+- [x] Algorithmic signal engine: risk/alpha/liquidity/volatility scoring from price history
+- [x] Auto Fetch + Auto Push loop: scheduled tick → fetch slot0 → score → threshold publish
+- [x] SQLite price history store (WAL mode, auto-prune)
+- [x] Test coverage: 127 tests passing
 
-Both interfaces share the same backend logic. No separate API service.
+### 3.2 MCP Server + Tool Registration (Done)
 
-- [ ] MCP Server framework setup (`apps/advisor/`)
-- [ ] HTTP API server (Express/Fastify, same process)
-- [ ] Tool: `advisor.market_status` — aggregated on-chain metrics + active signals
-- [ ] Tool: `advisor.get_strategy` — structured market context + algorithmic analysis for AI client to reason over
-- [ ] Tool: `advisor.execute` — execute strategy actions through Hook pools
-- [ ] Tool: `advisor.risk_check` — evaluate risk of a proposed action
-- [ ] Tool: `advisor.behavior_alert` — query current behavior risk status
-- [ ] Tool: `advisor.publish_signal` — publish signal to SignalRegistry
-- [ ] Tool: `advisor.configure` — update Advisor settings (risk thresholds, watched pools)
-- [ ] Tool: `advisor.publisher_stats` — accuracy, stake, revenue for connected publisher
-- [ ] HTTP endpoints mirroring MCP tools (GET /api/market, POST /api/execute, etc.)
+- [x] MCP Server framework integration (`@modelcontextprotocol/sdk` + zod)
+- [x] Tool: `advisor.market_status` — aggregated on-chain metrics + active signals
+- [x] Tool: `advisor.get_strategy` — structured market context for AI client reasoning
+- [x] Tool: `advisor.publish_signal` — publish signal to SignalRegistry
+- [x] Tool: `advisor.risk_check` — evaluate risk of a proposed action
+- [x] Tool: `advisor.behavior_alert` — query current behavior risk status
+- [x] Tool: `advisor.configure` — update Advisor settings (risk thresholds, watched pools)
+- [x] Tool: `advisor.publisher_stats` — accuracy, stake, revenue for connected publisher
+- [x] Tool: `advisor.execute` — propose and execute trades through Hook pools
+- [x] Tool: `advisor.confirm_execution` — confirm pending execution proposals
+- [x] HTTP endpoints: GET /api/market, /api/strategy, /api/publisher, /api/behavior, /api/execute/pending, /api/plugin
+- [x] HTTP endpoints: POST /api/configure, /api/publish, /api/behavior/record, /api/execute, /api/execute/confirm
 
-### 3.2 Auto Fetch (Signal + Data Aggregation)
+### 3.3 Strategy Context Assembly (Done)
 
-Advisor automatically and continuously fetches:
+- [x] Context assembly: user state + active signals + publisher rankings + pool state
+- [x] Structured output format for AI client consumption (JSON with bigint serialization)
+- [x] Graceful error handling (partial data when some reads fail)
+- [x] Action schema: swap, add_liquidity, remove_liquidity, wait, hedge, alert
+- [x] Simulation: before/after portfolio comparison (risk exposure, concentration, drawdown, fees, slippage)
 
-- [ ] SignalRegistry: all active signals, publisher accuracy scores
-- [ ] PolicyManager: pool policies (including publisherShareBps)
-- [ ] Pool state: TVL, current fee, recent swaps, slot0 price
-- [ ] On-chain market data:
-  - Whale wallet movements (large transfers >100 ETH)
-  - Liquidity changes (add/remove events, % of TVL)
-  - Volume anomalies (sudden spikes vs historical average)
-  - Price deviations across pools (arbitrage opportunities)
-  - Contract state (Aave/Compound liquidations, large borrows)
-  - Holder distribution changes (top 10 concentration shifts)
-  - Gas fee trends (network congestion for execution timing)
-- [ ] Publisher leaderboard (sorted by accuracy)
-- [ ] User wallet state: holdings, LP positions, pending claims
+### 3.4 Behavior Risk Indicator (Done)
 
-### 3.3 Auto Push (Signal Publishing)
+- [x] Metric tracking: trade frequency, single trade size, position concentration, consecutive direction, daily loss
+- [x] Configurable thresholds (via config)
+- [x] Alert levels: info → warning → critical
+- [x] Minimum sample protection (avoids false positives on sparse data)
+- [x] Historical behavior baseline from persistent SQLite storage (survives restarts)
 
-Advisor is itself a publisher on the protocol:
+### 3.5 On-chain Data Aggregation (Done)
 
-- [ ] Stake management: register as publisher, maintain stake
-- [ ] Signal generation: algorithmic scoring from aggregated on-chain data
-- [ ] Auto publish: sign and submit signal to SignalRegistry
-- [ ] Verification tracking: monitor signal outcomes, track accuracy
-- [ ] Revenue claiming: auto-claim accumulated fee revenue
+Advanced data feeds beyond basic contract reads:
 
-### 3.4 Strategy Context Assembly (for AI Client)
+- [x] Whale wallet movements (large transfers >100 ETH via Transfer event logs)
+- [x] Liquidity changes (ModifyLiquidity events from PoolManager)
+- [x] Volume anomalies (Swap event aggregation vs historical average, configurable multiplier)
+- [x] Price deviations across pools (cross-pool arbitrage detection)
+- [x] Unified `aggregate()` method combining all data sources
 
-The Advisor does NOT run its own LLM. It assembles structured context that the AI client's LLM (OpenClaw, Cursor, Claude, etc.) reasons over. The `advisor.get_strategy` tool returns this context.
+### 3.6 Wallet Execution (Done)
 
-- [ ] Context assembly: user state + active signals + on-chain data + publisher rankings + pool state
-- [ ] Scoring algorithms: risk, alpha, liquidity, volatility from raw on-chain metrics
-- [ ] Action schema: swap, liquidity, wait, hedge, alert, etc. (per `docs/ADVISOR_ACTIONS.md`)
-- [ ] Simulation: before/after portfolio comparison (risk, exposure, drawdown)
-- [ ] Structured output format for AI client consumption
+- [x] Tool: `advisor.execute` — execute strategy actions through Hook pools
+- [x] Transaction construction for swap (approve + policy check)
+- [x] User confirmation flow: propose → await confirmation → execute
+- [x] Execution result tracking (pending, completed, cancelled, history)
+- [x] Risk gate: rejects swaps when pool has blockHighRiskTrades and signal exceeds maxRiskScore
+- [x] Hedge action support with configurable ratio
 
-### 3.5 Behavior Risk Indicator (Anti-All-In)
-
-Monitors user trading patterns and warns against risk anomalies:
-
-- [ ] Metric tracking:
-  - Daily trade frequency (vs 30-day average)
-  - Single trade size (% of total portfolio)
-  - Position concentration (single asset > threshold)
-  - Consecutive same-direction trades (e.g., 5 buys in a row)
-  - Daily cumulative loss (realized + unrealized)
-- [ ] Configurable thresholds (JSON config per user)
-- [ ] Alert levels: info → warning → critical
-- [ ] Push alerts through connected AI client channels
-- [ ] Historical behavior baseline calculation (rolling 30-day window)
-
-### 3.6 Wallet Execution
-
-- [ ] Transaction construction for swap, addLiquidity, removeLiquidity
-- [ ] User confirmation flow (via AI client channel)
-- [ ] Transaction signing and submission
-- [ ] Execution result tracking and notification
-
-### 3.7 AI Client Plugins
+### 3.7 AI Client Plugins (Done)
 
 Adapters for AI clients to connect to the Advisor MCP Server:
 
-- [ ] OpenClaw plugin (`plugins/openclaw/`)
-- [ ] Cursor plugin (`plugins/cursor/`)
-- [ ] Hermes plugin (`plugins/hermes/`)
-- [ ] Plugin installation documentation
-- [ ] Bidirectional communication: user queries + Advisor push notifications
+- [x] OpenClaw plugin (streamable-http transport)
+- [x] Cursor plugin (stdio transport, npx command)
+- [x] Hermes plugin (SSE transport)
+- [x] `GET /api/plugin?client=<type>` — auto-generate connection config
+- [x] `generatePluginConfig()` utility for programmatic use
 
 ---
 
@@ -265,10 +246,10 @@ User's browser → http://localhost:3000 → Advisor (serves both HTTP API + sta
 The Advisor exposes an HTTP API alongside its MCP Server. The web dashboard (`apps/web/`) is a static Next.js app that calls this API. No separate API service exists.
 
 ### 4.1 Dashboard — Signal Market Overview
-- [ ] Top Publishers leaderboard (accuracy score, signal count, stake amount, revenue earned)
-- [ ] Latest signals across all pools (real-time feed)
-- [ ] Pool list with current risk/alpha status and publisher whitelist info
-- [ ] Protocol stats (total publishers, total signals, total pools, total revenue distributed)
+- [x] Top Publishers leaderboard (accuracy score, signal count, stake amount)
+- [x] Latest signals across all pools (real-time feed, 15s auto-refresh)
+- [x] Pool list with current risk/alpha status and signal validity
+- [x] Protocol stats (active pools, valid signals, publishers, behavior level)
 
 ### 4.2 Create Pool Page (Permissionless)
 - [ ] Token pair selector (any ERC20 on X Layer)
@@ -278,30 +259,30 @@ The Advisor exposes an HTTP API alongside its MCP Server. The web dashboard (`ap
 - [ ] Show created pool with poolId
 
 ### 4.3 Signals Page — Market View
-- [ ] All publishers' signals (not just "ours")
-- [ ] Filter by pool, publisher, accuracy score
-- [ ] Signal detail: risk/alpha/liquidity/volatility scores, expiry, publisher info
+- [x] All publishers' signals (not just "ours")
+- [x] Filter by validity status (all/valid/expired)
+- [x] Signal detail: risk/alpha/liquidity/volatility scores, expiry, publisher info
 - [ ] Verification status (verified/pending/slashed)
-- [ ] No wallet connection required for browsing
+- [x] No wallet connection required for browsing
 
 ### 4.4 Advisor Status Page
-- [ ] Connect wallet → show Advisor connection status
-- [ ] Display Advisor's published signals + accuracy history
-- [ ] Behavior risk indicator dashboard (current metrics vs thresholds)
-- [ ] Revenue dashboard: claimable fees, claim history
-- [ ] Advisor configuration panel (risk thresholds, watched pools)
+- [x] Connect wallet → show Advisor connection status
+- [x] Display Advisor's published signals + accuracy history
+- [x] Behavior risk indicator dashboard (current level + alerts)
+- [x] Revenue dashboard: claimable fees display
+- [x] Advisor configuration panel (score threshold, interval)
 
 ### 4.5 Terminal (Swap with Hook)
 - [ ] Token selector + swap interface
-- [ ] Show which signal is currently active for this pool
-- [ ] Show dynamic fee being applied (and why)
+- [x] Show which signal is currently active for this pool
+- [x] Show dynamic fee being applied
 - [ ] Show publisher revenue share breakdown
 - [ ] Execute swap → show Proof-of-Alpha (tx hash, signal used, fee applied)
 
 ### 4.6 Wallet Integration
-- [ ] OKX Wallet connection
-- [ ] X Layer network switch
-- [ ] Transaction signing
+- [x] OKX Wallet / MetaMask connection (EIP-6963 auto-detect)
+- [x] X Layer network configured (Chain 196)
+- [ ] Transaction signing (swap execution)
 
 ---
 
@@ -394,13 +375,14 @@ The Advisor exposes an HTTP API alongside its MCP Server. The web dashboard (`ap
 | P0 | Fee revenue share | Done |
 | P0 | Advisor mode (batch queries) | Done |
 | P0 | Redeploy Hook with revenue share flags | Done |
-| P0 | Aurex Advisor (self-hosted MCP app) | Core product — Phase 3 |
-| P0 | Advisor auto fetch + auto push | Core loop |
-| P0 | Behavior risk indicator | Core safety feature |
-| P1 | AI client plugins (OpenClaw/Cursor/Hermes) | Advisor distribution |
-| P1 | Frontend signal market browser | UX for marketplace |
-| P1 | Third-party agent MCP/SDK | Open ecosystem |
-| P2 | On-chain data aggregation (whale, liquidity, volume) | Feed for Advisor |
-| P2 | Advisor one-click execution | Action → on-chain tx |
-| P2 | End-to-end demo | Showcase |
-| P3 | Production infra | Post-launch |
+| P0 | Advisor infra (chain R/W, scorer, loop) | Done |
+| P0 | MCP Server + Tool registration | Done |
+| P0 | Strategy context assembly | Done |
+| P0 | Behavior risk indicator | Done |
+| P0 | On-chain data aggregation (whale, liquidity) | Done |
+| P0 | Wallet execution (swap/LP) | Done |
+| P0 | AI client plugins (OpenClaw/Cursor/Hermes) | Done |
+| P1 | Frontend signal market browser | Done (core pages) |
+| P2 | Third-party agent MCP/SDK | Phase 5 |
+| P2 | End-to-end demo | Phase 6 |
+| P3 | Production infra | Phase 7 |

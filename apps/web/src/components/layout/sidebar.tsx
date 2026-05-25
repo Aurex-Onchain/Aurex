@@ -2,40 +2,52 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { useTranslation, type TranslationKeys } from "@/i18n";
 
-const navItems = [
-  { href: "/", label: "Dashboard" },
-  { href: "/terminal", label: "Terminal" },
-  { href: "/hook-pools", label: "Hook Pools" },
-  { href: "/signals", label: "Signals" },
+const navItems: { href: string; labelKey: TranslationKeys }[] = [
+  { href: "/feed", labelKey: "sidebar.feed" },
+  { href: "/", labelKey: "sidebar.dashboard" },
+  { href: "/signals", labelKey: "sidebar.signals" },
+  { href: "/hook-pools", labelKey: "sidebar.hookPools" },
+  { href: "/create-pool", labelKey: "sidebar.createPool" },
+  { href: "/advisor", labelKey: "sidebar.advisor" },
+  { href: "/terminal", labelKey: "sidebar.terminal" },
 ];
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
-    <aside className="w-64 border-r border-zinc-800 bg-zinc-950 flex flex-col">
-      <div className="p-6">
-        <h1 className="text-xl font-bold text-white tracking-tight">Aurex</h1>
-        <p className="text-xs text-zinc-500 mt-1">AI Trading OS</p>
+    <aside className="hidden md:flex w-60 h-screen sticky top-0 border-r border-zinc-800 bg-zinc-950 flex-col pl-2">
+      <div className="px-4 pt-6 pb-5">
+        <h1 className="text-lg font-bold text-white tracking-tight">Aurex</h1>
+        <p className="text-[11px] text-zinc-500 mt-0.5">{t("sidebar.subtitle")}</p>
       </div>
-      <nav className="flex-1 px-3">
+      <nav className="flex-1 px-1 pr-2">
         {navItems.map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className={`block px-3 py-2 rounded-md text-sm mb-1 transition-colors ${
+            className={`block px-3 py-2 rounded-md text-sm mb-0.5 transition-colors ${
               pathname === item.href
                 ? "bg-zinc-800 text-white"
                 : "text-zinc-400 hover:text-white hover:bg-zinc-900"
             }`}
           >
-            {item.label}
+            {t(item.labelKey)}
           </Link>
         ))}
       </nav>
-      <div className="p-4 border-t border-zinc-800">
-        <p className="text-xs text-zinc-600">X Layer | Uniswap V4</p>
+      <div className="px-4 py-3 flex items-center justify-between">
+        <LanguageSwitcher />
+        <Link
+          href="/settings"
+          className="w-7 h-7 flex items-center justify-center rounded hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-zinc-300"
+        >
+          <span className="material-icons-outlined" style={{ fontSize: "16px" }}>settings</span>
+        </Link>
       </div>
     </aside>
   );

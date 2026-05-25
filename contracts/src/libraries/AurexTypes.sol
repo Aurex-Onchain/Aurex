@@ -21,6 +21,7 @@ struct PoolPolicy {
     uint16 publisherShareBps;
     bool blockHighRiskTrades;
     bool allowSwapWhenSignalExpired;
+    bool useWeightedSignal;
     address policyAdmin;
 }
 

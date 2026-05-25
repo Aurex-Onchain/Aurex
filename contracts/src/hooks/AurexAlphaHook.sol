@@ -27,6 +27,9 @@ contract AurexAlphaHook is IHooks {
     // Fee revenue share: publisher => token => claimable amount
     mapping(address => mapping(address => uint256)) public claimable;
 
+    // Track the fee applied in beforeSwap for use in afterSwap's ProofOfAlpha event
+    mapping(bytes32 => uint24) internal _lastAppliedFee;
+
     event AurexSwapChecked(
         bytes32 indexed poolId,
         address indexed sender,
@@ -45,6 +48,15 @@ contract AurexAlphaHook is IHooks {
         int256 amount1Delta,
         uint256 riskScore,
         uint256 alphaScore
+    );
+
+    event ProofOfAlpha(
+        bytes32 indexed poolId,
+        address indexed trader,
+        bytes32 signalId,
+        address signalPublisher,
+        uint24 feeApplied,
+        uint256 publisherRevenue
     );
 
     event FeesClaimed(address indexed publisher, address indexed token, uint256 amount);
@@ -161,12 +173,38 @@ contract AurexAlphaHook is IHooks {
         bool blocked = false;
 
         if (signalRegistry.isSignalValid(poolId)) {
-            // Valid signal: apply risk-based logic
-            if (policy.blockHighRiskTrades && signal.riskScore > policy.maxRiskScore) {
-                blocked = true;
-                totalSwapsBlocked++;
+            // Check if weighted signal mode is enabled and multiple signals exist
+            if (policy.useWeightedSignal) {
+                (uint256 wRisk, , uint24 wFee, uint256 wTotal) = signalRegistry.getWeightedSignal(poolId);
+                if (wTotal > 0) {
+                    // Use weighted values for risk check and fee
+                    if (policy.blockHighRiskTrades && wRisk > policy.maxRiskScore) {
+                        blocked = true;
+                        totalSwapsBlocked++;
+                    }
+                    if (wFee > 0 && wFee <= policy.maxFee) {
+                        fee = wFee;
+                    } else {
+                        uint24 feeRange = policy.maxFee - policy.defaultFee;
+                        uint24 riskPremium = uint24((uint256(feeRange) * wRisk) / 100);
+                        fee = policy.defaultFee + riskPremium;
+                    }
+                } else {
+                    // Fallback to single signal
+                    if (policy.blockHighRiskTrades && signal.riskScore > policy.maxRiskScore) {
+                        blocked = true;
+                        totalSwapsBlocked++;
+                    }
+                    fee = computeDynamicFee(signal, policy);
+                }
+            } else {
+                // Single signal mode (original behavior)
+                if (policy.blockHighRiskTrades && signal.riskScore > policy.maxRiskScore) {
+                    blocked = true;
+                    totalSwapsBlocked++;
+                }
+                fee = computeDynamicFee(signal, policy);
             }
-            fee = computeDynamicFee(signal, policy);
         } else if (!policy.allowSwapWhenSignalExpired) {
             // No valid signal and policy disallows expired-signal swaps: use max fee as penalty
             fee = policy.maxFee;
@@ -178,6 +216,8 @@ contract AurexAlphaHook is IHooks {
         emit AurexSwapChecked(poolId, sender, signal.signalId, signal.riskScore, signal.alphaScore, fee, blocked);
 
         require(!blocked, "Aurex: trade blocked by risk policy");
+
+        _lastAppliedFee[poolId] = fee;
 
         uint24 feeWithFlag = fee | LPFeeLibrary.OVERRIDE_FEE_FLAG;
         return (IHooks.beforeSwap.selector, BeforeSwapDeltaLibrary.ZERO_DELTA, feeWithFlag);
@@ -240,6 +280,15 @@ contract AurexAlphaHook is IHooks {
 
         claimable[signal.signer][outputToken] += publisherShare;
         emit RevenueShared(pid, signal.signer, outputToken, publisherShare);
+
+        emit ProofOfAlpha(
+            pid,
+            sender,
+            signal.signalId,
+            signal.signer,
+            _lastAppliedFee[pid],
+            publisherShare
+        );
 
         // Return positive delta = hook takes from the swap output
         return (IHooks.afterSwap.selector, int128(uint128(publisherShare)));
