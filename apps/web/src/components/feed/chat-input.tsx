@@ -21,14 +21,14 @@ export function ChatInput({ onSend, disabled }: ChatInputProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="backdrop-blur-md bg-zinc-900/70 border border-zinc-800 rounded-xl p-4 shadow-lg">
+    <form onSubmit={handleSubmit} className="backdrop-blur-md bg-white/70 dark:bg-zinc-900/70 border border-zinc-200 dark:border-zinc-800 rounded-xl p-4 shadow-lg">
       <input
         type="text"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         placeholder={t("feed.inputPlaceholder")}
         disabled={disabled}
-        className="w-full bg-transparent text-sm text-zinc-200 placeholder-zinc-500 focus:outline-none disabled:opacity-50"
+        className="w-full bg-transparent text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none disabled:opacity-50"
       />
       <div className="flex justify-end mt-3">
         <button

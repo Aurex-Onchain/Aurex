@@ -25,7 +25,7 @@ function getTypeColor(message: Message): string {
     case "signal_expired":
       return "text-amber-400";
     case "fee_change":
-      return "text-blue-400";
+      return "text-emerald-400";
     case "system":
       return "text-zinc-400";
     default:
@@ -64,8 +64,8 @@ function ProgressBar({ metric }: { metric: Metric }) {
 
   return (
     <div className="space-y-1.5">
-      <p className="text-xs font-semibold text-zinc-200">{metric.label}</p>
-      <div className="h-2 w-full bg-zinc-800 rounded-full overflow-hidden">
+      <p className="text-xs font-semibold text-zinc-700 dark:text-zinc-200">{metric.label}</p>
+      <div className="h-2 w-full bg-zinc-200 dark:bg-zinc-800 rounded-full overflow-hidden">
         <div
           className="h-full bg-emerald-500 rounded-full transition-all"
           style={{ width: `${pct}%` }}
@@ -81,7 +81,7 @@ function ProgressBar({ metric }: { metric: Metric }) {
 
 function MetricsCard({ metrics }: { metrics: Metric[] }) {
   return (
-    <div className="mt-4 p-4 bg-zinc-900 rounded-lg space-y-4">
+    <div className="mt-4 p-4 bg-zinc-50 dark:bg-zinc-900 rounded-lg space-y-4">
       {metrics.map((m, i) => (
         <ProgressBar key={i} metric={m} />
       ))}
@@ -145,14 +145,14 @@ export function FeedCard({ message, onAccept }: FeedCardProps) {
       <div className="flex items-center gap-3">
         <GradientAvatar address={avatarAddress} />
         <div>
-          <span className="text-sm font-medium text-zinc-200">{displayName}</span>
+          <span className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{displayName}</span>
           {subtitleAddr && (
             <p className="text-xs text-zinc-500">{subtitleAddr}</p>
           )}
         </div>
       </div>
 
-      <p className="mt-3 text-[15px] text-zinc-300 whitespace-pre-wrap break-words leading-relaxed">
+      <p className="mt-3 text-[15px] text-zinc-700 dark:text-zinc-300 whitespace-pre-wrap break-words leading-relaxed">
         {message.content}
       </p>
 
@@ -169,7 +169,7 @@ export function FeedCard({ message, onAccept }: FeedCardProps) {
           >
             <span className="material-icons-outlined" style={{ fontSize: "18px" }}>check</span>
           </button>
-          <button className="w-9 h-9 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-full transition-colors">
+          <button className="w-9 h-9 flex items-center justify-center bg-zinc-200 dark:bg-zinc-800 hover:bg-zinc-300 dark:hover:bg-zinc-700 text-zinc-600 dark:text-zinc-300 rounded-full transition-colors">
             <span className="material-icons-outlined" style={{ fontSize: "18px" }}>close</span>
           </button>
         </div>

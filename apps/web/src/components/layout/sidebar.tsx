@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 import { useTranslation, type TranslationKeys } from "@/i18n";
 
 const navItems: { href: string; labelKey: TranslationKeys }[] = [
@@ -20,9 +21,9 @@ export function Sidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="hidden md:flex w-60 h-screen sticky top-0 border-r border-zinc-800 bg-zinc-950 flex-col pl-2">
+    <aside className="hidden md:flex w-60 h-screen sticky top-0 border-r border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex-col pl-2">
       <div className="px-4 pt-6 pb-5">
-        <h1 className="text-lg font-bold text-white tracking-tight">Aurex</h1>
+        <h1 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight">Aurex</h1>
         <p className="text-[11px] text-zinc-500 mt-0.5">{t("sidebar.subtitle")}</p>
       </div>
       <nav className="flex-1 px-1 pr-2">
@@ -32,8 +33,8 @@ export function Sidebar() {
             href={item.href}
             className={`block px-3 py-2 rounded-md text-sm mb-0.5 transition-colors ${
               pathname === item.href
-                ? "bg-zinc-800 text-white"
-                : "text-zinc-400 hover:text-white hover:bg-zinc-900"
+                ? "bg-zinc-100 dark:bg-zinc-800 text-zinc-900 dark:text-white"
+                : "text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-100 dark:hover:bg-zinc-900"
             }`}
           >
             {t(item.labelKey)}
@@ -42,12 +43,15 @@ export function Sidebar() {
       </nav>
       <div className="px-4 py-3 flex items-center justify-between">
         <LanguageSwitcher />
-        <Link
-          href="/settings"
-          className="w-7 h-7 flex items-center justify-center rounded hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-zinc-300"
-        >
-          <span className="material-icons-outlined" style={{ fontSize: "16px" }}>settings</span>
-        </Link>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <Link
+            href="/settings"
+            className="w-7 h-7 flex items-center justify-center rounded hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300"
+          >
+            <span className="material-icons-outlined" style={{ fontSize: "16px" }}>settings</span>
+          </Link>
+        </div>
       </div>
     </aside>
   );

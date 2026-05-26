@@ -16,7 +16,7 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
 
   if (!signal) {
     return (
-      <div className="p-4 rounded-xl bg-zinc-800/40 border border-zinc-700/30">
+      <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/30">
         <div className="flex items-center gap-2 text-zinc-500">
           <span className="material-icons-outlined text-lg">signal_cellular_off</span>
           <span className="text-sm">{t("terminal.noSignal")}</span>
@@ -33,14 +33,14 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
   const riskBorder = riskLevel === "low" ? "border-emerald-500/20" : riskLevel === "medium" ? "border-yellow-500/20" : "border-red-500/20";
 
   return (
-    <div className={`p-4 rounded-xl border ${signalValid ? riskBorder : "border-zinc-700/30"} ${signalValid ? riskBg : "bg-zinc-800/40"}`}>
+    <div className={`p-4 rounded-xl border ${signalValid ? riskBorder : "border-zinc-200 dark:border-zinc-700/30"} ${signalValid ? riskBg : "bg-zinc-100 dark:bg-zinc-800/40"}`}>
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <span className={`material-icons-outlined text-lg ${signalValid ? riskColor : "text-zinc-500"}`}>
             {signalValid ? "signal_cellular_alt" : "signal_cellular_off"}
           </span>
-          <span className="text-sm font-medium text-zinc-200">{t("terminal.signalStatus")}</span>
+          <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{t("terminal.signalStatus")}</span>
         </div>
         <div className="flex items-center gap-1.5">
           {signalValid ? (
@@ -69,7 +69,7 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
       <div className="flex items-center justify-between text-xs">
         <div className="flex items-center gap-3">
           <span className="text-zinc-500">{t("terminal.dynamicFee")}</span>
-          <span className="text-zinc-200 font-medium">{formatFee(signal.recommendedFee)}</span>
+          <span className="text-zinc-800 dark:text-zinc-200 font-medium">{formatFee(signal.recommendedFee)}</span>
         </div>
         {!expired && (
           <div className="flex items-center gap-1 text-zinc-500">

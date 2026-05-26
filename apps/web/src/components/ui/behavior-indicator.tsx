@@ -1,8 +1,8 @@
 const levelColors = {
-  normal: "bg-green-500",
-  info: "bg-blue-500",
-  warning: "bg-yellow-500",
-  critical: "bg-red-500",
+  normal: "bg-emerald-600 dark:bg-green-500",
+  info: "bg-emerald-600 dark:bg-emerald-500",
+  warning: "bg-amber-500 dark:bg-yellow-500",
+  critical: "bg-red-600 dark:bg-red-500",
 } as const;
 
 const levelLabels = {
@@ -22,7 +22,7 @@ export function BehaviorIndicator({
       <span
         className={`w-2 h-2 rounded-full ${levelColors[level]} ${level === "critical" ? "animate-pulse" : ""}`}
       />
-      <span className="text-zinc-300">{levelLabels[level]}</span>
+      <span className="text-zinc-700 dark:text-zinc-300">{levelLabels[level]}</span>
     </span>
   );
 }

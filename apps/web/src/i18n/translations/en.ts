@@ -253,6 +253,10 @@ const en = {
   "language.en": "EN",
   "language.zhCN": "中文",
 
+  "theme.dark": "Dark mode",
+  "theme.light": "Light mode",
+  "theme.system": "System theme",
+
   "settings.title": "Settings",
   "settings.description": "Configure your Aurex Advisor instance: signal thresholds, intervals, and watched pools.",
   "settings.wallet": "Wallet & Publisher",

@@ -16,7 +16,7 @@ export function FeedList({ onAccept }: FeedListProps) {
     return (
       <div className="space-y-3 px-5">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="h-20 bg-zinc-900 rounded-lg animate-pulse" />
+          <div key={i} className="h-20 bg-zinc-100 dark:bg-zinc-900 rounded-lg animate-pulse" />
         ))}
       </div>
     );
@@ -33,7 +33,7 @@ export function FeedList({ onAccept }: FeedListProps) {
   }
 
   return (
-    <div className="divide-y divide-zinc-800">
+    <div className="divide-y divide-zinc-200 dark:divide-zinc-800">
       {messages.map((msg) => (
         <FeedCard key={msg.id} message={msg} onAccept={onAccept} />
       ))}

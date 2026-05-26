@@ -98,7 +98,7 @@ export function SwapForm({ pool }: Props) {
         <button
           type="button"
           onClick={() => setShowSlippage(!showSlippage)}
-          className="flex items-center gap-1 text-xs text-zinc-400 hover:text-zinc-200 transition-colors"
+          className="flex items-center gap-1 text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors"
         >
           <span className="material-icons-outlined text-sm">tune</span>
           {t("terminal.slippage")}: {customSlippage || slippage}%
@@ -107,8 +107,8 @@ export function SwapForm({ pool }: Props) {
 
       {/* Slippage Panel */}
       {showSlippage && (
-        <div className="p-3 rounded-lg bg-zinc-800/50 border border-zinc-700/50 space-y-2">
-          <p className="text-xs text-zinc-400">{t("terminal.slippageTolerance")}</p>
+        <div className="p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800/50 border border-zinc-200 dark:border-zinc-700/50 space-y-2">
+          <p className="text-xs text-zinc-600 dark:text-zinc-400">{t("terminal.slippageTolerance")}</p>
           <div className="flex gap-2">
             {SLIPPAGE_OPTIONS.map((opt) => (
               <button
@@ -117,8 +117,8 @@ export function SwapForm({ pool }: Props) {
                 onClick={() => { setSlippage(opt); setCustomSlippage(""); }}
                 className={`px-3 py-1.5 rounded text-xs font-medium transition-colors ${
                   !customSlippage && slippage === opt
-                    ? "bg-indigo-600 text-white"
-                    : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"
+                    ? "bg-emerald-600 text-white"
+                    : "bg-zinc-200 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-300 dark:hover:bg-zinc-600"
                 }`}
               >
                 {opt}%
@@ -129,7 +129,7 @@ export function SwapForm({ pool }: Props) {
               value={customSlippage}
               onChange={(e) => setCustomSlippage(e.target.value)}
               placeholder={t("terminal.custom")}
-              className="w-20 px-2 py-1.5 rounded bg-zinc-700 border border-zinc-600 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-indigo-500"
+              className="w-20 px-2 py-1.5 rounded bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 text-xs text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-500 focus:outline-none focus:border-emerald-500"
             />
           </div>
         </div>
@@ -137,7 +137,7 @@ export function SwapForm({ pool }: Props) {
 
       <form onSubmit={handleSubmit} className="space-y-3">
         {/* You Pay Section */}
-        <div className="relative z-30 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50 overflow-visible">
+        <div className="relative z-30 p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/50 overflow-visible">
           <span className="text-xs text-zinc-500">{t("terminal.youPay")}</span>
           <div className="flex items-center justify-between mt-2">
             <input
@@ -145,7 +145,7 @@ export function SwapForm({ pool }: Props) {
               value={amountIn}
               onChange={(e) => setAmountIn(e.target.value)}
               placeholder="0.0"
-              className="flex-1 min-w-0 bg-transparent text-2xl font-medium text-zinc-100 placeholder-zinc-600 focus:outline-none"
+              className="flex-1 min-w-0 bg-transparent text-2xl font-medium text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none"
             />
             <TokenSelect
               tokens={knownTokens}
@@ -162,14 +162,14 @@ export function SwapForm({ pool }: Props) {
           <button
             type="button"
             onClick={handleFlip}
-            className="p-2 rounded-lg bg-zinc-800 border border-zinc-700 hover:bg-zinc-700 hover:border-zinc-600 transition-colors"
+            className="p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-700 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors"
           >
             <span className="material-icons-outlined text-lg text-zinc-400">swap_vert</span>
           </button>
         </div>
 
         {/* You Receive Section */}
-        <div className="relative z-20 p-4 rounded-xl bg-zinc-800/60 border border-zinc-700/50 overflow-visible">
+        <div className="relative z-20 p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/50 overflow-visible">
           <span className="text-xs text-zinc-500">{t("terminal.youReceive")}</span>
           <div className="flex items-center justify-between mt-2">
             <input
@@ -177,7 +177,7 @@ export function SwapForm({ pool }: Props) {
               value={estimatedOut}
               readOnly
               placeholder="0.0"
-              className="flex-1 min-w-0 bg-transparent text-2xl font-medium text-zinc-100 placeholder-zinc-600 focus:outline-none"
+              className="flex-1 min-w-0 bg-transparent text-2xl font-medium text-zinc-900 dark:text-zinc-100 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none"
             />
             <TokenSelect
               tokens={knownTokens}
@@ -201,25 +201,25 @@ export function SwapForm({ pool }: Props) {
 
         {/* Order Summary */}
         {amountIn && tokenIn && tokenOut && (
-          <div className="p-3 rounded-lg bg-zinc-800/40 border border-zinc-700/30 space-y-2 text-xs">
-            <div className="flex items-center justify-between text-zinc-400">
+          <div className="p-3 rounded-lg bg-zinc-100 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/30 space-y-2 text-xs">
+            <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
               <span>{t("terminal.fee")}</span>
-              <span className="text-zinc-200">{formatFee(fee)}</span>
+              <span className="text-zinc-800 dark:text-zinc-200">{formatFee(fee)}</span>
             </div>
-            <div className="flex items-center justify-between text-zinc-400">
+            <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
               <span>{t("terminal.priceImpact")}</span>
               <span className={priceImpact > 1 ? "text-yellow-400" : "text-emerald-400"}>
                 {priceImpact.toFixed(2)}%
               </span>
             </div>
-            <div className="flex items-center justify-between text-zinc-400">
+            <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400">
               <span>{t("terminal.slippageTolerance")}</span>
-              <span className="text-zinc-200">{effectiveSlippage}%</span>
+              <span className="text-zinc-800 dark:text-zinc-200">{effectiveSlippage}%</span>
             </div>
             {minimumReceived && (
-              <div className="flex items-center justify-between text-zinc-400 pt-1 border-t border-zinc-700/50">
+              <div className="flex items-center justify-between text-zinc-500 dark:text-zinc-400 pt-1 border-t border-zinc-200 dark:border-zinc-700/50">
                 <span>{t("terminal.minimumReceived")}</span>
-                <span className="text-zinc-200">{minimumReceived} {tokenOut.symbol}</span>
+                <span className="text-zinc-800 dark:text-zinc-200">{minimumReceived} {tokenOut.symbol}</span>
               </div>
             )}
           </div>
@@ -234,7 +234,7 @@ export function SwapForm({ pool }: Props) {
         <button
           type="submit"
           disabled={!tokenIn || !tokenOut || !amountIn || isPending}
-          className="w-full px-4 py-3.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="w-full px-4 py-3.5 rounded-xl bg-emerald-600 text-white text-sm font-semibold hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {isPending ? (
             <span className="flex items-center justify-center gap-2">
@@ -285,11 +285,11 @@ function TokenSelect({
         onClick={() => setOpen(!open)}
         className={`flex items-center gap-2 px-4 py-2.5 rounded-full border transition-colors ${
           selected
-            ? "bg-zinc-700/90 border-zinc-600 text-zinc-100 shadow-sm"
-            : "bg-zinc-700/50 border-zinc-600 text-zinc-400"
-        } hover:bg-zinc-600/80 hover:border-zinc-500`}
+            ? "bg-zinc-200 dark:bg-zinc-700/90 border-zinc-300 dark:border-zinc-600 text-zinc-900 dark:text-zinc-100 shadow-sm"
+            : "bg-zinc-100 dark:bg-zinc-700/50 border-zinc-300 dark:border-zinc-600 text-zinc-600 dark:text-zinc-400"
+        } hover:bg-zinc-200 dark:hover:bg-zinc-600/80 hover:border-zinc-400 dark:hover:border-zinc-500`}
       >
-        <span className="material-icons-outlined text-base text-indigo-400">token</span>
+        <span className="material-icons-outlined text-base text-emerald-400">token</span>
         {selected ? (
           <span className="font-bold text-sm">{selected.symbol}</span>
         ) : (
@@ -299,15 +299,15 @@ function TokenSelect({
       </button>
 
       {open && (
-        <div className="absolute right-0 top-full mt-1 w-44 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl z-50 py-1 max-h-48 overflow-y-auto">
+        <div className="absolute right-0 top-full mt-1 w-44 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-2xl z-50 py-1 max-h-48 overflow-y-auto">
           {available.map((token) => (
             <button
               key={token.address}
               type="button"
               onClick={() => { onChange(token); setOpen(false); }}
-              className="w-full px-3 py-2.5 text-left text-sm text-zinc-200 hover:bg-zinc-700/70 transition-colors flex items-center gap-2"
+              className="w-full px-3 py-2.5 text-left text-sm text-zinc-800 dark:text-zinc-200 hover:bg-zinc-100 dark:hover:bg-zinc-700/70 transition-colors flex items-center gap-2"
             >
-              <span className="material-icons-outlined text-sm text-indigo-400">token</span>
+              <span className="material-icons-outlined text-sm text-emerald-400">token</span>
               <span className="font-semibold">{token.symbol}</span>
               <span className="text-xs text-zinc-500 ml-auto">{token.decimals}d</span>
             </button>

@@ -21,7 +21,7 @@ export function ConfigPanel() {
   };
 
   return (
-    <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
+    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label className="block text-xs text-zinc-500 uppercase mb-1">
@@ -32,7 +32,7 @@ export function ConfigPanel() {
             value={scoreThreshold}
             onChange={(e) => setScoreThreshold(e.target.value)}
             placeholder="e.g. 10"
-            className="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+            className="w-full px-3 py-2 rounded bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
           />
         </div>
         <div>
@@ -44,13 +44,13 @@ export function ConfigPanel() {
             value={intervalMs}
             onChange={(e) => setIntervalMs(e.target.value)}
             placeholder="e.g. 60000"
-            className="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-zinc-500"
+            className="w-full px-3 py-2 rounded bg-white dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 text-sm text-zinc-900 dark:text-zinc-200 placeholder-zinc-400 dark:placeholder-zinc-600 focus:outline-none focus:border-emerald-500"
           />
         </div>
         <button
           type="submit"
           disabled={configure.isPending}
-          className="px-4 py-2 rounded bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 transition-colors"
+          className="px-4 py-2 rounded bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 disabled:opacity-50 transition-colors"
         >
           {configure.isPending ? t("advisor.updating") : t("advisor.updateConfig")}
         </button>

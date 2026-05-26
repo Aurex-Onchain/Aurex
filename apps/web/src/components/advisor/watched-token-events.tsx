@@ -59,7 +59,7 @@ export function WatchedTokenEvents() {
 
   if (prices.length === 0) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
         <p className="text-zinc-500 text-sm">{t("advisor.noTokenEvents")}</p>
         <p className="text-xs text-zinc-600 mt-2">{t("advisor.tokenEventsHint")}</p>
       </div>
@@ -67,7 +67,7 @@ export function WatchedTokenEvents() {
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 divide-y divide-zinc-800">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 divide-y divide-zinc-200 dark:divide-zinc-800">
       {prices.map((entry) => {
         const symbol = getTokenSymbol(entry.token);
         const change1h = entry.change1hPct;
@@ -79,18 +79,18 @@ export function WatchedTokenEvents() {
           <div key={entry.token} className="p-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-                  <span className="text-xs font-bold text-zinc-300">{symbol.slice(0, 2)}</span>
+                <div className="w-8 h-8 rounded-full bg-zinc-200 dark:bg-zinc-800 flex items-center justify-center">
+                  <span className="text-xs font-bold text-zinc-700 dark:text-zinc-300">{symbol.slice(0, 2)}</span>
                 </div>
                 <div>
-                  <span className="text-sm font-medium text-zinc-200">{symbol}</span>
+                  <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{symbol}</span>
                   <p className="text-xs text-zinc-500 font-mono">
                     {entry.token.slice(0, 6)}...{entry.token.slice(-4)}
                   </p>
                 </div>
               </div>
               <div className="text-right">
-                <p className="text-sm text-zinc-200">
+                <p className="text-sm text-zinc-800 dark:text-zinc-200">
                   ${entry.currentPrice < 1 ? entry.currentPrice.toFixed(6) : entry.currentPrice.toFixed(2)}
                 </p>
                 {change1h !== null && (
@@ -104,18 +104,18 @@ export function WatchedTokenEvents() {
             <div className="flex items-center gap-3 mt-3">
               {change24h !== null && (
                 <span className={`text-xs px-2 py-0.5 rounded ${
-                  change24h >= 0 ? "bg-green-900/20 text-green-400" : "bg-red-900/20 text-red-400"
+                  change24h >= 0 ? "bg-green-100 dark:bg-green-900/20 text-green-700 dark:text-green-400" : "bg-red-100 dark:bg-red-900/20 text-red-700 dark:text-red-400"
                 }`}>
                   24h: {change24h >= 0 ? "+" : ""}{change24h.toFixed(2)}%
                 </span>
               )}
               {isVolatile && (
-                <span className="text-xs px-2 py-0.5 rounded bg-amber-900/20 text-amber-400">
+                <span className="text-xs px-2 py-0.5 rounded bg-amber-100 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400">
                   {t("advisor.highVolatility")}
                 </span>
               )}
               {isBigMove && (
-                <span className="text-xs px-2 py-0.5 rounded bg-indigo-900/20 text-indigo-400">
+                <span className="text-xs px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400">
                   {t("advisor.significantMove")}
                 </span>
               )}

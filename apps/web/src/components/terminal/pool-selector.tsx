@@ -22,12 +22,12 @@ export function PoolSelector({ pools, value, onChange }: Props) {
       <button
         type="button"
         onClick={() => setOpen(!open)}
-        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:border-zinc-600 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-zinc-100 dark:bg-zinc-800/60 border border-zinc-200 dark:border-zinc-700/50 hover:border-zinc-300 dark:hover:border-zinc-600 transition-colors"
       >
         <div className="flex items-center gap-3">
           <span className="material-icons-outlined text-lg text-zinc-400">pool</span>
           <div className="text-left">
-            <p className="text-sm font-medium text-zinc-200">
+            <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200">
               {selected ? formatAddress(selected.poolId) : t("terminal.selectPool")}
             </p>
             {selected && (
@@ -41,18 +41,18 @@ export function PoolSelector({ pools, value, onChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute left-0 right-0 top-full mt-1 rounded-xl bg-zinc-800 border border-zinc-700 shadow-2xl z-50 py-1 max-h-60 overflow-y-auto">
+        <div className="absolute left-0 right-0 top-full mt-1 rounded-xl bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 shadow-2xl z-50 py-1 max-h-60 overflow-y-auto">
           {pools.map((pool) => (
             <button
               key={pool.poolId}
               type="button"
               onClick={() => { onChange(pool.poolId); setOpen(false); }}
-              className={`w-full px-4 py-3 text-left hover:bg-zinc-700/50 transition-colors flex items-center justify-between ${
-                pool.poolId === value ? "bg-zinc-700/30" : ""
+              className={`w-full px-4 py-3 text-left hover:bg-zinc-100 dark:hover:bg-zinc-700/50 transition-colors flex items-center justify-between ${
+                pool.poolId === value ? "bg-zinc-100 dark:bg-zinc-700/30" : ""
               }`}
             >
               <div>
-                <p className="text-sm font-medium text-zinc-200 font-mono">
+                <p className="text-sm font-medium text-zinc-800 dark:text-zinc-200 font-mono">
                   {formatAddress(pool.poolId)}
                 </p>
                 <p className="text-xs text-zinc-500 mt-0.5">

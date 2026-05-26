@@ -36,12 +36,12 @@ export function CollapsibleHeader({ title, description, children }: CollapsibleH
   return (
     <div className="flex flex-col h-full relative">
       <div
-        className="sticky top-0 z-20 backdrop-blur-xl bg-zinc-950/70 px-3 sm:px-5 pt-6 pb-5"
+        className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 dark:bg-zinc-950/70 px-3 sm:px-5 pt-6 pb-5"
         style={{
-          borderBottom: `1px solid rgba(39, 39, 42, ${borderOpacity})`,
+          borderBottom: `1px solid color-mix(in srgb, var(--border) ${Math.round(borderOpacity * 100)}%, transparent)`,
         }}
       >
-        <h2 className="font-bold leading-tight" style={{ fontSize: `${fontSize}px` }}>
+        <h2 className="font-bold leading-tight text-zinc-900 dark:text-zinc-100" style={{ fontSize: `${fontSize}px` }}>
           {title}
         </h2>
         {description && (

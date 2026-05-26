@@ -12,6 +12,7 @@ import type { ContractAddresses, ChainConfig, AurexSignal } from "../types.js";
 
 export interface ChainWriter {
   getAddress(): Address;
+  getSignerInfo?(): { provider: "private-key" | "onchainos"; teeBacked: boolean };
   registerPublisher(amount: bigint): Promise<Hash>;
   increaseStake(amount: bigint): Promise<Hash>;
   unregisterPublisher(): Promise<Hash>;
@@ -122,6 +123,10 @@ export function createChainWriter(
   return {
     getAddress() {
       return account.address;
+    },
+
+    getSignerInfo() {
+      return { provider: "private-key", teeBacked: false };
     },
 
     async registerPublisher(amount) {
