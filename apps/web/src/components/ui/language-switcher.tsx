@@ -17,7 +17,7 @@ export function LanguageSwitcher() {
   return (
     <button
       onClick={() => setLocale(nextLocale)}
-      className="px-2 py-1 rounded text-xs text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
+      className="px-2 py-1 rounded text-xs text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-200 dark:hover:bg-zinc-800 transition-colors"
       aria-label={`Switch language to ${LOCALE_LABELS[nextLocale]}`}
     >
       {LOCALE_LABELS[locale]}

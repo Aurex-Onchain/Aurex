@@ -114,27 +114,30 @@ export function SettingsForm() {
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       {status !== "idle" && (
         <div className={`flex items-center gap-2 px-4 py-3 rounded-lg text-sm ${
-          status === "success" ? "bg-emerald-950/50 text-emerald-300 border border-emerald-800" : "bg-red-950/50 text-red-300 border border-red-800"
+          status === "success" ? "bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800" : "bg-red-50 dark:bg-red-950/50 text-red-700 dark:text-red-300 border border-red-200 dark:border-red-800"
         }`}>
           <MaterialIcon name={status === "success" ? "check_circle" : "error"} className="text-lg" />
           {status === "success" ? t("settings.saved") : t("settings.failed")}
         </div>
       )}
 
-      <section className="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <section className="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-lg bg-indigo-600/20 flex items-center justify-center">
-            <MaterialIcon name="account_balance_wallet" className="text-lg text-indigo-400" />
+          <div className="w-9 h-9 rounded-lg bg-emerald-600/20 flex items-center justify-center">
+            <MaterialIcon name="account_balance_wallet" className="text-lg text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-sm font-medium text-zinc-200">{t("settings.wallet")}</h2>
+            <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t("settings.wallet")}</h2>
             <p className="text-xs text-zinc-500">{t("settings.walletDesc")}</p>
           </div>
         </div>
-        {config?.hasPrivateKey && (
-          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-800/50">
+        {config?.publisherAddress && (
+          <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-zinc-100/50 dark:bg-zinc-800/50">
             <span className="inline-block w-2 h-2 rounded-full bg-green-500" />
-            <span className="text-sm text-zinc-300 font-mono">{config.publisherAddress}</span>
+            <span className="text-sm text-zinc-700 dark:text-zinc-300 font-mono">{config.publisherAddress}</span>
+            {config.signer?.teeBacked && (
+              <span className="ml-auto text-xs text-emerald-500">OnchainOS TEE</span>
+            )}
           </div>
         )}
         <div>
@@ -144,19 +147,19 @@ export function SettingsForm() {
             value={privateKey}
             onChange={(e) => setPrivateKey(e.target.value)}
             placeholder={config?.hasPrivateKey ? t("settings.privateKeyReplace") : "0x..."}
-            className="w-full px-3 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 font-mono transition-colors"
+            className="w-full px-3 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono transition-colors"
           />
           <p className="text-xs text-zinc-600 mt-1.5">{t("settings.privateKeyHint")}</p>
         </div>
       </section>
 
-      <section className="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <section className="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 rounded-lg bg-amber-600/20 flex items-center justify-center">
             <MaterialIcon name="bolt" className="text-lg text-amber-400" />
           </div>
           <div>
-            <h2 className="text-sm font-medium text-zinc-200">{t("settings.signalEngine")}</h2>
+            <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t("settings.signalEngine")}</h2>
             <p className="text-xs text-zinc-500">{t("settings.signalEngineDesc")}</p>
           </div>
         </div>
@@ -168,7 +171,7 @@ export function SettingsForm() {
                 type="number"
                 value={scoreThreshold}
                 onChange={(e) => setScoreThreshold(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-colors pr-16"
+                className="w-full px-3 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 transition-colors pr-16"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">points</span>
             </div>
@@ -181,7 +184,7 @@ export function SettingsForm() {
                 type="number"
                 value={intervalMs}
                 onChange={(e) => setIntervalMs(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-colors pr-10"
+                className="w-full px-3 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 transition-colors pr-10"
               />
               <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-zinc-500">ms</span>
             </div>
@@ -191,13 +194,13 @@ export function SettingsForm() {
           </div>
         </div>
       </section>
-      <section className="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <section className="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-lg bg-violet-600/20 flex items-center justify-center">
-            <MaterialIcon name="push_pin" className="text-lg text-violet-400" />
+          <div className="w-9 h-9 rounded-lg bg-emerald-600/20 flex items-center justify-center">
+            <MaterialIcon name="push_pin" className="text-lg text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-sm font-medium text-zinc-200">{t("settings.pinnedTokens")}</h2>
+            <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t("settings.pinnedTokens")}</h2>
             <p className="text-xs text-zinc-500">{t("settings.pinnedTokensDesc")}</p>
           </div>
         </div>
@@ -211,12 +214,12 @@ export function SettingsForm() {
                 onClick={() => togglePin(token.address)}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
                   isPinned
-                    ? "border-indigo-600 bg-indigo-950/40 text-white"
-                    : "border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:border-zinc-600"
+                    ? "border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-white"
+                    : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
                 }`}
               >
                 <span className={`w-4 h-4 rounded border flex items-center justify-center ${
-                  isPinned ? "border-indigo-500 bg-indigo-600" : "border-zinc-600"
+                  isPinned ? "border-emerald-500 bg-emerald-600" : "border-zinc-300 dark:border-zinc-600"
                 }`}>
                   {isPinned && <MaterialIcon name="check" className="text-xs text-white" />}
                 </span>
@@ -233,12 +236,12 @@ export function SettingsForm() {
                   onClick={() => togglePin(token.address)}
                   className={`flex-1 flex items-center gap-2 px-3 py-2 rounded-lg border text-sm transition-colors ${
                     isPinned
-                      ? "border-indigo-600 bg-indigo-950/40 text-white"
-                      : "border-zinc-700 bg-zinc-800/50 text-zinc-400 hover:border-zinc-600"
+                      ? "border-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-white"
+                      : "border-zinc-200 dark:border-zinc-700 bg-white dark:bg-zinc-800/50 text-zinc-700 dark:text-zinc-400 hover:border-zinc-300 dark:hover:border-zinc-600"
                   }`}
                 >
                   <span className={`w-4 h-4 rounded border flex items-center justify-center ${
-                    isPinned ? "border-indigo-500 bg-indigo-600" : "border-zinc-600"
+                    isPinned ? "border-emerald-500 bg-emerald-600" : "border-zinc-300 dark:border-zinc-600"
                   }`}>
                     {isPinned && <MaterialIcon name="check" className="text-xs text-white" />}
                   </span>
@@ -255,7 +258,7 @@ export function SettingsForm() {
             );
           })}
         </div>
-        <div className="pt-2 border-t border-zinc-800">
+        <div className="pt-2 border-t border-zinc-200 dark:border-zinc-800">
           <label className="block text-xs text-zinc-400 mb-1.5">{t("settings.addCustomToken")}</label>
           <div className="flex gap-2">
             <input
@@ -263,14 +266,14 @@ export function SettingsForm() {
               value={customAddress}
               onChange={(e) => { setCustomAddress(e.target.value); setCustomError(""); }}
               placeholder="0x..."
-              className="flex-1 px-3 py-2 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 font-mono transition-colors"
+              className="flex-1 px-3 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono transition-colors"
             />
             <button
               type="button"
               onClick={handleAddCustomToken}
-              className="px-3 py-2 rounded-lg bg-zinc-700 text-sm text-zinc-200 hover:bg-zinc-600 transition-colors"
+              className="flex items-center justify-center px-3 py-2 rounded-lg bg-zinc-200 dark:bg-zinc-700 text-sm text-zinc-700 dark:text-zinc-200 hover:bg-zinc-300 dark:hover:bg-zinc-600 transition-colors"
             >
-              <MaterialIcon name="add" className="text-base" />
+              <MaterialIcon name="add" className="text-base leading-none" />
             </button>
           </div>
           {customError && <p className="text-xs text-red-400 mt-1">{customError}</p>}
@@ -278,13 +281,13 @@ export function SettingsForm() {
       </section>
 
 
-      <section className="p-5 rounded-xl border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <section className="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <div className="flex items-center gap-3 mb-2">
           <div className="w-9 h-9 rounded-lg bg-emerald-600/20 flex items-center justify-center">
             <MaterialIcon name="visibility" className="text-lg text-emerald-400" />
           </div>
           <div>
-            <h2 className="text-sm font-medium text-zinc-200">{t("settings.watchlist")}</h2>
+            <h2 className="text-sm font-medium text-zinc-700 dark:text-zinc-200">{t("settings.watchlist")}</h2>
             <p className="text-xs text-zinc-500">{t("settings.watchlistDesc")}</p>
           </div>
         </div>
@@ -294,7 +297,7 @@ export function SettingsForm() {
             value={poolIds}
             onChange={(e) => setPoolIds(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 font-mono transition-colors"
+            className="w-full px-3 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono transition-colors"
             placeholder="0x..."
           />
           <p className="text-xs text-zinc-600 mt-1">{t("settings.poolIdsHint")}</p>
@@ -305,7 +308,7 @@ export function SettingsForm() {
             value={hotTokens}
             onChange={(e) => setHotTokens(e.target.value)}
             rows={3}
-            className="w-full px-3 py-2.5 rounded-lg bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 font-mono transition-colors"
+            className="w-full px-3 py-2.5 rounded-lg bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/30 font-mono transition-colors"
             placeholder="0x..."
           />
           <p className="text-xs text-zinc-600 mt-1">{t("settings.hotTokensHint")}</p>
@@ -315,7 +318,7 @@ export function SettingsForm() {
       <button
         type="submit"
         disabled={configure.isPending}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500 disabled:opacity-50 transition-colors"
+        className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 disabled:opacity-50 transition-colors"
       >
         <MaterialIcon name="save" className="text-base" />
         {configure.isPending ? t("settings.saving") : t("settings.save")}

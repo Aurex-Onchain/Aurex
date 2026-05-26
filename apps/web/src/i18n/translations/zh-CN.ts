@@ -255,6 +255,10 @@ const zhCN: Translations = {
   "language.en": "EN",
   "language.zhCN": "中文",
 
+  "theme.dark": "深色模式",
+  "theme.light": "浅色模式",
+  "theme.system": "跟随系统",
+
   "settings.title": "设置",
   "settings.description": "配置 Aurex Advisor 实例：信号阈值、发布间隔和监控池。",
   "settings.wallet": "钱包与发布者",

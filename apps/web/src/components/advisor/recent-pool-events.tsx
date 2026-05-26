@@ -84,7 +84,7 @@ const EVENT_TYPE_KEYS: Record<string, TranslationKeys> = {
 };
 
 const EVENT_STYLES: Record<string, { icon: string; color: string; bg: string }> = {
-  signal_published: { icon: "broadcast_on_personal", color: "text-indigo-400", bg: "bg-indigo-900/20" },
+  signal_published: { icon: "broadcast_on_personal", color: "text-emerald-400", bg: "bg-emerald-900/20" },
   signal_expired: { icon: "timer_off", color: "text-zinc-400", bg: "bg-zinc-800/40" },
   fee_change: { icon: "swap_vert", color: "text-amber-400", bg: "bg-amber-900/20" },
   high_risk: { icon: "warning", color: "text-red-400", bg: "bg-red-900/20" },
@@ -98,7 +98,7 @@ export function RecentPoolEvents() {
 
   if (!data?.pools?.length) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
         <p className="text-zinc-500 text-sm">{t("advisor.noPoolEvents")}</p>
       </div>
     );
@@ -108,14 +108,14 @@ export function RecentPoolEvents() {
 
   if (events.length === 0) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
         <p className="text-zinc-500 text-sm">{t("advisor.noPoolEvents")}</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 divide-y divide-zinc-800">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 divide-y divide-zinc-200 dark:divide-zinc-800">
       {events.map((event, i) => {
         const style = EVENT_STYLES[event.type] || EVENT_STYLES.signal_published;
         return (

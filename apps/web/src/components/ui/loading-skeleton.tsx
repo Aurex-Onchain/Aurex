@@ -6,7 +6,7 @@ export function LoadingSkeleton({ rows = 3 }: { rows?: number }) {
       {Array.from({ length: rows }).map((_, i) => (
         <div
           key={i}
-          className="h-10 rounded bg-zinc-800 animate-pulse"
+          className="h-10 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse"
           style={{ width: `${WIDTHS[i % WIDTHS.length]}%` }}
         />
       ))}

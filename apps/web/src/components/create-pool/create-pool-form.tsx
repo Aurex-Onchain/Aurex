@@ -50,7 +50,7 @@ export function CreatePoolForm() {
 
   if (!isConnected) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 text-center">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 text-center">
         <span className="material-icons-outlined text-zinc-600 text-3xl mb-2 block">account_balance_wallet</span>
         <p className="text-zinc-400">{t("createPool.connectWallet")}</p>
       </div>
@@ -60,7 +60,7 @@ export function CreatePoolForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Token Pair */}
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide flex items-center gap-2">
           <span className="material-icons-outlined text-base">toll</span>
           {t("createPool.tokenPair")}
@@ -78,7 +78,7 @@ export function CreatePoolForm() {
       </div>
 
       {/* Pool Parameters */}
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide flex items-center gap-2">
           <span className="material-icons-outlined text-base">tune</span>
           {t("createPool.poolParams")}
@@ -90,7 +90,7 @@ export function CreatePoolForm() {
               type="number"
               value={tickSpacing}
               onChange={(e) => setTickSpacing(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-600 transition-colors"
+              className="w-full px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-600 transition-colors"
             />
             <p className="text-xs text-zinc-600 mt-1">{t("createPool.tickSpacingHint")}</p>
           </div>
@@ -100,7 +100,7 @@ export function CreatePoolForm() {
               type="text"
               value={sqrtPriceX96}
               onChange={(e) => setSqrtPriceX96(e.target.value)}
-              className="w-full px-3 py-2 rounded bg-zinc-800 border border-zinc-700 text-sm text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-indigo-600 font-mono text-xs transition-colors"
+              className="w-full px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 text-sm text-zinc-800 dark:text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-emerald-600 font-mono text-xs transition-colors"
             />
             <p className="text-xs text-zinc-600 mt-1">{t("createPool.sqrtPriceHint")}</p>
           </div>
@@ -108,7 +108,7 @@ export function CreatePoolForm() {
       </div>
 
       {/* Policy */}
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide flex items-center gap-2">
           <span className="material-icons-outlined text-base">shield</span>
           {t("createPool.policy")}
@@ -117,7 +117,7 @@ export function CreatePoolForm() {
       </div>
 
       {/* Publisher Whitelist */}
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 space-y-4">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
         <h3 className="text-sm font-semibold text-zinc-400 uppercase tracking-wide flex items-center gap-2">
           <span className="material-icons-outlined text-base">group</span>
           {t("createPool.whitelist")}
@@ -132,7 +132,7 @@ export function CreatePoolForm() {
         <button
           type="submit"
           disabled={!canSubmit}
-          className="px-6 py-2.5 rounded bg-indigo-600 text-white text-sm font-medium hover:bg-indigo-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+          className="px-6 py-2.5 rounded bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
         >
           <span className="material-icons-outlined text-base">rocket_launch</span>
           {isPending ? t("createPool.confirmWallet") : isConfirming ? t("createPool.creating") : t("createPool.submit")}

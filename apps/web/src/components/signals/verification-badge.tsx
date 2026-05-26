@@ -57,10 +57,10 @@ export function VerificationBadge({ signalId, valid, verified, slashed, onVerifi
 
   // Badge styles per status
   const badgeStyles: Record<VerificationStatus, string> = {
-    active: "bg-indigo-900/50 text-indigo-400 border-indigo-800/50",
-    pending: "bg-amber-900/50 text-amber-400 border-amber-800/50",
-    verified: "bg-emerald-900/50 text-emerald-400 border-emerald-800/50",
-    slashed: "bg-red-900/50 text-red-400 border-red-800/50",
+    active: "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50",
+    pending: "bg-amber-50 dark:bg-amber-900/50 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-800/50",
+    verified: "bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800/50",
+    slashed: "bg-red-50 dark:bg-red-900/50 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800/50",
   };
 
   const badgeLabels: Record<VerificationStatus, string> = {
@@ -74,7 +74,7 @@ export function VerificationBadge({ signalId, valid, verified, slashed, onVerifi
   if (showResult) {
     return (
       <div className="flex items-center gap-1.5 animate-in fade-in duration-300">
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-900/50 text-emerald-400 border border-emerald-800/50">
+        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-50 dark:bg-emerald-900/50 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/50">
           <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
@@ -88,12 +88,12 @@ export function VerificationBadge({ signalId, valid, verified, slashed, onVerifi
   if (error) {
     return (
       <div className="flex items-center gap-1.5">
-        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-900/50 text-red-400 border border-red-800/50">
+        <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-50 dark:bg-red-900/50 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800/50">
           Error
         </span>
         <button
           onClick={() => reset()}
-          className="text-xs text-zinc-500 hover:text-zinc-300 underline"
+          className="text-xs text-zinc-500 hover:text-zinc-700 dark:hover:text-zinc-300 underline"
         >
           {t("terminal.dismiss")}
         </button>
@@ -115,7 +115,7 @@ export function VerificationBadge({ signalId, valid, verified, slashed, onVerifi
         <button
           onClick={handleVerify}
           disabled={isPending || isConfirming}
-          className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-700 text-xs text-zinc-400 hover:text-white hover:border-zinc-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-300 dark:border-zinc-700 text-xs text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white hover:border-zinc-400 dark:hover:border-zinc-500 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           {isPending || isConfirming ? (
             <>

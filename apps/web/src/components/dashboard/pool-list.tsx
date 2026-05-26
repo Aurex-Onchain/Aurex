@@ -16,7 +16,7 @@ export function PoolList() {
 
   if (pools.length === 0) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
         <p className="text-zinc-500 text-sm">{t("dashboard.noPools")}</p>
       </div>
     );
@@ -27,10 +27,10 @@ export function PoolList() {
       {pools.map((pool) => (
         <div
           key={pool.poolId}
-          className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden"
+          className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 overflow-hidden"
         >
           <div className="flex items-center justify-between mb-3">
-            <span className="font-mono text-sm text-zinc-300">
+            <span className="font-mono text-sm text-zinc-700 dark:text-zinc-300">
               {formatAddress(pool.poolId)}
             </span>
             <span

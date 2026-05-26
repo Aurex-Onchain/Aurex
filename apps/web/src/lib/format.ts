@@ -30,6 +30,45 @@ export function isExpired(expiresAt: string): boolean {
   return Number(expiresAt) * 1000 < Date.now();
 }
 
+// --- OKX Explorer URL utilities for X Layer ---
+
+const OKX_EXPLORER_BASE: Record<number, string> = {
+  196: "https://www.okx.com/web3/explorer/xlayer",
+  195: "https://www.okx.com/web3/explorer/xlayer-test",
+};
+
+/**
+ * Generate an OKX Explorer URL for a transaction hash on X Layer.
+ */
+export function getOkxExplorerTxUrl(txHash: string, chainId: number = 196): string {
+  const base = OKX_EXPLORER_BASE[chainId] ?? OKX_EXPLORER_BASE[196];
+  return `${base}/tx/${txHash}`;
+}
+
+/**
+ * Generate an OKX Explorer URL for an address on X Layer.
+ */
+export function getOkxExplorerAddressUrl(address: string, chainId: number = 196): string {
+  const base = OKX_EXPLORER_BASE[chainId] ?? OKX_EXPLORER_BASE[196];
+  return `${base}/address/${address}`;
+}
+
+/**
+ * Generate an OKX Explorer URL for a block on X Layer.
+ */
+export function getOkxExplorerBlockUrl(blockNumber: number | string, chainId: number = 196): string {
+  const base = OKX_EXPLORER_BASE[chainId] ?? OKX_EXPLORER_BASE[196];
+  return `${base}/block/${blockNumber}`;
+}
+
+/**
+ * Generate an OKX Explorer URL for a token contract on X Layer.
+ */
+export function getOkxExplorerTokenUrl(tokenAddress: string, chainId: number = 196): string {
+  const base = OKX_EXPLORER_BASE[chainId] ?? OKX_EXPLORER_BASE[196];
+  return `${base}/token/${tokenAddress}`;
+}
+
 export function timeUntilExpiry(expiresAt: string): string {
   const diff = Number(expiresAt) * 1000 - Date.now();
   if (diff <= 0) return "Expired";

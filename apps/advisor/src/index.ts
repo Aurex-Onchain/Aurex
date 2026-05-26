@@ -1,7 +1,8 @@
 import { createServer } from "./server/index.js";
 import { createLogger } from "./logger.js";
 import { defaultConfig } from "./config.js";
-import { createChainReader, createChainWriter } from "./chain/index.js";
+import { createChainReader } from "./chain/index.js";
+import { createAdvisorWriterFromEnv } from "./chain/signer.js";
 import { createBehaviorMonitor, createBehaviorStore } from "./behavior/index.js";
 import { createPriceStore } from "./signal/store.js";
 import { createSignalLoop } from "./signal/loop.js";
@@ -28,10 +29,7 @@ async function main() {
 
   const priceStore = createPriceStore("./data/prices.db");
 
-  const privateKey = (process.env.AUREX_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY) as `0x${string}` | undefined;
-  const writer = privateKey
-    ? createChainWriter(config.chain, config.contracts, privateKey)
-    : null;
+  const writer = await createAdvisorWriterFromEnv(config.chain, config.contracts);
 
   const poolIds: `0x${string}`[] = process.env.AUREX_POOL_IDS
     ? (process.env.AUREX_POOL_IDS.split(",") as `0x${string}`[])
@@ -124,8 +122,11 @@ async function main() {
 
   await server.listen({ host: config.server.host, port: config.server.port });
   logger.info(`Advisor running at http://${config.server.host}:${config.server.port}`);
-  if (writer) logger.info(`Publisher address: ${writer.getAddress()}`);
-  if (!writer) logger.info("Read-only mode (set AUREX_PRIVATE_KEY to enable publishing/execution)");
+  if (writer) {
+    const signerInfo = writer.getSignerInfo?.();
+    logger.info(`Publisher address: ${writer.getAddress()} (${signerInfo?.provider ?? "unknown"} signer)`);
+  }
+  if (!writer) logger.info("Read-only mode (set AUREX_PRIVATE_KEY or AUREX_SIGNER_PROVIDER=onchainos to enable publishing/execution)");
 }
 
 main().catch((err) => {

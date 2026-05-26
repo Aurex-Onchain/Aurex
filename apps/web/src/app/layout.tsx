@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   description: "AI-native onchain trading operating system powered by Uniswap V4 Hooks on X Layer",
 };
 
+// Inline script to prevent FOUC — runs before React hydrates
+const themeScript = `(function(){try{var t=localStorage.getItem("aurex-theme");if(!t||!["light","dark","system"].includes(t))t="dark";var r=t;if(t==="system")r=window.matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";document.documentElement.classList.add(r)}catch(e){document.documentElement.classList.add("dark")}})()`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -24,15 +27,17 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} h-full antialiased dark`}
+      className={`${inter.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <link
           href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined"
           rel="stylesheet"
         />
       </head>
-      <body className="h-full flex bg-zinc-950 text-zinc-100">
+      <body className="h-full flex bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100">
         <Providers>
           <Sidebar />
           <main className="flex-1 overflow-y-auto h-screen pb-16 md:pb-0">{children}</main>

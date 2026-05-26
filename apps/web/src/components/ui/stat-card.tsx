@@ -10,10 +10,10 @@ export function StatCard({
   loading?: boolean;
 }) {
   return (
-    <div className="p-4 rounded-lg border border-zinc-800 bg-zinc-900/50">
+    <div className="p-4 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
       <p className="text-xs text-zinc-500 uppercase tracking-wide">{title}</p>
       {loading ? (
-        <div className="h-8 mt-1 w-16 rounded bg-zinc-800 animate-pulse" />
+        <div className="h-8 mt-1 w-16 rounded bg-zinc-200 dark:bg-zinc-800 animate-pulse" />
       ) : (
         <p className="text-2xl font-bold mt-1">{value}</p>
       )}

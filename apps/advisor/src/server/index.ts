@@ -3,7 +3,7 @@ import cors from "@fastify/cors";
 import type { McpDeps } from "../mcp/index.js";
 import { assembleStrategy } from "../mcp/strategy.js";
 import { generatePluginConfig } from "../plugins/index.js";
-import { createChainWriter } from "../chain/index.js";
+import { createChainWriter, createOnchainosChainWriter } from "../chain/index.js";
 import { createSignalLoop } from "../signal/loop.js";
 import { createWalletExecutor } from "../execution/index.js";
 import type { MessageStore } from "../messages/store.js";
@@ -100,13 +100,16 @@ export async function createServer(deps: ServerDeps) {
     ));
   });
   app.get("/api/config", async () => {
+    const signer = deps.writer?.getSignerInfo?.() ?? null;
     return {
       scoreChangeThreshold: deps.config.publisher.scoreChangeThreshold,
       intervalMs: deps.config.publisher.intervalMs,
       poolIds: deps.poolIds,
       hotTokens: deps.config.hotTokens,
       publisherAddress: deps.writer?.getAddress() ?? null,
-      hasPrivateKey: !!deps.writer,
+      signer,
+      hasPrivateKey: signer?.provider === "private-key",
+      hasSigner: !!deps.writer,
     };
   });
 
@@ -119,9 +122,27 @@ export async function createServer(deps: ServerDeps) {
     return { prices, timestamp: Date.now() };
   });
 
-  app.post<{ Body: { watched_pools?: string[]; score_threshold?: number; interval_ms?: number; private_key?: string; hot_tokens?: string[] } }>("/api/configure", async (request) => {
-    const { watched_pools, score_threshold, interval_ms, private_key, hot_tokens } = request.body || {};
+  app.post<{ Body: { watched_pools?: string[]; score_threshold?: number; interval_ms?: number; private_key?: string; hot_tokens?: string[]; signer_provider?: "private-key" | "onchainos"; onchainos_address?: string; onchainos_auto_confirm?: boolean } }>("/api/configure", async (request) => {
+    const { watched_pools, score_threshold, interval_ms, private_key, hot_tokens, signer_provider, onchainos_address, onchainos_auto_confirm } = request.body || {};
     const changes: string[] = [];
+    function replaceWriter(newWriter: NonNullable<typeof deps.writer>) {
+      deps.loop?.stop();
+      deps.writer = newWriter;
+      deps.loop = createSignalLoop(deps.reader, newWriter, deps.store, {
+        poolIds: deps.poolIds,
+        intervalMs: deps.config.publisher.intervalMs,
+        scoreChangeThreshold: deps.config.publisher.scoreChangeThreshold,
+        signalDurationMs: deps.config.publisher.signalDurationMs,
+        historyDepth: 50,
+        pruneOlderThanMs: 7 * 24 * 60 * 60 * 1000,
+        onAlert: deps.onAlert,
+      });
+      deps.executor = createWalletExecutor(deps.reader, newWriter, deps.config.contracts.poolManager);
+      if (deps.config.publisher.enabled) {
+        deps.loop.start();
+      }
+    }
+
     if (watched_pools) {
       deps.poolIds.length = 0;
       deps.poolIds.push(...(watched_pools as `0x${string}`[]));
@@ -139,25 +160,22 @@ export async function createServer(deps: ServerDeps) {
       deps.config.publisher.intervalMs = interval_ms;
       changes.push(`intervalMs = ${interval_ms}`);
     }
-    if (private_key) {
+    if (signer_provider === "onchainos") {
+      try {
+        const newWriter = await createOnchainosChainWriter(deps.config.chain, deps.config.contracts, {
+          address: (onchainos_address || undefined) as `0x${string}` | undefined,
+          autoConfirm: onchainos_auto_confirm ?? false,
+        });
+        replaceWriter(newWriter);
+        changes.push(`signer_provider = onchainos (publisher: ${newWriter.getAddress()})`);
+      } catch (err) {
+        return { success: false, error: `Failed to configure OnchainOS signer: ${err instanceof Error ? err.message : String(err)}` };
+      }
+    } else if (private_key) {
       try {
         const newWriter = createChainWriter(deps.config.chain, deps.config.contracts, private_key as `0x${string}`);
-        deps.loop?.stop();
-        deps.writer = newWriter;
-        deps.loop = createSignalLoop(deps.reader, newWriter, deps.store, {
-          poolIds: deps.poolIds,
-          intervalMs: deps.config.publisher.intervalMs,
-          scoreChangeThreshold: deps.config.publisher.scoreChangeThreshold,
-          signalDurationMs: deps.config.publisher.signalDurationMs,
-          historyDepth: 50,
-          pruneOlderThanMs: 7 * 24 * 60 * 60 * 1000,
-          onAlert: deps.onAlert,
-        });
-        deps.executor = createWalletExecutor(deps.reader, newWriter, deps.config.contracts.poolManager);
-        if (deps.config.publisher.enabled) {
-          deps.loop.start();
-        }
-        changes.push(`private_key set (publisher: ${newWriter.getAddress()})`);
+        replaceWriter(newWriter);
+        changes.push(`signer_provider = private-key (publisher: ${newWriter.getAddress()})`);
       } catch (err) {
         return { success: false, error: `Invalid private key: ${err instanceof Error ? err.message : String(err)}` };
       }
@@ -389,4 +407,3 @@ function serializeContext(ctx: { market: unknown; userState: unknown; behaviorSt
     typeof value === "bigint" ? value.toString() : value,
   ));
 }
-

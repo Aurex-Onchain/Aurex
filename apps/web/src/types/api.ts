@@ -98,6 +98,10 @@ export interface ConfigureRequest {
   score_threshold?: number;
   interval_ms?: number;
   private_key?: string;
+  hot_tokens?: string[];
+  signer_provider?: "private-key" | "onchainos";
+  onchainos_address?: string;
+  onchainos_auto_confirm?: boolean;
 }
 
 export interface ConfigureResponse {
@@ -128,4 +132,6 @@ export interface AdvisorConfigResponse {
   hotTokens: string[];
   publisherAddress: string | null;
   hasPrivateKey: boolean;
+  hasSigner: boolean;
+  signer: { provider: "private-key" | "onchainos"; teeBacked: boolean } | null;
 }

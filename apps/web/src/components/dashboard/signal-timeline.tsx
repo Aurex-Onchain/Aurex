@@ -44,7 +44,7 @@ export function SignalTimeline() {
 
   if (signals.length === 0) {
     return (
-      <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 text-center">
+      <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 text-center">
         <span className="material-icons-outlined text-zinc-600 text-3xl mb-2 block">
           sensors_off
         </span>
@@ -55,15 +55,15 @@ export function SignalTimeline() {
   }
 
   return (
-    <div className="rounded-lg border border-zinc-800 bg-zinc-900/50 overflow-hidden">
+    <div className="rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-800">
+      <div className="flex items-center justify-between px-4 py-3 border-b border-zinc-200 dark:border-zinc-800">
         <div className="flex items-center gap-2">
           <span className="relative flex h-2.5 w-2.5">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
             <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
           </span>
-          <span className="text-xs font-medium text-zinc-400 uppercase">
+          <span className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">
             {t("timeline.liveLabel")}
           </span>
         </div>
@@ -73,14 +73,14 @@ export function SignalTimeline() {
       </div>
 
       {/* Timeline entries */}
-      <div className="divide-y divide-zinc-800/50 max-h-[400px] overflow-y-auto">
+      <div className="divide-y divide-zinc-200 dark:divide-zinc-800/50 max-h-[400px] overflow-y-auto">
         {signals.map((sig) => {
           const risk = formatScore(sig.riskScore);
           const alpha = formatScore(sig.alphaScore);
           return (
             <div
               key={sig.signalId}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-800/30 transition-colors"
+              className="flex items-center gap-3 px-4 py-3 hover:bg-zinc-100 dark:hover:bg-zinc-800/30 transition-colors"
             >
               {/* Risk indicator dot */}
               <div
@@ -93,7 +93,7 @@ export function SignalTimeline() {
               </span>
 
               {/* Publisher */}
-              <span className="font-mono text-xs text-zinc-400 w-24 shrink-0">
+              <span className="font-mono text-xs text-zinc-500 dark:text-zinc-400 w-24 shrink-0">
                 {formatAddress(sig.signer)}
               </span>
 
@@ -107,10 +107,10 @@ export function SignalTimeline() {
                 <span className={`text-xs font-medium ${riskColor(risk)}`}>
                   R:{risk}
                 </span>
-                <span className="text-xs font-medium text-indigo-400">
+                <span className="text-xs font-medium text-emerald-400">
                   A:{alpha}
                 </span>
-                <span className="text-xs text-zinc-400">
+                <span className="text-xs text-zinc-500 dark:text-zinc-400">
                   {formatFee(sig.recommendedFee)}
                 </span>
               </div>

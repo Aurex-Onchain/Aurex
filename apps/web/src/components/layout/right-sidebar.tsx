@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect, useReadContracts } from "wagmi";
+import { useAccount, useReadContracts } from "wagmi";
 import { useTranslation } from "@/i18n";
 import { TOKENS, CONTRACTS, erc20Abi } from "@/lib/contracts";
 import { formatAddress } from "@/lib/format";
-import { addressToColors } from "@/lib/avatar";
 import { usePinnedTokens } from "@/hooks/use-pinned-tokens";
 import { useTokenPrices, getPriceForToken } from "@/hooks/use-token-prices";
+import { ConnectButton } from "@/components/ui/connect-button";
 
 const contractEntries = [
   { label: "Pool Factory", address: CONTRACTS.poolFactory },
@@ -36,48 +36,9 @@ function formatBalance(raw: bigint | undefined, decimals: number): string {
 }
 
 function WalletSection() {
-  const { address, isConnected } = useAccount();
-  const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  if (mounted && isConnected && address) {
-    const [c1, c2] = addressToColors(address);
-    return (
-      <div className="px-4 pt-6 pb-4">
-        <div
-          className="w-12 h-12"
-          style={{
-            background: `linear-gradient(135deg, ${c1}, ${c2})`,
-            borderRadius: "22%",
-          }}
-        />
-        <button
-          onClick={() => disconnect()}
-          className="mt-4 block text-sm font-mono text-zinc-300 hover:text-white transition-colors"
-        >
-          {formatAddress(address)}
-        </button>
-        <span className="text-xs text-zinc-500">Connected</span>
-      </div>
-    );
-  }
-
   return (
     <div className="px-4 pt-6 pb-4">
-      <button
-        onClick={() => {
-          const connector = connectors[0];
-          if (connector) connect({ connector });
-        }}
-        className="w-full px-3 py-2 rounded-md text-sm bg-indigo-600 text-white hover:bg-indigo-500 transition-colors"
-      >
-        Connect Wallet
-      </button>
+      <ConnectButton />
     </div>
   );
 }
@@ -87,11 +48,6 @@ function BalanceList() {
   const { t } = useTranslation();
   const { pinnedAddresses, customTokens } = usePinnedTokens();
   const { data: priceData } = useTokenPrices();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const allTokens = [...TOKENS, ...customTokens.filter((ct) => !TOKENS.some((t) => t.address.toLowerCase() === ct.address.toLowerCase()))];
 
@@ -105,7 +61,7 @@ function BalanceList() {
     query: { enabled: !!address, refetchInterval: 15000 },
   });
 
-  if (!mounted || !address) {
+  if (!address) {
     return (
       <p className="text-xs text-zinc-500 px-4">{t("rightSidebar.connectHint")}</p>
     );
@@ -142,8 +98,8 @@ function BalanceList() {
   return (
     <div className="space-y-2 px-4">
       {hasPrices && (
-        <div className="pb-2 mb-2 border-b border-zinc-800">
-          <span className="text-lg font-semibold text-white">${totalUsd.toFixed(2)}</span>
+        <div className="pb-2 mb-2 border-b border-zinc-200 dark:border-zinc-800">
+          <span className="text-lg font-semibold text-zinc-900 dark:text-white">${totalUsd.toFixed(2)}</span>
           <span className="text-xs text-zinc-500 ml-1.5">USD</span>
         </div>
       )}
@@ -153,7 +109,7 @@ function BalanceList() {
           <div key={token.address} className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="material-icons-outlined text-zinc-400" style={{ fontSize: "16px" }}>{icon}</span>
-              <span className="text-sm text-zinc-300">{token.symbol}</span>
+              <span className="text-sm text-zinc-700 dark:text-zinc-300">{token.symbol}</span>
             </div>
             <span className="text-sm font-mono text-zinc-400">
               {formatBalance(balance, token.decimals)}
@@ -206,7 +162,7 @@ function ServiceStatus() {
   useEffect(() => {
     async function check(label: string, url: string) {
       try {
-        const res = await fetch(url, { method: "HEAD", mode: "no-cors", signal: AbortSignal.timeout(5000) });
+        await fetch(url, { method: "HEAD", mode: "no-cors", signal: AbortSignal.timeout(5000) });
         setStatuses((prev) => ({ ...prev, [label]: true }));
       } catch {
         setStatuses((prev) => ({ ...prev, [label]: false }));
@@ -238,7 +194,7 @@ export function RightSidebar() {
   const { t } = useTranslation();
 
   return (
-    <aside className="hidden lg:flex w-72 h-screen sticky top-0 border-l border-zinc-800 bg-zinc-950 flex-col overflow-y-auto">
+    <aside className="hidden lg:flex w-72 h-screen sticky top-0 border-l border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-950 flex-col overflow-y-auto">
       <WalletSection />
 
       <div className="py-4">

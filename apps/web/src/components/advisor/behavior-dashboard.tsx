@@ -13,9 +13,9 @@ export function BehaviorDashboard() {
   if (!data) return null;
 
   return (
-    <div className="p-6 rounded-lg border border-zinc-800 bg-zinc-900/50 space-y-4">
+    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
       <div className="flex items-center justify-between">
-        <span className="text-sm text-zinc-400">{t("advisor.currentLevel")}</span>
+        <span className="text-sm text-zinc-600 dark:text-zinc-400">{t("advisor.currentLevel")}</span>
         <BehaviorIndicator level={data.level} />
       </div>
 
@@ -27,10 +27,10 @@ export function BehaviorDashboard() {
               key={i}
               className={`p-3 rounded border text-sm ${
                 alert.level === "critical"
-                  ? "border-red-800 bg-red-900/20 text-red-300"
+                  ? "border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-300"
                   : alert.level === "warning"
-                    ? "border-yellow-800 bg-yellow-900/20 text-yellow-300"
-                    : "border-blue-800 bg-blue-900/20 text-blue-300"
+                    ? "border-amber-200 dark:border-yellow-800 bg-amber-50 dark:bg-yellow-900/20 text-amber-700 dark:text-yellow-300"
+                    : "border-emerald-200 dark:border-emerald-800 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300"
               }`}
             >
               <p>{alert.message}</p>

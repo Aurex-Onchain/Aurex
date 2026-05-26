@@ -31,9 +31,9 @@ export default function TerminalPage() {
             {/* Left: Swap Panel */}
             <div className="lg:col-span-5 space-y-4">
               {/* Pool Selector Card */}
-              <div className="relative z-20 p-5 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+              <div className="relative z-20 p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-900/60 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="material-icons-outlined text-sm text-indigo-400">layers</span>
+                  <span className="material-icons-outlined text-sm text-emerald-400">layers</span>
                   <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                     {t("terminal.pool")}
                   </h3>
@@ -46,7 +46,7 @@ export default function TerminalPage() {
               </div>
 
               {/* Swap Card */}
-              <div className="p-5 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+              <div className="p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-900/60 backdrop-blur-sm">
                 {activePool ? (
                   <SwapForm pool={activePool} />
                 ) : (
@@ -61,9 +61,9 @@ export default function TerminalPage() {
             {/* Right: Signal & Info Panel */}
             <div className="lg:col-span-7 space-y-4">
               {/* Signal Indicator */}
-              <div className="p-5 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+              <div className="p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-900/60 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="material-icons-outlined text-sm text-indigo-400">sensors</span>
+                  <span className="material-icons-outlined text-sm text-emerald-400">sensors</span>
                   <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                     {t("terminal.activeSignal")}
                   </h3>
@@ -81,9 +81,9 @@ export default function TerminalPage() {
 
               {/* Pool Details Card */}
               {activePool && policy && (
-                <div className="p-5 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+                <div className="p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-900/60 backdrop-blur-sm">
                   <div className="flex items-center gap-2 mb-4">
-                    <span className="material-icons-outlined text-sm text-indigo-400">info</span>
+                    <span className="material-icons-outlined text-sm text-emerald-400">info</span>
                     <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                       {t("terminal.poolDetails")}
                     </h3>
@@ -124,9 +124,9 @@ export default function TerminalPage() {
               )}
 
               {/* Execution Info */}
-              <div className="p-5 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 backdrop-blur-sm">
+              <div className="p-5 rounded-2xl border border-zinc-200/80 dark:border-zinc-800/80 bg-zinc-50/60 dark:bg-zinc-900/60 backdrop-blur-sm">
                 <div className="flex items-center gap-2 mb-3">
-                  <span className="material-icons-outlined text-sm text-indigo-400">bolt</span>
+                  <span className="material-icons-outlined text-sm text-emerald-400">bolt</span>
                   <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wide">
                     {t("terminal.executionInfo")}
                   </h3>
@@ -148,7 +148,7 @@ function InfoItem({ label, value, mono, highlight }: { label: string; value: str
   return (
     <div className="space-y-1">
       <p className="text-xs text-zinc-500">{label}</p>
-      <p className={`text-sm font-medium ${highlight ? "text-indigo-400" : "text-zinc-200"} ${mono ? "font-mono" : ""}`}>
+      <p className={`text-sm font-medium ${highlight ? "text-emerald-400" : "text-zinc-700 dark:text-zinc-200"} ${mono ? "font-mono" : ""}`}>
         {value}
       </p>
     </div>

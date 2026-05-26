@@ -324,6 +324,27 @@ Every recommendation includes: reasoning chain, confidence score, simulation (be
 
 Full action schema: [`docs/ADVISOR_ACTIONS.md`](./docs/ADVISOR_ACTIONS.md)
 
+### OnchainOS Agentic Wallet Signer
+
+Advisor can publish signals and submit contract calls through OKX OnchainOS Agentic Wallet. In this mode, private-key generation, custody, and signing happen inside OnchainOS' TEE-backed wallet instead of `AUREX_PRIVATE_KEY`.
+
+```bash
+cd apps/advisor
+cp .env.example .env
+
+# Install and log in to the OnchainOS CLI first:
+curl -sSL https://raw.githubusercontent.com/okx/onchainos-skills/main/install.sh | sh
+onchainos wallet login
+
+# Then set:
+AUREX_SIGNER_PROVIDER=onchainos
+AUREX_ONCHAINOS_CHAIN=196
+# Optional if Advisor should not auto-resolve it from `onchainos wallet balance`:
+AUREX_ONCHAINOS_ADDRESS=0x...
+```
+
+When `AUREX_SIGNER_PROVIDER=onchainos`, Advisor encodes Aurex contract calls locally, runs an OnchainOS transaction security scan, then calls `onchainos wallet contract-call` for TEE signing and broadcasting. Keep `AUREX_ONCHAINOS_AUTO_CONFIRM=false` unless the operator has explicitly accepted the confirmation policy for unattended publishing.
+
 ---
 
 ## Third-party Agent Integration
