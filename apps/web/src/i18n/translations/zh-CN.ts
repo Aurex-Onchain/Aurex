@@ -246,6 +246,7 @@ const zhCN: Translations = {
   "advisor.copyConfig": "复制配置",
   "advisor.configCopied": "✓ 已复制",
   "advisor.closeSetup": "关闭",
+  "advisor.followSteps": "按照以下步骤将 Aurex Advisor 集成到你的 AI 助手",
 
   "staking.title": "发布者质押",
   "staking.connectWallet": "连接钱包以管理质押。",

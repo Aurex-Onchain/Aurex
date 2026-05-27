@@ -244,6 +244,7 @@ const en = {
   "advisor.copyConfig": "Copy Config",
   "advisor.configCopied": "✓ Copied",
   "advisor.closeSetup": "Close",
+  "advisor.followSteps": "Follow these steps to integrate with Aurex Advisor",
 
   "staking.title": "Publisher Staking",
   "staking.connectWallet": "Connect your wallet to manage staking.",

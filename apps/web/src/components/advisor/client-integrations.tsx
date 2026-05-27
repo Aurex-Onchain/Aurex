@@ -286,7 +286,7 @@ export function ClientIntegrations() {
                 {selectedClientConfig.name} {t("advisor.setupSteps")}
               </h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                Follow these steps to integrate with Aurex Advisor
+                {t("advisor.followSteps")}
               </p>
             </div>
             <button
