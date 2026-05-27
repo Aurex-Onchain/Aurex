@@ -119,15 +119,266 @@ export function createHermesPlugin(): PluginAdapter {
   };
 }
 
-export function getPluginAdapter(clientType: "openclaw" | "cursor" | "hermes"): PluginAdapter {
+export function createClaudeCodePlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Claude Code",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "claude-code",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export function createWindsurfPlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Windsurf IDE",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "windsurf",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export function createClinePlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Cline (VSCode Extension)",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "cline",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export function createContinuePlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Continue.dev",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "continue",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export function createZedPlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Zed Editor",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "zed",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export function createClaudeDesktopPlugin(): PluginAdapter {
+  return {
+    getManifest() {
+      return {
+        name: "aurex-advisor",
+        version: "0.1.0",
+        description: "Aurex Advisor MCP Server for Claude Desktop App",
+        transport: "stdio",
+        tools: [
+          "advisor.market_status",
+          "advisor.get_strategy",
+          "advisor.publish_signal",
+          "advisor.risk_check",
+          "advisor.behavior_alert",
+          "advisor.publisher_stats",
+          "advisor.configure",
+          "advisor.execute",
+          "advisor.confirm_execution",
+        ],
+      };
+    },
+    getConnectionConfig(_advisorUrl) {
+      return {
+        type: "claude-desktop",
+        mcpServers: {
+          "aurex-advisor": {
+            command: "npx",
+            args: ["-y", "@aurex/advisor"],
+            env: {
+              AUREX_RPC_URL: "https://rpc.xlayer.tech",
+              AUREX_CHAIN_ID: "196",
+            },
+          },
+        },
+      };
+    },
+  };
+}
+
+export type SupportedClient =
+  | "openclaw"
+  | "cursor"
+  | "hermes"
+  | "claude-code"
+  | "windsurf"
+  | "cline"
+  | "continue"
+  | "zed"
+  | "claude-desktop";
+
+export function getPluginAdapter(clientType: SupportedClient): PluginAdapter {
   switch (clientType) {
     case "openclaw": return createOpenClawPlugin();
     case "cursor": return createCursorPlugin();
     case "hermes": return createHermesPlugin();
+    case "claude-code": return createClaudeCodePlugin();
+    case "windsurf": return createWindsurfPlugin();
+    case "cline": return createClinePlugin();
+    case "continue": return createContinuePlugin();
+    case "zed": return createZedPlugin();
+    case "claude-desktop": return createClaudeDesktopPlugin();
   }
 }
 
-export function generatePluginConfig(clientType: "openclaw" | "cursor" | "hermes", advisorUrl: string): Record<string, unknown> {
+export function generatePluginConfig(clientType: SupportedClient, advisorUrl: string): Record<string, unknown> {
   const adapter = getPluginAdapter(clientType);
   return {
     manifest: adapter.getManifest(),

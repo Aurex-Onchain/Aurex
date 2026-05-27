@@ -256,30 +256,51 @@ Each pool has configurable parameters:
 A self-hosted AI trading application. Users deploy it locally — their keys, their data, their AI. The Advisor serves both an MCP interface (for AI clients) and an HTTP API (for the web dashboard). No separate backend service needed.
 
 ```
-┌─────────────┐  ┌─────────┐  ┌────────┐  ┌────────┐
-│ OpenClaw    │  │ Cursor  │  │ Hermes │  │ Claude │
-│ (plugin)    │  │ (plugin)│  │(plugin)│  │ (MCP)  │
-└──────┬──────┘  └────┬────┘  └───┬────┘  └───┬────┘
-       └───────────────┴──────────┴────────────┘
-                              │
-                              ▼
-              ┌───────────────────────────────┐
-              │  Aurex Advisor (MCP Server)    │
-              │  Self-hosted by user           │
-              │                               │
-              │  Auto fetch signals + data     │
-              │  Algorithmic signal scoring     │
-              │  Structured context for AI     │
-              │  Behavior risk monitoring      │
-              │  Wallet execution              │
-              │  HTTP API for Dashboard        │
-              └───────────────┬───────────────┘
-                              │
-                              ▼
-              ┌───────────────────────────────┐
-              │  Aurex Signal Protocol (chain) │
-              └───────────────────────────────┘
+┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+│ Claude Code  │  │ Cursor       │  │ Windsurf     │  │ Cline        │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       │                 │                  │                 │
+┌──────┴───────┐  ┌──────┴───────┐  ┌──────┴───────┐  ┌──────┴───────┐
+│ Continue.dev │  │ Zed Editor   │  │ Claude App   │  │ OpenClaw     │
+└──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘
+       └──────────────────┴──────────────────┴──────────────────┘
+                                  │
+                                  ▼
+              ┌───────────────────────────────────────────────┐
+              │  Aurex Advisor (MCP Server)                   │
+              │  Self-hosted by user                          │
+              │                                               │
+              │  Auto fetch signals + data                    │
+              │  Algorithmic signal scoring                   │
+              │  Structured context for AI                    │
+              │  Behavior risk monitoring                     │
+              │  Wallet execution                             │
+              │  HTTP API for Dashboard                       │
+              └───────────────────┬───────────────────────────┘
+                                  │
+                                  ▼
+              ┌───────────────────────────────────────────────┐
+              │  Aurex Signal Protocol (chain)                │
+              └───────────────────────────────────────────────┘
 ```
+
+### Supported AI Clients
+
+Aurex Advisor works with **9+ AI assistants** via MCP (Model Context Protocol):
+
+| Client | Type | Transport | Description |
+|--------|------|-----------|-------------|
+| **Claude Code** | CLI | stdio | Anthropic's official CLI for Claude |
+| **Cursor** | IDE | stdio | AI-first code editor |
+| **Windsurf** | IDE | stdio | Codeium's AI IDE |
+| **Cline** | Extension | stdio | VSCode AI assistant |
+| **Continue.dev** | Extension | stdio | Open-source AI code assistant |
+| **Zed** | Editor | stdio | High-performance code editor |
+| **Claude Desktop** | App | stdio | Claude desktop application |
+| **OpenClaw** | Platform | http | AI agent platform with plugins |
+| **Hermes AI** | Platform | sse | AI assistant with SSE support |
+
+**Setup**: Visit the Advisor page in the web dashboard to get client-specific configuration for your preferred AI assistant.
 
 ### MCP Tools
 

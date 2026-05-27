@@ -248,12 +248,27 @@ export async function createServer(deps: ServerDeps) {
   });
 
   app.get<{ Querystring: { client: string } }>("/api/plugin", async (request) => {
-    const client = request.query.client as "openclaw" | "cursor" | "hermes";
-    if (!["openclaw", "cursor", "hermes"].includes(client)) {
-      return { error: "Invalid client type. Use: openclaw, cursor, hermes" };
+    const client = request.query.client;
+    const supportedClients = [
+      "openclaw",
+      "cursor",
+      "hermes",
+      "claude-code",
+      "windsurf",
+      "cline",
+      "continue",
+      "zed",
+      "claude-desktop",
+    ];
+    if (!client || !supportedClients.includes(client)) {
+      return {
+        error: "Invalid client type",
+        supported: supportedClients,
+        usage: "GET /api/plugin?client=<type>",
+      };
     }
     const baseUrl = `http://${deps.config.server.host}:${deps.config.server.port}`;
-    return generatePluginConfig(client, baseUrl);
+    return generatePluginConfig(client as any, baseUrl);
   });
 
   app.get<{ Querystring: { since?: string; limit?: string } }>("/api/messages", async (request) => {
