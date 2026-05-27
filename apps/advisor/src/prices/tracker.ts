@@ -1,6 +1,7 @@
 import type { ChainReader } from "../chain/index.js";
 import type { TokenPriceStore } from "./store.js";
 import type { MessageStore } from "../messages/store.js";
+import type { AlertContext } from "../alerts/notifier.js";
 import { createLogger } from "../logger.js";
 
 const logger = createLogger();
@@ -10,6 +11,7 @@ export interface PriceTrackerConfig {
   poolIds: `0x${string}`[];
   intervalMs: number;
   messageStore?: MessageStore;
+  onAlert?: (alert: AlertContext) => void | Promise<void>;
 }
 
 export interface PriceTracker {
@@ -43,6 +45,14 @@ export function createPriceTracker(
         metadata: { token, currentPrice, oldPrice, changePct: change.change1hPct },
       });
       logger.info({ token, changePct: change.change1hPct }, "Price alert emitted");
+
+      if (config.onAlert) {
+        config.onAlert({
+          type: "whale_movement",
+          summary: content,
+          data: { token, currentPrice, oldPrice, changePct: change.change1hPct },
+        });
+      }
     }
   }
 

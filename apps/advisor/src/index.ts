@@ -9,6 +9,7 @@ import { createSignalLoop } from "./signal/loop.js";
 import { createExpiryWatcher } from "./signal/expiry-watcher.js";
 import { createWalletExecutor } from "./execution/index.js";
 import { createOnchainAggregator } from "./aggregation/index.js";
+import { createAggregationWatcher } from "./aggregation/watcher.js";
 import { createMessageStore } from "./messages/store.js";
 import { generateInitialStrategy } from "./messages/auto-strategy.js";
 import { createNotifier, getNotifierConfig } from "./alerts/notifier.js";
@@ -53,11 +54,38 @@ async function main() {
     : null;
 
   const executor = writer
-    ? createWalletExecutor(reader, writer, config.contracts.poolManager)
+    ? createWalletExecutor(reader, writer, config.contracts.poolManager, async (execution, results) => {
+        const allSuccess = results.every(r => r.status === "success");
+        if (!allSuccess || !loop) return;
+
+        messageStore.save({
+          type: "system",
+          role: "assistant",
+          content: `Trade executed: ${results.filter(r => r.status === "success").length}/${results.length} actions succeeded`,
+          metadata: { executionId: execution.id, txHashes: results.map(r => r.txHash).filter(Boolean) },
+        });
+
+        const tickResults = await loop.tick();
+        for (const tr of tickResults) {
+          if (tr.published) {
+            messageStore.save({
+              type: "signal_alert",
+              role: "assistant",
+              content: `Strategy published on-chain for pool ${tr.poolId.slice(0, 10)}… — Risk: ${tr.scores.riskScore}, Alpha: ${tr.scores.alphaScore}`,
+              metadata: { poolId: tr.poolId, txHash: tr.txHash, executionId: execution.id },
+            });
+          }
+        }
+      })
     : null;
 
   const publicClient = createPublicClient({ transport: http(config.chain.rpcUrl) });
-  const aggregator = createOnchainAggregator(publicClient);
+  const aggregator = createOnchainAggregator(publicClient, {
+    whaleThresholdWei: 100000000000000000000n,
+    volumeAnomalyMultiplier: 3.0,
+    priceDeviationThresholdBps: 50,
+    lookbackBlocks: 100,
+  });
 
   const tokenPriceStore = createTokenPriceStore("./data/token-prices.db");
   const priceTracker = createPriceTracker(reader, tokenPriceStore, {
@@ -65,8 +93,18 @@ async function main() {
     poolIds,
     intervalMs: 60_000,
     messageStore,
+    onAlert: (alert) => notifier.notify(alert),
   });
   priceTracker.start();
+
+  const aggregationWatcher = createAggregationWatcher(aggregator, reader, {
+    tokens: config.hotTokens.filter(t => !t.startsWith("0x000000000")) as `0x${string}`[],
+    poolManagerAddress: config.contracts.poolManager,
+    poolIds,
+    intervalMs: 120_000,
+    onAlert: (alert) => notifier.notify(alert),
+  });
+  aggregationWatcher.start();
 
   const expiryWatcher = createExpiryWatcher(reader, messageStore, {
     poolIds,
@@ -108,6 +146,7 @@ async function main() {
     logger.info("Shutting down...");
     loop?.stop();
     priceTracker.stop();
+    aggregationWatcher.stop();
     expiryWatcher.stop();
     priceStore.close();
     tokenPriceStore.close();

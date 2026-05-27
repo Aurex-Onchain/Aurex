@@ -36,6 +36,7 @@ export function createWalletExecutor(
   reader: ChainReader,
   writer: ChainWriter,
   poolManagerAddress: Address,
+  onComplete?: (execution: PendingExecution, results: ExecutionResult[]) => void | Promise<void>,
 ): WalletExecutor {
   const pending = new Map<string, PendingExecution>();
   const history: PendingExecution[] = [];
@@ -140,6 +141,10 @@ export function createWalletExecutor(
       execution.status = "completed";
       pending.delete(executionId);
       history.push(execution);
+
+      if (onComplete) {
+        await Promise.resolve(onComplete(execution, results)).catch(() => {});
+      }
 
       return results;
     },

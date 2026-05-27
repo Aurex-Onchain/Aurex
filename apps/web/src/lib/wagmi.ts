@@ -1,5 +1,5 @@
-import { http, createConfig } from "wagmi";
-import { injected } from "wagmi/connectors";
+import { cookieStorage, createStorage } from "wagmi";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 import { defineChain } from "viem";
 
 export const xlayer = defineChain({
@@ -27,34 +27,15 @@ export const xlayerTestnet = defineChain({
   testnet: true,
 });
 
-/**
- * OKX Wallet connector using wagmi's injected() with explicit target.
- * OKX Wallet also supports EIP-6963, so it will be auto-discovered by wagmi's
- * multiInjectedProviderDiscovery (enabled by default). This explicit connector
- * ensures OKX Wallet appears with proper branding even if EIP-6963 isn't available.
- */
-const okxWalletConnector = injected({
-  target() {
-    if (typeof window === "undefined") return undefined;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const provider = (window as any).okxwallet as
-      | { request: (...args: unknown[]) => Promise<unknown> }
-      | undefined;
-    if (!provider) return undefined;
-    return {
-      id: "okxWallet",
-      name: "OKX Wallet",
-      provider: provider as never,
-    };
-  },
+export const projectId = process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID || "04b0796e5eb5a4ef1f6e3e4a7e0b80c7";
+
+export const networks = [xlayer, xlayerTestnet] as const;
+
+export const wagmiAdapter = new WagmiAdapter({
+  storage: createStorage({ storage: cookieStorage }),
+  ssr: true,
+  projectId,
+  networks: [xlayer, xlayerTestnet],
 });
 
-export const config = createConfig({
-  chains: [xlayer, xlayerTestnet],
-  connectors: [okxWalletConnector],
-  multiInjectedProviderDiscovery: true,
-  transports: {
-    [xlayer.id]: http(),
-    [xlayerTestnet.id]: http(),
-  },
-});
+export const config = wagmiAdapter.wagmiConfig;

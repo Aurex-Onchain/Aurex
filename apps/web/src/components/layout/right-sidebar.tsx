@@ -37,7 +37,7 @@ function formatBalance(raw: bigint | undefined, decimals: number): string {
 
 function WalletSection() {
   return (
-    <div className="px-4 pt-6 pb-4">
+    <div className="px-4 pt-6 pb-4 overflow-visible relative z-50">
       <ConnectButton />
     </div>
   );
