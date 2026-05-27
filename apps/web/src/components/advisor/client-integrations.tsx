@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useHealth } from "@/hooks/use-health";
+import { useTranslation } from "@/i18n";
 
 interface ClientConfig {
   id: string;
@@ -197,6 +198,7 @@ function getAdvisorUrl(): string {
 
 export function ClientIntegrations() {
   const { data } = useHealth();
+  const { t } = useTranslation();
   const [selectedClient, setSelectedClient] = useState<string | null>(null);
   const [copiedConfig, setCopiedConfig] = useState(false);
   const connected = data?.status === "ok";
@@ -230,16 +232,16 @@ export function ClientIntegrations() {
       <div className="flex items-center justify-between">
         <div>
           <h3 className="text-lg font-semibold text-zinc-900 dark:text-zinc-100">
-            Supported AI Clients
+            {t("advisor.clientIntegrations")}
           </h3>
           <p className="text-sm text-zinc-500 dark:text-zinc-400 mt-1">
-            Connect Aurex Advisor to your favorite AI assistant
+            {t("advisor.clientIntegrationsDesc")}
           </p>
         </div>
         {connected && (
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
             <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span className="text-xs font-medium text-emerald-400">Advisor Running</span>
+            <span className="text-xs font-medium text-emerald-400">{t("advisor.advisorRunning")}</span>
           </div>
         )}
       </div>
@@ -281,7 +283,7 @@ export function ClientIntegrations() {
             <div>
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 <span className="text-xl">{selectedClientConfig.icon}</span>
-                {selectedClientConfig.name} Setup
+                {selectedClientConfig.name} {t("advisor.setupSteps")}
               </h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 Follow these steps to integrate with Aurex Advisor
@@ -310,13 +312,13 @@ export function ClientIntegrations() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <p className="text-xs font-medium text-zinc-500 dark:text-zinc-400 uppercase">
-                  Configuration
+                  {t("advisor.configuration")}
                 </p>
                 <button
                   onClick={copyConfig}
                   className="px-2 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-xs text-zinc-300 transition-colors"
                 >
-                  {copiedConfig ? "✓ Copied" : "Copy Config"}
+                  {copiedConfig ? t("advisor.configCopied") : t("advisor.copyConfig")}
                 </button>
               </div>
               <pre className="p-3 rounded bg-zinc-900 text-xs font-mono text-emerald-300 overflow-x-auto">
@@ -327,10 +329,10 @@ export function ClientIntegrations() {
 
           <div className="pt-3 border-t border-emerald-500/20">
             <p className="text-xs text-zinc-500 dark:text-zinc-400">
-              <span className="font-medium text-emerald-400">Advisor URL:</span> {advisorUrl}
+              <span className="font-medium text-emerald-400">{t("advisor.advisorUrl")}:</span> {advisorUrl}
             </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              <span className="font-medium text-emerald-400">Available Tools:</span> advisor.market_status, advisor.get_strategy, advisor.publish_signal, advisor.risk_check, advisor.behavior_alert, advisor.publisher_stats, advisor.configure, advisor.execute, advisor.confirm_execution
+              <span className="font-medium text-emerald-400">{t("advisor.availableTools")}:</span> advisor.market_status, advisor.get_strategy, advisor.publish_signal, advisor.risk_check, advisor.behavior_alert, advisor.publisher_stats, advisor.configure, advisor.execute, advisor.confirm_execution
             </p>
           </div>
         </div>
@@ -343,9 +345,9 @@ export function ClientIntegrations() {
               warning
             </span>
             <div>
-              <p className="text-sm font-medium text-amber-400">Advisor Not Running</p>
+              <p className="text-sm font-medium text-amber-400">{t("advisor.advisorNotRunning")}</p>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                Start the Advisor first: <code className="px-1.5 py-0.5 rounded bg-zinc-800 text-emerald-300 font-mono">cd apps/advisor && pnpm dev</code>
+                {t("advisor.advisorNotRunningDesc")} <code className="px-1.5 py-0.5 rounded bg-zinc-800 text-emerald-300 font-mono">cd apps/advisor && pnpm dev</code>
               </p>
             </div>
           </div>
