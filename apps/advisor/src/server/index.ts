@@ -332,51 +332,103 @@ export async function createServer(deps: ServerDeps) {
     const gatewayUrl = process.env.OPENCLAW_GATEWAY_URL || "http://localhost:18789";
     const gatewayToken = process.env.OPENCLAW_GATEWAY_TOKEN || "";
     const agentId = process.env.OPENCLAW_AGENT_ID || "main";
-    if (!gatewayToken) {
-      return { error: "OpenClaw not configured. Set OPENCLAW_GATEWAY_TOKEN to enable AI chat." };
+
+    // Mode 1: OpenClaw Gateway (full AI)
+    if (gatewayToken) {
+      const beforeTimestamp = Date.now();
+
+      try {
+        const res = await fetch(`${gatewayUrl}/hooks/agent`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${gatewayToken}`,
+          },
+          body: JSON.stringify({
+            message: `[AUREX CHAT] User asks: "${content}"\n\nYou MUST call the aurex.send_message tool with type="chat" to reply to the user. Include your analysis and any recommendations. Use aurex.get_strategy and aurex.get_prices for market context if needed.`,
+            agentId,
+            wakeMode: "now",
+            deliver: false,
+          }),
+        });
+        if (!res.ok) {
+          return { error: `Gateway returned ${res.status}: ${await res.text()}` };
+        }
+      } catch (err) {
+        return { error: `Failed to reach gateway: ${err instanceof Error ? err.message : String(err)}` };
+      }
+
+      // Poll message store for the AI reply (max 30s)
+      const maxWait = 30_000;
+      const pollInterval = 500;
+      const deadline = Date.now() + maxWait;
+
+      while (Date.now() < deadline) {
+        await new Promise((r) => setTimeout(r, pollInterval));
+        const recent = deps.messageStore.list({ since: beforeTimestamp, limit: 5 });
+        const aiReply = recent.find((m) => m.role === "assistant" && m.createdAt > beforeTimestamp);
+        if (aiReply) {
+          return { reply: aiReply.content };
+        }
+      }
+
+      return { reply: "AI is processing your request. Check the feed for updates." };
     }
 
-    const beforeTimestamp = Date.now();
-
+    // Mode 2: Fallback (structured response without OpenClaw)
     try {
-      const res = await fetch(`${gatewayUrl}/hooks/agent`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${gatewayToken}`,
-        },
-        body: JSON.stringify({
-          message: `[AUREX CHAT] User asks: "${content}"\n\nYou MUST call the aurex.send_message tool with type="chat" to reply to the user. Include your analysis and any recommendations. Use aurex.get_strategy and aurex.get_prices for market context if needed.`,
-          agentId,
-          wakeMode: "now",
-          deliver: false,
-        }),
+      const strategy = await assembleStrategy(deps);
+      const response = generateFallbackResponse(content, strategy);
+
+      deps.messageStore.save({
+        type: "chat",
+        role: "assistant",
+        content: response,
+        metadata: { mode: "fallback" },
       });
-      if (!res.ok) {
-        return { error: `Gateway returned ${res.status}: ${await res.text()}` };
-      }
+
+      return { reply: response };
     } catch (err) {
-      return { error: `Failed to reach gateway: ${err instanceof Error ? err.message : String(err)}` };
+      return { reply: "Unable to generate response. Please check Advisor status." };
     }
-
-    // Poll message store for the AI reply (max 30s)
-    const maxWait = 30_000;
-    const pollInterval = 500;
-    const deadline = Date.now() + maxWait;
-
-    while (Date.now() < deadline) {
-      await new Promise((r) => setTimeout(r, pollInterval));
-      const recent = deps.messageStore.list({ since: beforeTimestamp, limit: 5 });
-      const aiReply = recent.find((m) => m.role === "assistant" && m.createdAt > beforeTimestamp);
-      if (aiReply) {
-        return { reply: aiReply.content };
-      }
-    }
-
-    return { reply: "AI is processing your request. Check the feed for updates." };
   });
 
   return app;
+}
+
+function generateFallbackResponse(userQuery: string, strategy: any): string {
+  const lower = userQuery.toLowerCase();
+  const pools = strategy.market?.pools || [];
+
+  if (lower.includes("risk") || lower.includes("风险")) {
+    if (pools.length === 0) return "No pools are currently monitored.";
+    const signals = pools.filter((p: any) => p.latestSignal);
+    if (signals.length === 0) return "No active signals to assess risk.";
+    const avgRisk = signals.reduce((sum: number, p: any) =>
+      sum + Number(p.latestSignal?.riskScore || 0), 0) / signals.length;
+    return `Current average risk score: ${avgRisk.toFixed(0)}/100. ${
+      avgRisk > 60 ? "High risk detected across monitored pools." : "Risk levels are moderate."
+    }`;
+  }
+
+  if (lower.includes("signal") || lower.includes("信号")) {
+    const validSignals = pools.filter((p: any) => p.signalValid).length;
+    return `${validSignals} valid signal${validSignals !== 1 ? 's' : ''} active across ${pools.length} pool${pools.length !== 1 ? 's' : ''}.`;
+  }
+
+  if (lower.includes("alpha") || lower.includes("机会")) {
+    const signals = pools.filter((p: any) => p.latestSignal && p.signalValid);
+    if (signals.length === 0) return "No active signals with alpha data.";
+    const avgAlpha = signals.reduce((sum: number, p: any) =>
+      sum + Number(p.latestSignal?.alphaScore || 0), 0) / signals.length;
+    return `Average alpha score: ${avgAlpha.toFixed(0)}/100. ${
+      avgAlpha > 60 ? "Good opportunities detected." : "Limited alpha opportunities currently."
+    }`;
+  }
+
+  // Default: market summary
+  const validSignals = pools.filter((p: any) => p.signalValid).length;
+  return `Market Overview: ${pools.length} pool${pools.length !== 1 ? 's' : ''} monitored, ${validSignals} active signal${validSignals !== 1 ? 's' : ''}. For advanced AI analysis, configure OpenClaw Gateway in Advisor settings.`;
 }
 
 function serializeSignal(s: { signalId: string; poolId: string; riskScore: bigint; alphaScore: bigint; liquidityScore: bigint; volatilityScore: bigint; recommendedFee: number; expiresAt: bigint; signer: string }) {
