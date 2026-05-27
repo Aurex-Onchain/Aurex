@@ -334,9 +334,6 @@ const en = {
   "feed.type.fee_change": "Fee Change",
   "feed.type.system": "System",
 
-  "language.en": "EN",
-  "language.zhCN": "中文",
-
   "theme.dark": "Dark mode",
   "theme.light": "Light mode",
   "theme.system": "System theme",
@@ -395,6 +392,101 @@ const en = {
   "chat.title": "Ask Aurex AI",
   "chat.hint": "Ask about market conditions, strategies, or trade ideas. The AI will reply directly here. If it produces a concrete strategy, it'll be pinned to your feed.",
   "chat.inputPlaceholder": "Ask anything…",
+
+  "common.connectWallet": "Connect Wallet",
+  "common.home": "Home",
+  "common.trade": "Trade",
+  "common.fee": "Fee",
+  "common.tx": "Tx",
+  "common.pool": "Pool",
+  "common.direction": "Direction",
+  "common.amount": "Amount",
+  "common.status": "Status",
+  "common.error": "Error",
+  "common.justNow": "just now",
+  "common.minutesAgo": "{minutes}m ago",
+  "common.hoursAgo": "{hours}h ago",
+  "common.low": "low",
+  "common.medium": "medium",
+  "common.high": "high",
+  "common.points": "points",
+  "common.milliseconds": "ms",
+  "common.minutes": "min",
+  "common.eth": "ETH",
+
+  "language.en": "EN",
+  "language.zh": "中文",
+
+  "client.openclaw.name": "OpenClaw",
+  "client.openclaw.description": "AI agent platform with plugin system",
+  "client.openclaw.step1": "Install OpenClaw: npm install -g openclaw",
+  "client.openclaw.step2": "Build plugin: cd apps/openclaw-plugin && npm run plugin:build",
+  "client.openclaw.step3": "Install plugin: openclaw plugins install ./dist",
+  "client.openclaw.step4": "Configure gateway in apps/advisor/.env",
+
+  "client.claudeCode.name": "Claude Code",
+  "client.claudeCode.description": "Anthropic's official CLI for Claude",
+  "client.claudeCode.step1": "Add to Claude Code MCP settings",
+  "client.claudeCode.step2": "The Advisor will run as an MCP server",
+  "client.claudeCode.step3": "Use advisor.* tools in your conversations",
+
+  "client.cursor.name": "Cursor",
+  "client.cursor.description": "AI-first code editor",
+  "client.cursor.step1": "Open Cursor settings",
+  "client.cursor.step2": "Add MCP server configuration",
+  "client.cursor.step3": "Restart Cursor to load the server",
+
+  "client.windsurf.name": "Windsurf",
+  "client.windsurf.description": "Codeium's AI IDE",
+  "client.windsurf.step1": "Open Windsurf MCP settings",
+  "client.windsurf.step2": "Add Aurex Advisor server",
+  "client.windsurf.step3": "Reload window to activate",
+
+  "client.cline.name": "Cline",
+  "client.cline.description": "VSCode AI assistant extension",
+  "client.cline.step1": "Install Cline extension in VSCode",
+  "client.cline.step2": "Open Cline MCP settings",
+  "client.cline.step3": "Add Aurex Advisor configuration",
+
+  "client.continue.name": "Continue.dev",
+  "client.continue.description": "Open-source AI code assistant",
+  "client.continue.step1": "Install Continue extension",
+  "client.continue.step2": "Open Continue config.json",
+  "client.continue.step3": "Add MCP server entry",
+
+  "client.zed.name": "Zed",
+  "client.zed.description": "High-performance code editor",
+  "client.zed.step1": "Open Zed settings",
+  "client.zed.step2": "Navigate to MCP servers section",
+  "client.zed.step3": "Add Aurex Advisor configuration",
+
+  "client.claudeDesktop.name": "Claude Desktop",
+  "client.claudeDesktop.description": "Claude desktop application",
+  "client.claudeDesktop.step1": "Open Claude Desktop settings",
+  "client.claudeDesktop.step2": "Add MCP server in configuration",
+  "client.claudeDesktop.step3": "Restart Claude Desktop",
+
+  "client.hermes.name": "Hermes AI",
+  "client.hermes.description": "AI assistant with SSE support",
+  "client.hermes.step1": "Configure Hermes to connect via SSE",
+  "client.hermes.step2": "Point to Advisor SSE endpoint",
+  "client.hermes.step3": "Enable auto-reconnect",
+
+  "advisor.toolsList": "advisor.market_status, advisor.get_strategy, advisor.publish_signal, advisor.risk_check, advisor.behavior_alert, advisor.publisher_stats, advisor.configure, advisor.execute, advisor.confirm_execution",
+  "advisor.connectPrompt": "Install the Aurex Advisor plugin and connect to {url} — use it as an MCP tool server. The plugin provides 5 tools: aurex.get_strategy, aurex.market_status, aurex.send_message, aurex.execute_trade, aurex.get_prices. Start by calling aurex.get_strategy to check the current market state.",
+  "advisor.startCommand": "cd apps/advisor && pnpm dev",
+  "advisor.installOpenclaw": "npm install -g openclaw",
+  "advisor.buildPlugin": "cd apps/openclaw-plugin\nnpm install\nnpm run plugin:build\nopenclaw plugins install ./dist",
+  "advisor.envConfig": "# apps/advisor/.env\nOPENCLAW_GATEWAY_URL=http://localhost:18789\nOPENCLAW_GATEWAY_TOKEN=your-token\nOPENCLAW_AGENT_ID=main",
+
+  "feed.aurexSignal": "Aurex Signal",
+  "feed.aurexAI": "Aurex AI",
+
+  "dashboard.riskLabel": "R:",
+  "dashboard.alphaLabel": "A:",
+
+  "settings.onchainosTEE": "OnchainOS TEE",
+  "settings.equals": "=",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

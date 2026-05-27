@@ -17,14 +17,14 @@ function riskBgColor(score: number): string {
   return "bg-red-500";
 }
 
-function relativeTime(expiresAt: string): string {
+function relativeTime(expiresAt: string, t: (key: any, params?: Record<string, string | number>) => string): string {
   const ts = Number(expiresAt) * 1000;
   const diff = Date.now() - (ts - 5 * 60 * 1000); // approximate publish time as 5min before expiry
-  if (diff < 60_000) return "just now";
+  if (diff < 60_000) return t("common.justNow");
   const mins = Math.floor(diff / 60_000);
-  if (mins < 60) return `${mins}m ago`;
+  if (mins < 60) return t("common.minutesAgo", { minutes: mins });
   const hours = Math.floor(mins / 60);
-  return `${hours}h ago`;
+  return t("common.hoursAgo", { hours });
 }
 
 export function SignalTimeline() {
@@ -89,7 +89,7 @@ export function SignalTimeline() {
 
               {/* Time */}
               <span className="text-xs text-zinc-500 w-14 shrink-0">
-                {relativeTime(sig.expiresAt)}
+                {relativeTime(sig.expiresAt, t)}
               </span>
 
               {/* Publisher */}
@@ -105,10 +105,10 @@ export function SignalTimeline() {
               {/* Scores */}
               <div className="flex items-center gap-3 flex-1 min-w-0">
                 <span className={`text-xs font-medium ${riskColor(risk)}`}>
-                  R:{risk}
+                  {t("dashboard.riskLabel")}:{risk}
                 </span>
                 <span className="text-xs font-medium text-emerald-400">
-                  A:{alpha}
+                  {t("dashboard.alphaLabel")}:{alpha}
                 </span>
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">
                   {formatFee(sig.recommendedFee)}

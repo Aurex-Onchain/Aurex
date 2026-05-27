@@ -44,7 +44,7 @@ export function PoolList() {
                 <SignalBadge score={Number(pool.latestSignal.alphaScore)} label="Alpha" />
               </div>
               <p className="text-xs text-zinc-500">
-                Fee: {formatFee(pool.latestSignal.recommendedFee)}
+                {t("common.fee")}: {formatFee(pool.latestSignal.recommendedFee)}
               </p>
             </div>
           ) : (

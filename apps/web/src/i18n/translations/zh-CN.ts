@@ -336,9 +336,6 @@ const zhCN: Translations = {
   "feed.type.fee_change": "费率变更",
   "feed.type.system": "系统",
 
-  "language.en": "EN",
-  "language.zhCN": "中文",
-
   "theme.dark": "深色模式",
   "theme.light": "浅色模式",
   "theme.system": "跟随系统",
@@ -397,6 +394,101 @@ const zhCN: Translations = {
   "chat.title": "询问 Aurex AI",
   "chat.hint": "询问市场状况、策略或交易思路。AI 将直接在这里回复。如果产生了具体的策略，会自动推送到信息流。",
   "chat.inputPlaceholder": "随便问点什么…",
+
+  "common.connectWallet": "连接钱包",
+  "common.home": "首页",
+  "common.trade": "交易",
+  "common.fee": "费率",
+  "common.tx": "交易",
+  "common.pool": "池",
+  "common.direction": "方向",
+  "common.amount": "数量",
+  "common.status": "状态",
+  "common.error": "错误",
+  "common.justNow": "刚刚",
+  "common.minutesAgo": "{minutes} 分钟前",
+  "common.hoursAgo": "{hours} 小时前",
+  "common.low": "低",
+  "common.medium": "中",
+  "common.high": "高",
+  "common.points": "点",
+  "common.milliseconds": "毫秒",
+  "common.minutes": "分钟",
+  "common.eth": "ETH",
+
+  "language.en": "EN",
+  "language.zh": "中文",
+
+  "client.openclaw.name": "OpenClaw",
+  "client.openclaw.description": "AI 代理平台，支持插件系统",
+  "client.openclaw.step1": "安装 OpenClaw：npm install -g openclaw",
+  "client.openclaw.step2": "构建插件：cd apps/openclaw-plugin && npm run plugin:build",
+  "client.openclaw.step3": "安装插件：openclaw plugins install ./dist",
+  "client.openclaw.step4": "在 apps/advisor/.env 中配置网关",
+
+  "client.claudeCode.name": "Claude Code",
+  "client.claudeCode.description": "Anthropic 官方 Claude CLI",
+  "client.claudeCode.step1": "添加到 Claude Code MCP 设置",
+  "client.claudeCode.step2": "Advisor 将作为 MCP 服务器运行",
+  "client.claudeCode.step3": "在对话中使用 advisor.* 工具",
+
+  "client.cursor.name": "Cursor",
+  "client.cursor.description": "AI 优先的代码编辑器",
+  "client.cursor.step1": "打开 Cursor 设置",
+  "client.cursor.step2": "添加 MCP 服务器配置",
+  "client.cursor.step3": "重启 Cursor 以加载服务器",
+
+  "client.windsurf.name": "Windsurf",
+  "client.windsurf.description": "Codeium 的 AI IDE",
+  "client.windsurf.step1": "打开 Windsurf MCP 设置",
+  "client.windsurf.step2": "添加 Aurex Advisor 服务器",
+  "client.windsurf.step3": "重新加载窗口以激活",
+
+  "client.cline.name": "Cline",
+  "client.cline.description": "VSCode AI 助手扩展",
+  "client.cline.step1": "在 VSCode 中安装 Cline 扩展",
+  "client.cline.step2": "打开 Cline MCP 设置",
+  "client.cline.step3": "添加 Aurex Advisor 配置",
+
+  "client.continue.name": "Continue.dev",
+  "client.continue.description": "开源 AI 代码助手",
+  "client.continue.step1": "安装 Continue 扩展",
+  "client.continue.step2": "打开 Continue config.json",
+  "client.continue.step3": "添加 MCP 服务器条目",
+
+  "client.zed.name": "Zed",
+  "client.zed.description": "高性能代码编辑器",
+  "client.zed.step1": "打开 Zed 设置",
+  "client.zed.step2": "导航到 MCP 服务器部分",
+  "client.zed.step3": "添加 Aurex Advisor 配置",
+
+  "client.claudeDesktop.name": "Claude Desktop",
+  "client.claudeDesktop.description": "Claude 桌面应用",
+  "client.claudeDesktop.step1": "打开 Claude Desktop 设置",
+  "client.claudeDesktop.step2": "在配置中添加 MCP 服务器",
+  "client.claudeDesktop.step3": "重启 Claude Desktop",
+
+  "client.hermes.name": "Hermes AI",
+  "client.hermes.description": "支持 SSE 的 AI 助手",
+  "client.hermes.step1": "配置 Hermes 通过 SSE 连接",
+  "client.hermes.step2": "指向 Advisor SSE 端点",
+  "client.hermes.step3": "启用自动重连",
+
+  "advisor.toolsList": "advisor.market_status, advisor.get_strategy, advisor.publish_signal, advisor.risk_check, advisor.behavior_alert, advisor.publisher_stats, advisor.configure, advisor.execute, advisor.confirm_execution",
+  "advisor.connectPrompt": "安装 Aurex Advisor 插件并连接到 {url} — 将其用作 MCP 工具服务器。该插件提供 5 个工具：aurex.get_strategy、aurex.market_status、aurex.send_message、aurex.execute_trade、aurex.get_prices。首先调用 aurex.get_strategy 检查当前市场状态。",
+  "advisor.startCommand": "cd apps/advisor && pnpm dev",
+  "advisor.installOpenclaw": "npm install -g openclaw",
+  "advisor.buildPlugin": "cd apps/openclaw-plugin\nnpm install\nnpm run plugin:build\nopenclaw plugins install ./dist",
+  "advisor.envConfig": "# apps/advisor/.env\nOPENCLAW_GATEWAY_URL=http://localhost:18789\nOPENCLAW_GATEWAY_TOKEN=your-token\nOPENCLAW_AGENT_ID=main",
+
+  "feed.aurexSignal": "Aurex 信号",
+  "feed.aurexAI": "Aurex AI",
+
+  "dashboard.riskLabel": "风险:",
+  "dashboard.alphaLabel": "Alpha:",
+
+  "settings.onchainosTEE": "OnchainOS TEE",
+  "settings.equals": "=",
 };
 
 export default zhCN;

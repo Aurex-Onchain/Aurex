@@ -27,10 +27,11 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
 
   const expired = isExpired(signal.expiresAt);
   const riskScore = formatScore(signal.riskScore);
-  const riskLevel = riskScore <= 30 ? "low" : riskScore <= 60 ? "medium" : "high";
-  const riskColor = riskLevel === "low" ? "text-emerald-400" : riskLevel === "medium" ? "text-yellow-400" : "text-red-400";
-  const riskBg = riskLevel === "low" ? "bg-emerald-500/10" : riskLevel === "medium" ? "bg-yellow-500/10" : "bg-red-500/10";
-  const riskBorder = riskLevel === "low" ? "border-emerald-500/20" : riskLevel === "medium" ? "border-yellow-500/20" : "border-red-500/20";
+  const riskLevel = riskScore <= 30 ? t("common.low") : riskScore <= 60 ? t("common.medium") : t("common.high");
+  const riskLevelKey = riskScore <= 30 ? "low" : riskScore <= 60 ? "medium" : "high";
+  const riskColor = riskLevelKey === "low" ? "text-emerald-400" : riskLevelKey === "medium" ? "text-yellow-400" : "text-red-400";
+  const riskBg = riskLevelKey === "low" ? "bg-emerald-500/10" : riskLevelKey === "medium" ? "bg-yellow-500/10" : "bg-red-500/10";
+  const riskBorder = riskLevelKey === "low" ? "border-emerald-500/20" : riskLevelKey === "medium" ? "border-yellow-500/20" : "border-red-500/20";
 
   return (
     <div className={`p-4 rounded-xl border ${signalValid ? riskBorder : "border-zinc-200 dark:border-zinc-700/30"} ${signalValid ? riskBg : "bg-zinc-100 dark:bg-zinc-800/40"}`}>

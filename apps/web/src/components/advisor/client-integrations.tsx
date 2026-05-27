@@ -6,39 +6,30 @@ import { useTranslation } from "@/i18n";
 
 interface ClientConfig {
   id: string;
-  name: string;
-  description: string;
+  nameKey: string;
+  descKey: string;
   icon: string;
   transport: "stdio" | "http" | "sse";
-  setupSteps: string[];
+  stepKeys: string[];
   configExample?: string;
 }
 
 const SUPPORTED_CLIENTS: ClientConfig[] = [
   {
     id: "openclaw",
-    name: "OpenClaw",
-    description: "AI agent platform with plugin system",
-    icon: "🦅",
+    nameKey: "client.openclaw.name",
+    descKey: "client.openclaw.description",
+    icon: "\u{1F985}",
     transport: "http",
-    setupSteps: [
-      "Install OpenClaw: npm install -g openclaw",
-      "Build plugin: cd apps/openclaw-plugin && npm run plugin:build",
-      "Install plugin: openclaw plugins install ./dist",
-      "Configure gateway in apps/advisor/.env",
-    ],
+    stepKeys: ["client.openclaw.step1", "client.openclaw.step2", "client.openclaw.step3", "client.openclaw.step4"],
   },
   {
     id: "claude-code",
-    name: "Claude Code",
-    description: "Anthropic's official CLI for Claude",
-    icon: "🤖",
+    nameKey: "client.claudeCode.name",
+    descKey: "client.claudeCode.description",
+    icon: "\u{1F916}",
     transport: "stdio",
-    setupSteps: [
-      "Add to Claude Code MCP settings",
-      "The Advisor will run as an MCP server",
-      "Use advisor.* tools in your conversations",
-    ],
+    stepKeys: ["client.claudeCode.step1", "client.claudeCode.step2", "client.claudeCode.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -54,15 +45,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "cursor",
-    name: "Cursor",
-    description: "AI-first code editor",
+    nameKey: "client.cursor.name",
+    descKey: "client.cursor.description",
     icon: "⚡",
     transport: "stdio",
-    setupSteps: [
-      "Open Cursor settings",
-      "Add MCP server configuration",
-      "Restart Cursor to load the server",
-    ],
+    stepKeys: ["client.cursor.step1", "client.cursor.step2", "client.cursor.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -77,15 +64,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "windsurf",
-    name: "Windsurf",
-    description: "Codeium's AI IDE",
-    icon: "🌊",
+    nameKey: "client.windsurf.name",
+    descKey: "client.windsurf.description",
+    icon: "\u{1F30A}",
     transport: "stdio",
-    setupSteps: [
-      "Open Windsurf MCP settings",
-      "Add Aurex Advisor server",
-      "Reload window to activate",
-    ],
+    stepKeys: ["client.windsurf.step1", "client.windsurf.step2", "client.windsurf.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -97,15 +80,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "cline",
-    name: "Cline",
-    description: "VSCode AI assistant extension",
-    icon: "🔧",
+    nameKey: "client.cline.name",
+    descKey: "client.cline.description",
+    icon: "\u{1F527}",
     transport: "stdio",
-    setupSteps: [
-      "Install Cline extension in VSCode",
-      "Open Cline MCP settings",
-      "Add Aurex Advisor configuration",
-    ],
+    stepKeys: ["client.cline.step1", "client.cline.step2", "client.cline.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -117,15 +96,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "continue",
-    name: "Continue.dev",
-    description: "Open-source AI code assistant",
+    nameKey: "client.continue.name",
+    descKey: "client.continue.description",
     icon: "➡️",
     transport: "stdio",
-    setupSteps: [
-      "Install Continue extension",
-      "Open Continue config.json",
-      "Add MCP server entry",
-    ],
+    stepKeys: ["client.continue.step1", "client.continue.step2", "client.continue.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -137,15 +112,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "zed",
-    name: "Zed",
-    description: "High-performance code editor",
+    nameKey: "client.zed.name",
+    descKey: "client.zed.description",
     icon: "⚡",
     transport: "stdio",
-    setupSteps: [
-      "Open Zed settings",
-      "Navigate to MCP servers section",
-      "Add Aurex Advisor configuration",
-    ],
+    stepKeys: ["client.zed.step1", "client.zed.step2", "client.zed.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -157,15 +128,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "claude-desktop",
-    name: "Claude Desktop",
-    description: "Claude desktop application",
-    icon: "🖥️",
+    nameKey: "client.claudeDesktop.name",
+    descKey: "client.claudeDesktop.description",
+    icon: "\u{1F5A5}️",
     transport: "stdio",
-    setupSteps: [
-      "Open Claude Desktop settings",
-      "Add MCP server in configuration",
-      "Restart Claude Desktop",
-    ],
+    stepKeys: ["client.claudeDesktop.step1", "client.claudeDesktop.step2", "client.claudeDesktop.step3"],
     configExample: `{
   "mcpServers": {
     "aurex-advisor": {
@@ -177,15 +144,11 @@ const SUPPORTED_CLIENTS: ClientConfig[] = [
   },
   {
     id: "hermes",
-    name: "Hermes AI",
-    description: "AI assistant with SSE support",
-    icon: "🚀",
+    nameKey: "client.hermes.name",
+    descKey: "client.hermes.description",
+    icon: "\u{1F680}",
     transport: "sse",
-    setupSteps: [
-      "Configure Hermes to connect via SSE",
-      "Point to Advisor SSE endpoint",
-      "Enable auto-reconnect",
-    ],
+    stepKeys: ["client.hermes.step1", "client.hermes.step2", "client.hermes.step3"],
   },
 ];
 
@@ -206,22 +169,9 @@ export function ClientIntegrations() {
 
   const selectedClientConfig = SUPPORTED_CLIENTS.find((c) => c.id === selectedClient);
 
-  async function fetchConfig(clientId: string) {
-    try {
-      const res = await fetch(`${advisorUrl}/api/plugin?client=${clientId}`);
-      const data = await res.json();
-      return data;
-    } catch {
-      return null;
-    }
-  }
-
   async function copyConfig() {
     if (!selectedClientConfig) return;
-
-    const config = await fetchConfig(selectedClientConfig.id);
-    const configText = config ? JSON.stringify(config, null, 2) : selectedClientConfig.configExample || "";
-
+    const configText = selectedClientConfig.configExample || "";
     navigator.clipboard.writeText(configText);
     setCopiedConfig(true);
     setTimeout(() => setCopiedConfig(false), 2000);
@@ -262,14 +212,14 @@ export function ClientIntegrations() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
-                    {client.name}
+                    {t(client.nameKey as any)}
                   </h4>
                   <span className="text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800 text-zinc-500 dark:text-zinc-400">
                     {client.transport}
                   </span>
                 </div>
                 <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                  {client.description}
+                  {t(client.descKey as any)}
                 </p>
               </div>
             </div>
@@ -283,7 +233,7 @@ export function ClientIntegrations() {
             <div>
               <h4 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
                 <span className="text-xl">{selectedClientConfig.icon}</span>
-                {selectedClientConfig.name} {t("advisor.setupSteps")}
+                {t(selectedClientConfig.nameKey as any)} {t("advisor.setupSteps")}
               </h4>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
                 {t("advisor.followSteps")}
@@ -298,12 +248,12 @@ export function ClientIntegrations() {
           </div>
 
           <div className="space-y-3">
-            {selectedClientConfig.setupSteps.map((step, idx) => (
+            {selectedClientConfig.stepKeys.map((stepKey, idx) => (
               <div key={idx} className="flex gap-3">
                 <div className="flex-shrink-0 w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xs font-medium">
                   {idx + 1}
                 </div>
-                <p className="text-sm text-zinc-700 dark:text-zinc-300 pt-0.5">{step}</p>
+                <p className="text-sm text-zinc-700 dark:text-zinc-300 pt-0.5">{t(stepKey as any)}</p>
               </div>
             ))}
           </div>
@@ -332,7 +282,7 @@ export function ClientIntegrations() {
               <span className="font-medium text-emerald-400">{t("advisor.advisorUrl")}:</span> {advisorUrl}
             </p>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              <span className="font-medium text-emerald-400">{t("advisor.availableTools")}:</span> advisor.market_status, advisor.get_strategy, advisor.publish_signal, advisor.risk_check, advisor.behavior_alert, advisor.publisher_stats, advisor.configure, advisor.execute, advisor.confirm_execution
+              <span className="font-medium text-emerald-400">{t("advisor.availableTools")}:</span> {t("advisor.toolsList")}
             </p>
           </div>
         </div>
@@ -347,7 +297,7 @@ export function ClientIntegrations() {
             <div>
               <p className="text-sm font-medium text-amber-400">{t("advisor.advisorNotRunning")}</p>
               <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                {t("advisor.advisorNotRunningDesc")} <code className="px-1.5 py-0.5 rounded bg-zinc-800 text-emerald-300 font-mono">cd apps/advisor && pnpm dev</code>
+                {t("advisor.advisorNotRunningDesc")} <code className="px-1.5 py-0.5 rounded bg-zinc-800 text-emerald-300 font-mono">{t("advisor.startCommand")}</code>
               </p>
             </div>
           </div>

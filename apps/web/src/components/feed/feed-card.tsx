@@ -373,7 +373,7 @@ function SignalHeader({
           <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${chrome.dot}`} />
         </span>
         <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-200">
-          Aurex Signal
+          {t("feed.aurexSignal")}
         </span>
         <span className="hidden text-[11px] text-zinc-400 sm:inline">{"·"}</span>
         <span className="truncate text-[11px] text-zinc-500 dark:text-zinc-400">
@@ -406,7 +406,7 @@ export function FeedCard({ message, onAccept, onDismiss }: FeedCardProps) {
     ? formatAddr(publisherAddr)
     : message.role === "user"
       ? t("feed.you")
-      : "Aurex AI";
+      : t("feed.aurexAI");
   const subtitleAddr = publisherAddr
     ? formatAddr(publisherAddr)
     : userAddress

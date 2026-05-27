@@ -11,8 +11,8 @@ function getAdvisorUrl(): string {
   return `http://${host}:3100`;
 }
 
-function getConnectPrompt(url: string): string {
-  return `Install the Aurex Advisor plugin and connect to ${url} — use it as an MCP tool server. The plugin provides 5 tools: aurex.get_strategy, aurex.market_status, aurex.send_message, aurex.execute_trade, aurex.get_prices. Start by calling aurex.get_strategy to check the current market state.`;
+function getConnectPrompt(url: string, t: (key: any, params?: Record<string, string | number>) => string): string {
+  return t("advisor.connectPrompt", { url });
 }
 
 export function OpenClawGuide() {
@@ -22,7 +22,7 @@ export function OpenClawGuide() {
   const [copied, setCopied] = useState(false);
   const connected = data?.status === "ok";
   const advisorUrl = getAdvisorUrl();
-  const connectPrompt = getConnectPrompt(advisorUrl);
+  const connectPrompt = getConnectPrompt(advisorUrl, t);
 
   function copyCommand() {
     navigator.clipboard.writeText(connectPrompt);
@@ -68,7 +68,7 @@ export function OpenClawGuide() {
                 </div>
               </div>
               <p className="text-xs text-zinc-500 mt-2">
-                <span className="text-zinc-400 font-medium">Advisor URL:</span> {advisorUrl}
+                <span className="text-zinc-400 font-medium">{t("advisor.advisorUrl")}:</span> {advisorUrl}
               </p>
             </div>
 
@@ -81,33 +81,27 @@ export function OpenClawGuide() {
             <div className="space-y-4">
               <Step number={1} title={t("advisor.guideStep1Title")} done={connected}>
                 <code className="block mt-1 px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto">
-                  cd apps/advisor && pnpm dev
+                  {t("advisor.startCommand")}
                 </code>
                 <p className="mt-1 text-xs text-zinc-500">{t("advisor.guideStep1Hint")}</p>
               </Step>
 
               <Step number={2} title={t("advisor.guideStep2Title")}>
                 <code className="block mt-1 px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto">
-                  npm install -g openclaw
+                  {t("advisor.installOpenclaw")}
                 </code>
               </Step>
 
               <Step number={3} title={t("advisor.guideStep3Title")}>
                 <code className="block mt-1 px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto whitespace-pre">
-{`cd apps/openclaw-plugin
-npm install
-npm run plugin:build
-openclaw plugins install ./dist`}
+{t("advisor.buildPlugin")}
                 </code>
               </Step>
 
               <Step number={4} title={t("advisor.guideStep4Title")}>
                 <p className="mt-1 text-xs">{t("advisor.guideStep4Desc")}</p>
                 <code className="block mt-1 px-3 py-2 rounded bg-zinc-100 dark:bg-zinc-800 text-xs font-mono text-zinc-700 dark:text-zinc-300 overflow-x-auto whitespace-pre">
-{`# apps/advisor/.env
-OPENCLAW_GATEWAY_URL=http://localhost:18789
-OPENCLAW_GATEWAY_TOKEN=your-token
-OPENCLAW_AGENT_ID=main`}
+{t("advisor.envConfig")}
                 </code>
               </Step>
 

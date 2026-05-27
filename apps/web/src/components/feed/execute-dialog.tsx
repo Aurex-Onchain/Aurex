@@ -55,17 +55,17 @@ export function ExecuteDialog({ message, onClose }: ExecuteDialogProps) {
 
         {metadata?.pool_id && (
           <div className="text-xs text-zinc-500 space-y-1 mb-4 bg-zinc-100 dark:bg-zinc-800 rounded p-3">
-            <div>Pool: {metadata.pool_id.slice(0, 10)}...</div>
-            {metadata.direction && <div>Direction: {metadata.direction}</div>}
-            {metadata.amount && <div>Amount: {metadata.amount}</div>}
+            <div>{t("common.pool")}: {metadata.pool_id.slice(0, 10)}...</div>
+            {metadata.direction && <div>{t("common.direction")}: {metadata.direction}</div>}
+            {metadata.amount && <div>{t("common.amount")}: {metadata.amount}</div>}
           </div>
         )}
 
         {result && (
           <div className={`text-xs p-3 rounded mb-4 ${result.error ? "bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300" : "bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300"}`}>
-            <div>Status: {result.status}</div>
-            {result.txHash && <div>Tx: {result.txHash.slice(0, 16)}...</div>}
-            {result.error && <div>Error: {result.error}</div>}
+            <div>{t("common.status")}: {result.status}</div>
+            {result.txHash && <div>{t("common.tx")}: {result.txHash.slice(0, 16)}...</div>}
+            {result.error && <div>{t("common.error")}: {result.error}</div>}
           </div>
         )}
 

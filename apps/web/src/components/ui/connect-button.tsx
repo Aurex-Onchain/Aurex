@@ -4,6 +4,7 @@ import { useAppKit } from "@reown/appkit/react";
 import { useAccount } from "wagmi";
 import { formatAddress } from "@/lib/format";
 import { addressToColors } from "@/lib/avatar";
+import { useTranslation } from "@/i18n";
 
 function WalletAvatar({ address }: { address: string }) {
   const [c1, c2] = addressToColors(address);
@@ -18,6 +19,7 @@ function WalletAvatar({ address }: { address: string }) {
 export function ConnectButton() {
   const { open } = useAppKit();
   const { address, isConnected, connector } = useAccount();
+  const { t } = useTranslation();
 
   if (isConnected && address) {
     return (
@@ -39,7 +41,7 @@ export function ConnectButton() {
       onClick={() => open()}
       className="w-full px-3 py-2 rounded-md text-sm bg-emerald-600 text-white hover:bg-emerald-500 transition-colors"
     >
-      Connect Wallet
+      {t("common.connectWallet")}
     </button>
   );
 }

@@ -2,16 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTranslation } from "@/i18n";
 
 const navItems = [
-  { href: "/feed", icon: "dynamic_feed", label: "Feed" },
-  { href: "/", icon: "dashboard", label: "Home" },
-  { href: "/terminal", icon: "swap_horiz", label: "Trade" },
-  { href: "/signals", icon: "sensors", label: "Signals" },
+  { href: "/feed", icon: "dynamic_feed", labelKey: "sidebar.feed" as const },
+  { href: "/", icon: "dashboard", labelKey: "common.home" as const },
+  { href: "/terminal", icon: "swap_horiz", labelKey: "common.trade" as const },
+  { href: "/signals", icon: "sensors", labelKey: "sidebar.signals" as const },
 ];
 
 export function BottomNav() {
   const pathname = usePathname();
+  const { t } = useTranslation();
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-200 dark:border-zinc-800 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-sm">
@@ -31,7 +33,7 @@ export function BottomNav() {
               <span className="material-icons-outlined" style={{ fontSize: "20px" }}>
                 {item.icon}
               </span>
-              <span className="text-[10px] font-medium">{item.label}</span>
+              <span className="text-[10px] font-medium">{t(item.labelKey)}</span>
             </Link>
           );
         })}
