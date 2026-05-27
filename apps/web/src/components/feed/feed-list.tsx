@@ -4,6 +4,8 @@ import { useMemo, useState } from "react";
 import { useMessages, type Message } from "@/hooks/use-messages";
 import { FeedCard } from "./feed-card";
 import { useTranslation } from "@/i18n";
+import { TickerBar } from "./ticker-bar";
+import { useCollapsed } from "@/components/ui/collapsible-header";
 
 interface FeedListProps {
   onAccept: (message: Message) => void;
@@ -13,6 +15,7 @@ export function FeedList({ onAccept }: FeedListProps) {
   const { data, isLoading } = useMessages();
   const { t } = useTranslation();
   const [dismissedIds, setDismissedIds] = useState<Set<string>>(() => new Set());
+  const collapsed = useCollapsed();
 
   if (isLoading) {
     return (
@@ -41,6 +44,12 @@ export function FeedList({ onAccept }: FeedListProps) {
   return (
     <div className="space-y-3 px-3 sm:px-5">
       <MarketPulse messages={visibleMessages} />
+      <div
+        aria-hidden={collapsed}
+        className={`transition-opacity duration-150 ${collapsed ? "pointer-events-none opacity-0" : "opacity-100"}`}
+      >
+        <TickerBar />
+      </div>
       {visibleMessages.map((msg) => (
         <FeedCard
           key={msg.id}

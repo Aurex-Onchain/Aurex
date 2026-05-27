@@ -7,6 +7,7 @@ import { ExecuteDialog } from "@/components/feed/execute-dialog";
 import type { Message } from "@/hooks/use-messages";
 import { useTranslation } from "@/i18n";
 import { CollapsibleHeader } from "@/components/ui/collapsible-header";
+import { TickerBar } from "@/components/feed/ticker-bar";
 
 export default function FeedPage() {
   const { t } = useTranslation();
@@ -20,7 +21,11 @@ export default function FeedPage() {
   }
 
   return (
-    <CollapsibleHeader title={t("feed.title")} description={t("feed.description")}>
+    <CollapsibleHeader
+      title={t("feed.title")}
+      description={t("feed.description")}
+      tickerSlot={<TickerBar collapsed />}
+    >
       <div className="relative h-full">
         <div className="pb-52">
           <FeedList onAccept={setSelectedMessage} />

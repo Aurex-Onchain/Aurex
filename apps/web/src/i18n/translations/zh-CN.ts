@@ -302,6 +302,7 @@ const zhCN: Translations = {
   "feed.pulse.hot": "热门事项",
   "feed.pulse.executable": "可执行",
   "feed.pulse.latest": "最新",
+  "feed.ticker.empty": "未配置热门代币",
   "feed.prompt.highAlpha": "显示高 Alpha 信号",
   "feed.prompt.lastHour": "过去一小时发生了什么？",
   "feed.prompt.bestPool": "现在最优池是哪一个？",

@@ -300,6 +300,7 @@ const en = {
   "feed.pulse.hot": "Hot items",
   "feed.pulse.executable": "Executable",
   "feed.pulse.latest": "Latest",
+  "feed.ticker.empty": "No hot tokens configured",
   "feed.prompt.highAlpha": "Show high-alpha signals",
   "feed.prompt.lastHour": "What changed in the last hour?",
   "feed.prompt.bestPool": "Find the best pool now",

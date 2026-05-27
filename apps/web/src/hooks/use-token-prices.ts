@@ -4,23 +4,30 @@ import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 import { TOKENS } from "@/lib/contracts";
 
-interface PriceChange {
+export interface PriceChange {
   token: string;
   currentPrice: number;
   change24hPct: number | null;
 }
 
-interface PricesResponse {
+export interface PricesResponse {
   prices: PriceChange[];
   timestamp: number;
 }
 
-export function useTokenPrices() {
-  const tokenAddresses = TOKENS.map((t) => t.address.toLowerCase()).join(",");
+export function useTokenPrices(tokenAddresses?: string[]) {
+  const sourceTokens = tokenAddresses === undefined
+    ? TOKENS.map((t) => t.address)
+    : tokenAddresses;
+  const tokenQuery = sourceTokens
+    .map((address) => address.trim().toLowerCase())
+    .filter(Boolean)
+    .join(",");
 
   return useQuery({
-    queryKey: ["token-prices"],
-    queryFn: () => fetchApi<PricesResponse>(`/api/prices?tokens=${tokenAddresses}`),
+    queryKey: ["token-prices", tokenQuery],
+    queryFn: () => fetchApi<PricesResponse>(`/api/prices?tokens=${tokenQuery}`),
+    enabled: tokenQuery.length > 0,
     refetchInterval: 30_000,
     staleTime: 20_000,
   });
