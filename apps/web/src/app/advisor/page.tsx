@@ -23,18 +23,22 @@ export default function AdvisorPage() {
           <OpenClawGuide />
         </section>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <section>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <section className="flex min-h-0 flex-col">
             <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
               {t("advisor.publisher")}
             </h3>
-            <PublisherStatus />
+            <div className="flex-1 [&>*]:h-full">
+              <PublisherStatus />
+            </div>
           </section>
-          <section>
+          <section className="flex min-h-0 flex-col">
             <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
               {t("advisor.behaviorMonitor")}
             </h3>
-            <BehaviorDashboard />
+            <div className="flex-1 [&>*]:h-full">
+              <BehaviorDashboard />
+            </div>
           </section>
         </div>
 

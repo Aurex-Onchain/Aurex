@@ -23,18 +23,22 @@ export default function DashboardPage() {
           </h3>
           <SignalTimeline />
         </section>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <section>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <section className="flex min-h-0 flex-col">
             <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
               {t("dashboard.pools")}
             </h3>
-            <PoolList />
+            <div className="flex-1 [&>*]:h-full">
+              <PoolList />
+            </div>
           </section>
-          <section>
+          <section className="flex min-h-0 flex-col">
             <h3 className="text-sm font-semibold text-zinc-400 uppercase mb-4">
               {t("dashboard.publisherLeaderboard")}
             </h3>
-            <PublisherLeaderboard />
+            <div className="flex-1 [&>*]:h-full">
+              <PublisherLeaderboard />
+            </div>
           </section>
         </div>
         <section>
