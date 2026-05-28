@@ -29,9 +29,21 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
   const expired = isExpired(signal.expiresAt);
   const riskScore = formatScore(signal.riskScore);
   const riskLevelKey = riskScore <= 30 ? "low" : riskScore <= 60 ? "medium" : "high";
-  const riskColor = riskLevelKey === "low" ? "text-emerald-400" : riskLevelKey === "medium" ? "text-yellow-400" : "text-red-400";
-  const riskBg = riskLevelKey === "low" ? "bg-emerald-500/10" : riskLevelKey === "medium" ? "bg-yellow-500/10" : "bg-red-500/10";
-  const riskBorder = riskLevelKey === "low" ? "border-emerald-500/20" : riskLevelKey === "medium" ? "border-yellow-500/20" : "border-red-500/20";
+  const riskColor = riskLevelKey === "low"
+    ? "text-emerald-600 dark:text-emerald-400"
+    : riskLevelKey === "medium"
+      ? "text-yellow-600 dark:text-yellow-400"
+      : "text-red-600 dark:text-red-400";
+  const riskBg = riskLevelKey === "low"
+    ? "bg-emerald-50 dark:bg-emerald-500/10"
+    : riskLevelKey === "medium"
+      ? "bg-yellow-50 dark:bg-yellow-500/10"
+      : "bg-red-50 dark:bg-red-500/10";
+  const riskBorder = riskLevelKey === "low"
+    ? "border-emerald-200 dark:border-emerald-500/20"
+    : riskLevelKey === "medium"
+      ? "border-yellow-200 dark:border-yellow-500/20"
+      : "border-red-200 dark:border-red-500/20";
 
   return (
     <div className={`p-4 rounded-xl border ${signalValid ? riskBorder : "border-zinc-200 dark:border-zinc-700/30"} ${signalValid ? riskBg : "bg-zinc-100 dark:bg-zinc-800/40"}`}>
@@ -45,13 +57,13 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
         </div>
         <div className="flex items-center gap-1.5">
           {signalValid ? (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
               {t("terminal.signalLive")}
             </span>
           ) : (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-700/50 border border-zinc-600/50 text-zinc-400 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-500" />
+            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-600/50 text-zinc-600 dark:text-zinc-400 text-xs font-medium">
+              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
               {expired ? t("signals.statusExpired") : t("terminal.signalInactive")}
             </span>
           )}
