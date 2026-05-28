@@ -208,14 +208,17 @@ Layer 2 — Signal Marketplace (Open Competition)
 
 ### Contracts (X Layer Mainnet)
 
-| Contract | Address | Role |
-|----------|---------|------|
-| AurexSignalRegistry | `0x713d8C2f1983848eDFe2F1f3730d9Ff74aBa4b7f` | Publisher lifecycle + signal storage + verification |
-| AurexAlphaHook | `0x3D28D43FFB4ed9321B0d740B2B457E802259C0c0` | Dynamic fee + revenue share (Uniswap V4 Hook) |
-| AurexPolicyManager | `0x025774B4e49b7Cb98D90111461B69Af98c301cD7` | Pool policy configuration |
-| AurexPoolFactory | `0x6708213b47715771e290e41599de14e45E8C4358` | Permissionless pool creation |
-| PoolManager (Uniswap V4) | `0x360e68faccca8ca495c1b759fd9eee466db9fb32` | Core Uniswap V4 |
-| MockAUREX | `0x8819A7972e17C61A4eeFe0F06e4bbef521228c82` | Stake token |
+| Contract | Address | Role | Source |
+|----------|---------|------|--------|
+| AurexSignalRegistry | [`0x713d...4b7f`](https://www.okx.com/web3/explorer/xlayer/address/0x713d8C2f1983848eDFe2F1f3730d9Ff74aBa4b7f) | Publisher lifecycle + signal storage + verification | [contracts/src/registry/](./contracts/src/registry/AurexSignalRegistry.sol) |
+| AurexAlphaHook | [`0x3D28...C0c0`](https://www.okx.com/web3/explorer/xlayer/address/0x3D28D43FFB4ed9321B0d740B2B457E802259C0c0) | Dynamic fee + revenue share (Uniswap V4 Hook) | [contracts/src/hooks/](./contracts/src/hooks/AurexAlphaHook.sol) |
+| AurexPolicyManager | [`0x0257...1cD7`](https://www.okx.com/web3/explorer/xlayer/address/0x025774B4e49b7Cb98D90111461B69Af98c301cD7) | Pool policy configuration | [contracts/src/policy/](./contracts/src/policy/AurexPolicyManager.sol) |
+| AurexPoolFactory | [`0x6708...4358`](https://www.okx.com/web3/explorer/xlayer/address/0x6708213b47715771e290e41599de14e45E8C4358) | Permissionless pool creation | [contracts/src/factory/](./contracts/src/factory/AurexPoolFactory.sol) |
+| PoolManager (Uniswap V4) | [`0x360e...fb32`](https://www.okx.com/web3/explorer/xlayer/address/0x360e68faccca8ca495c1b759fd9eee466db9fb32) | Core Uniswap V4 | (external) |
+| MockAUREX ✓ verified | [`0x8819...8c82`](https://repo.sourcify.dev/196/0x8819A7972e17C61A4eeFe0F06e4bbef521228c82) | Stake token | [contracts/src/tokens/](./contracts/src/tokens/MockAUREX.sol) |
+| MockUSDC ✓ verified | [`0x4229...231d`](https://repo.sourcify.dev/196/0x4229Df8c78F60D1Daf54035E01527B9B025C231d) | Test stablecoin | [contracts/src/tokens/](./contracts/src/tokens/MockUSDC.sol) |
+
+**Verification status**: MockAUREX and MockUSDC are verified on [Sourcify](https://sourcify.dev) (chain 196). The 4 core protocol contracts were initially deployed before the current source revision; their on-chain bytecode is preserved and functional, but Sourcify metadata-hash matching no longer succeeds against the latest commit. Re-verification will happen on the next deployment cycle. To verify yourself, run `./contracts/verify-sourcify.sh`.
 
 ### Protocol Flow
 
