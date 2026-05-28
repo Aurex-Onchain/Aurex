@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import type { Message } from "@/hooks/use-messages";
 import { useExecuteTrade } from "@/hooks/use-chat";
 import { useTranslation } from "@/i18n";
@@ -15,7 +16,7 @@ export function ExecuteDialog({ message, onClose }: ExecuteDialogProps) {
   const executeTrade = useExecuteTrade();
   const [result, setResult] = useState<{ status: string; txHash?: string; error?: string } | null>(null);
 
-  if (!message) return null;
+  if (!message || typeof document === "undefined") return null;
 
   const metadata = message.metadata as {
     pool_id?: string;
@@ -43,8 +44,8 @@ export function ExecuteDialog({ message, onClose }: ExecuteDialogProps) {
     }
   };
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
         <h3 className="text-lg font-semibold text-zinc-900 dark:text-white mb-3">
           {t("feed.confirmExecution")}
@@ -87,6 +88,7 @@ export function ExecuteDialog({ message, onClose }: ExecuteDialogProps) {
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

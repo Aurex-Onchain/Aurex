@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { useTranslation } from "@/i18n";
 import { postApi } from "@/lib/api";
 
@@ -69,9 +70,9 @@ export function ChatDialog({ open, onClose, initialPrompt, onOpened }: ChatDialo
     await sendMessage(content);
   }
 
-  if (!open) return null;
+  if (!open || typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       <div className="relative w-full max-w-lg mx-4 mb-4 sm:mb-0 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-700 rounded-2xl shadow-2xl flex flex-col max-h-[70vh]">
@@ -136,6 +137,7 @@ export function ChatDialog({ open, onClose, initialPrompt, onOpened }: ChatDialo
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
