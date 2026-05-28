@@ -326,7 +326,7 @@ Live on @XLayerOfficial today.
 6 contracts verified on Sourcify.
 8+ signals already published on-chain.
 
-Co-built for #HookTheFuture by @XLayerOfficial @Uniswap @flapprotocol.
+Co-built for #HookTheFuture #BuildX by @XLayerOfficial @Uniswap @flapdotsh.
 
 github.com/Aurex-Onchain/Aurex
 web-sigma-virid-60.vercel.app

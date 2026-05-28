@@ -133,7 +133,7 @@ Live on X Layer Mainnet:
 
 8+ signals already published onchain. 4 active pools.
 
-Built for Hook the Future @XLayerOfficial @Uniswap @flapprotocol
+Built for Hook the Future @XLayerOfficial @Uniswap @flapdotsh
 
 Hook the future. We did.
 ```
@@ -247,7 +247,7 @@ A new market structure for trading alpha:
 • Hook reads signals → dynamic fees
 • Right calls earn. Wrong calls slash.
 
-Live on @XLayerOfficial. Powered by @Uniswap V4. Co-built with @flapprotocol.
+Live on @XLayerOfficial. Powered by @Uniswap V4. Co-built with @flapdotsh.
 
 🔗 github.com/Aurex-Onchain/Aurex
 🌐 web-sigma-virid-60.vercel.app
@@ -295,7 +295,7 @@ So we built something that compounds:
 
 This is what V4 Hooks were made for.
 
-@XLayerOfficial @Uniswap @flapprotocol
+@XLayerOfficial @Uniswap @flapdotsh
 ```
 
 ---
@@ -359,7 +359,7 @@ Your local advisor runs on port 3100. Connect any MCP client (Claude Code, Curso
 **Always tag in launch posts:**
 - @XLayerOfficial
 - @Uniswap
-- @flapprotocol
+- @flapdotsh
 - @okx (for ExchangeOS / OnchainOS posts)
 
 **Hashtags (use sparingly, max 2 per tweet):**

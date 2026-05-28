@@ -1,8 +1,38 @@
 # Aurex
 
+**English** · [简体中文](./README.zh-CN.md)
+
 Open Signal Marketplace Protocol on Uniswap V4 Hooks + Self-hosted AI Trading Application.
 
 Built on X Layer Mainnet (Chain ID: 196).
+
+> 🏆 **Hook the Future Hackathon submission** — Live on **X Layer Mainnet (Chain 196)** · All 4 core contracts + 2 tokens **verified on Sourcify** · AurexAlphaHook: [`0xF8F9...00c4`](https://www.okx.com/web3/explorer/xlayer/address/0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4) · Project X: [@0xAurex_ai](https://twitter.com/0xAurex_ai)
+>
+> **One-line pitch:** Aurex turns Uniswap V4 Hooks into an open signal marketplace on X Layer — publishers stake AUREX to push on-chain risk/alpha scores, the Hook converts every swap into a dynamic-fee + publisher revenue-share event, and a self-hosted MCP Advisor lets any AI client (Claude / Cursor / OpenClaw) consume and publish signals from one wallet.
+
+## 🎬 Demo Video
+
+https://github.com/user-attachments/assets/2b5f6cd1-f1cf-4530-9952-6c627d8a81d3
+
+## For Hackathon Judges
+
+**60-second verification path:**
+
+1. **Hook is live on X Layer Mainnet** → AurexAlphaHook [`0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4`](https://www.okx.com/web3/explorer/xlayer/address/0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4) ([source verified on Sourcify ✓](https://repo.sourcify.dev/196/0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4))
+2. **Hook has been triggered by real on-chain flow** → 8+ signals published across 4 pools, every tx hash in [`contracts/deployments/demo-transactions.md`](./contracts/deployments/demo-transactions.md)
+3. **Hook source code** → [`contracts/src/hooks/AurexAlphaHook.sol`](./contracts/src/hooks/AurexAlphaHook.sol) — `beforeSwap` reads the active signal to compute a dynamic fee; `afterSwap` uses `afterSwapReturnDelta: true` to skim `publisherShareBps` from swap output and credit the publisher in the same tx
+4. **Reproduce end-to-end** → `cd contracts && ./run-demo.sh` (uses `script/FullFlowDemo.s.sol` — register publisher → publish 4 signals → all on chain)
+5. **Demo video** → embedded above ([script source](./docs/VIDEO_SCRIPT.md))
+
+**Mapped to the three evaluation criteria:**
+
+| Criterion | Aurex's answer |
+|-----------|----------------|
+| **Innovation** | Hook is not a business plugin — it's the **settlement layer of a signal marketplace**. Publishers stake AUREX → push signals → the Hook reads them at `beforeSwap` to set dynamic fee → at `afterSwap` it routes `publisherShareBps` back to the publisher via `afterSwapReturnDelta`. Alpha becomes a tradeable, slashable, on-chain asset class — something V4 Hooks make possible for the first time. |
+| **Market value** | Publisher revenue comes from **real swap fees**, not token inflation — every swap through a Hook pool credits the publisher in the same transaction. Sustainable cash flow for any AI agent that can produce accurate market intelligence, plus dynamic-fee LP protection for pool creators. |
+| **Completeness** | 4 core contracts + 2 tokens deployed on X Layer Mainnet · all verified on Sourcify · 34 passing Foundry tests · 8+ live signals across 4 pools · end-to-end demo reproducible by judges in one command |
+
+---
 
 🌐 **Live Demo (Showcase only)**: [web-sigma-virid-60.vercel.app](https://web-sigma-virid-60.vercel.app)
 
