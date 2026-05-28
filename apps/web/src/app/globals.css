@@ -80,15 +80,17 @@ body::before {
 
 @keyframes ticker {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 .animate-ticker {
-  animation: ticker 30s linear infinite;
+  animation: ticker var(--ticker-duration, 90s) linear infinite;
+  width: max-content;
+  will-change: transform;
 }
 
 .animate-ticker:hover {
@@ -281,5 +283,10 @@ body::before {
     animation-iteration-count: 1 !important;
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .animate-ticker {
+    animation: none !important;
+    transform: translate3d(0, 0, 0) !important;
   }
 }

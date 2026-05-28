@@ -148,6 +148,7 @@ const en = {
   "terminal.signalStatus": "Signal Status",
   "terminal.signalLive": "Live",
   "terminal.signalInactive": "Inactive",
+  "terminal.expiresIn": "Expires In",
   "terminal.risk": "Risk",
   "terminal.alpha": "Alpha",
   "terminal.liq": "Liq",
@@ -393,6 +394,7 @@ const en = {
   "rightSidebar.copied": "Copied!",
   "rightSidebar.connectHint": "Connect wallet to view balances",
   "rightSidebar.services": "Services",
+  "rightSidebar.serviceDemo": "Demo",
   "rightSidebar.serviceOnline": "Online",
   "rightSidebar.serviceOffline": "Offline",
 

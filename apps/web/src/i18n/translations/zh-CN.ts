@@ -150,6 +150,7 @@ const zhCN: Translations = {
   "terminal.signalStatus": "信号状态",
   "terminal.signalLive": "实时",
   "terminal.signalInactive": "未激活",
+  "terminal.expiresIn": "剩余时间",
   "terminal.risk": "风险",
   "terminal.alpha": "Alpha",
   "terminal.liq": "流动性",
@@ -395,6 +396,7 @@ const zhCN: Translations = {
   "rightSidebar.copied": "已复制!",
   "rightSidebar.connectHint": "连接钱包查看余额",
   "rightSidebar.services": "服务",
+  "rightSidebar.serviceDemo": "演示",
   "rightSidebar.serviceOnline": "在线",
   "rightSidebar.serviceOffline": "离线",
 

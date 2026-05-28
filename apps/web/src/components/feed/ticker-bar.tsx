@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { type CSSProperties, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchApi } from "@/lib/api";
 import { TOKENS, type TokenInfo } from "@/lib/contracts";
@@ -25,6 +25,9 @@ const HOT_TOKEN_SYMBOLS: Record<string, string> = {
   "0x0000000000000000000000000000000000000003": "SOL",
   "0x0000000000000000000000000000000000000004": "BONK",
 };
+
+const MIN_TICKER_ITEMS = 36;
+const TICKER_SECONDS_PER_ITEM = 4.25;
 
 function isAddress(value: string): value is `0x${string}` {
   return /^0x[0-9a-fA-F]{40}$/.test(value);
@@ -126,7 +129,16 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
     );
   };
 
-  const displayTokens = [...tokens, ...tokens];
+  const tickerCycle = tokens.length > 0
+    ? Array.from(
+      { length: Math.max(1, Math.ceil(MIN_TICKER_ITEMS / tokens.length)) },
+      () => tokens,
+    ).flat()
+    : [];
+  const displayTokens = [...tickerCycle, ...tickerCycle];
+  const tickerStyle = {
+    "--ticker-duration": `${Math.max(90, tickerCycle.length * TICKER_SECONDS_PER_ITEM)}s`,
+  } as CSSProperties;
 
   if (tokens.length === 0) {
     return (
@@ -140,9 +152,9 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
 
   if (collapsed) {
     return (
-    <div className="scanner-panel overflow-hidden rounded-lg border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
+      <div className="scanner-panel overflow-hidden rounded-lg border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
         <div className="relative h-10 overflow-hidden">
-          <div className="absolute inset-0 flex items-center animate-ticker">
+          <div className="flex h-full w-max min-w-full items-center animate-ticker" style={tickerStyle}>
             {displayTokens.map((token, idx) => renderToken(token, idx, true))}
           </div>
         </div>
@@ -153,7 +165,7 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
   return (
     <div className="scanner-panel overflow-hidden rounded-xl border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
       <div className="relative h-12 overflow-hidden">
-        <div className="absolute inset-0 flex items-center animate-ticker">
+        <div className="flex h-full w-max min-w-full items-center animate-ticker" style={tickerStyle}>
           {displayTokens.map((token, idx) => renderToken(token, idx, false))}
         </div>
       </div>

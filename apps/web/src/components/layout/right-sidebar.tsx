@@ -8,6 +8,8 @@ import { formatAddress } from "@/lib/format";
 import { usePinnedTokens } from "@/hooks/use-pinned-tokens";
 import { useTokenPrices, getPriceForToken } from "@/hooks/use-token-prices";
 import { ConnectButton } from "@/components/ui/connect-button";
+import { fetchApi, isDemoMode } from "@/lib/api";
+import type { HealthResponse } from "@/types/api";
 
 const contractEntries = [
   { label: "Pool Factory", address: CONTRACTS.poolFactory },
@@ -150,39 +152,66 @@ function ContractList() {
 }
 
 const SERVICES = [
-  { label: "X Layer", url: "https://rpc.xlayer.tech" },
-  { label: "Advisor Dashboard", url: `${process.env.NEXT_PUBLIC_ADVISOR_URL || "http://localhost:3100"}/health` },
-  { label: "Advisor Service", url: `${process.env.NEXT_PUBLIC_ADVISOR_URL || "http://localhost:3100"}/health` },
+  { label: "X Layer", kind: "external", url: "https://rpc.xlayer.tech" },
+  { label: "Advisor Dashboard", kind: "advisor" },
+  { label: "Advisor Service", kind: "advisor" },
 ] as const;
+
+type ServiceState = "online" | "offline" | "demo";
 
 function ServiceStatus() {
   const { t } = useTranslation();
-  const [statuses, setStatuses] = useState<Record<string, boolean | null>>({});
+  const [statuses, setStatuses] = useState<Record<string, ServiceState | null>>({});
 
   useEffect(() => {
-    async function check(label: string, url: string) {
+    async function check(service: typeof SERVICES[number]) {
       try {
-        await fetch(url, { method: "HEAD", mode: "no-cors", signal: AbortSignal.timeout(5000) });
-        setStatuses((prev) => ({ ...prev, [label]: true }));
+        if (service.kind === "advisor") {
+          const health = await fetchApi<HealthResponse>("/health");
+          const demoHealth = isDemoMode() || health.version.includes("demo");
+          const state: ServiceState = demoHealth ? "demo" : health.status === "ok" ? "online" : "offline";
+          setStatuses((prev) => ({ ...prev, [service.label]: state }));
+          return;
+        }
+
+        const controller = new AbortController();
+        const timeout = window.setTimeout(() => controller.abort(), 5000);
+
+        try {
+          await fetch(service.url, { method: "HEAD", mode: "no-cors", signal: controller.signal });
+          setStatuses((prev) => ({ ...prev, [service.label]: "online" }));
+        } finally {
+          window.clearTimeout(timeout);
+        }
       } catch {
-        setStatuses((prev) => ({ ...prev, [label]: false }));
+        setStatuses((prev) => ({ ...prev, [service.label]: "offline" }));
       }
     }
-    SERVICES.forEach((s) => check(s.label, s.url));
-    const interval = setInterval(() => SERVICES.forEach((s) => check(s.label, s.url)), 30000);
+    SERVICES.forEach((s) => check(s));
+    const interval = setInterval(() => SERVICES.forEach((s) => check(s)), 30000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="space-y-2 px-4">
       {SERVICES.map((s) => {
-        const online = statuses[s.label];
+        const state = statuses[s.label];
+        const tone = state === "online" || state === "demo" ? "text-emerald-400" : state === "offline" ? "text-red-400" : "text-zinc-600";
+        const dot = state === "online" || state === "demo" ? "live-dot bg-emerald-400 text-emerald-400" : state === "offline" ? "bg-red-400" : "bg-zinc-600";
+        const label = state === null || state === undefined
+          ? "..."
+          : state === "demo"
+            ? t("rightSidebar.serviceDemo")
+            : state === "online"
+              ? t("rightSidebar.serviceOnline")
+              : t("rightSidebar.serviceOffline");
+
         return (
           <div key={s.label} className="flex items-center justify-between">
             <span className="text-sm text-zinc-400">{s.label}</span>
-            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${online === true ? "text-emerald-400" : online === false ? "text-red-400" : "text-zinc-600"}`}>
-              <span className={`h-1.5 w-1.5 rounded-full ${online === true ? "live-dot bg-emerald-400 text-emerald-400" : online === false ? "bg-red-400" : "bg-zinc-600"}`} />
-              {online === null || online === undefined ? "..." : online ? t("rightSidebar.serviceOnline") : t("rightSidebar.serviceOffline")}
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${tone}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${dot}`} />
+              {label}
             </span>
           </div>
         );

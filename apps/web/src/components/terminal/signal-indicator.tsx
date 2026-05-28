@@ -1,8 +1,7 @@
 "use client";
 
 import type { SerializedSignal, SerializedPolicy } from "@/types/api";
-import { formatFee, formatScore, timeUntilExpiry, isExpired } from "@/lib/format";
-import { SignalBadge } from "@/components/ui/signal-badge";
+import { formatAddress, formatFee, formatScore, timeUntilExpiry, isExpired } from "@/lib/format";
 import { useTranslation } from "@/i18n";
 import { AnimatedNumber, useNumberFlash } from "@/components/motion/animated-number";
 
@@ -17,10 +16,30 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
 
   if (!signal) {
     return (
-      <div className="p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800/40 border border-zinc-200 dark:border-zinc-700/30">
-        <div className="flex items-center gap-2 text-zinc-500">
-          <span className="material-icons-outlined text-lg">signal_cellular_off</span>
-          <span className="text-sm">{t("terminal.noSignal")}</span>
+      <div className="flex h-full flex-col gap-4">
+        <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
+          <div className="flex min-w-0 items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-zinc-200 bg-white/70 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-400">
+              <span className="material-icons-outlined" style={{ fontSize: "20px", lineHeight: 1 }}>
+                signal_cellular_off
+              </span>
+            </span>
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-2">
+                <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                  {t("terminal.signalStatus")}
+                </h3>
+                <StatusPill active={false} label={t("terminal.signalInactive")} />
+              </div>
+              <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+                {t("terminal.noSignal")}
+              </p>
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-2 sm:min-w-64">
+            <SummaryTile label={t("terminal.dynamicFee")} value="--" />
+            <SummaryTile label={t("terminal.expiresIn")} value="--" />
+          </div>
         </div>
       </div>
     );
@@ -28,54 +47,46 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
 
   const expired = isExpired(signal.expiresAt);
   const riskScore = formatScore(signal.riskScore);
-  const riskLevelKey = riskScore <= 30 ? "low" : riskScore <= 60 ? "medium" : "high";
-  const riskColor = riskLevelKey === "low"
-    ? "text-emerald-600 dark:text-emerald-400"
-    : riskLevelKey === "medium"
-      ? "text-yellow-600 dark:text-yellow-400"
-      : "text-red-600 dark:text-red-400";
-  const riskBg = riskLevelKey === "low"
-    ? "bg-emerald-50 dark:bg-emerald-500/10"
-    : riskLevelKey === "medium"
-      ? "bg-yellow-50 dark:bg-yellow-500/10"
-      : "bg-red-50 dark:bg-red-500/10";
-  const riskBorder = riskLevelKey === "low"
-    ? "border-emerald-200 dark:border-emerald-500/20"
-    : riskLevelKey === "medium"
-      ? "border-yellow-200 dark:border-yellow-500/20"
-      : "border-red-200 dark:border-red-500/20";
+  const alphaScore = formatScore(signal.alphaScore);
+  const liquidityScore = formatScore(signal.liquidityScore);
+  const volatilityScore = formatScore(signal.volatilityScore);
 
   return (
-    <div className={`p-4 rounded-xl border ${signalValid ? riskBorder : "border-zinc-200 dark:border-zinc-700/30"} ${signalValid ? riskBg : "bg-zinc-100 dark:bg-zinc-800/40"}`}>
-      {/* Header */}
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-2">
-          <span className={`material-icons-outlined text-lg ${signalValid ? riskColor : "text-zinc-500"}`}>
-            {signalValid ? "signal_cellular_alt" : "signal_cellular_off"}
+    <div className="space-y-4">
+      <div className="flex flex-col gap-4 2xl:flex-row 2xl:items-start 2xl:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${signalValid ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-200" : "border-zinc-200 bg-white/70 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40 dark:text-zinc-400"}`}>
+            <span className="material-icons-outlined" style={{ fontSize: "20px", lineHeight: 1 }}>
+              {signalValid ? "sensors" : "signal_cellular_off"}
+            </span>
           </span>
-          <span className="text-sm font-medium text-zinc-800 dark:text-zinc-200">{t("terminal.signalStatus")}</span>
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <h3 className="text-sm font-semibold text-zinc-900 dark:text-zinc-100">
+                {t("terminal.signalStatus")}
+              </h3>
+              <StatusPill
+                active={signalValid}
+                label={signalValid ? t("terminal.signalLive") : expired ? t("signals.statusExpired") : t("terminal.signalInactive")}
+              />
+            </div>
+            <p className="mt-1 text-sm leading-relaxed text-zinc-600 dark:text-zinc-300">
+              #{signal.signalId.slice(0, 8)} · {t("terminal.publisher")} {formatAddress(signal.signer)}
+            </p>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          {signalValid ? (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-emerald-400 animate-pulse" />
-              {t("terminal.signalLive")}
-            </span>
-          ) : (
-            <span className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-zinc-100 dark:bg-zinc-700/50 border border-zinc-300 dark:border-zinc-600/50 text-zinc-600 dark:text-zinc-400 text-xs font-medium">
-              <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-500" />
-              {expired ? t("signals.statusExpired") : t("terminal.signalInactive")}
-            </span>
-          )}
+
+        <div className="grid grid-cols-2 gap-2 sm:min-w-64">
+          <SummaryTile label={t("terminal.dynamicFee")} value={formatFee(signal.recommendedFee)} tone="emerald" />
+          <SummaryTile label={t("terminal.expiresIn")} value={expired ? t("signals.statusExpired") : timeUntilExpiry(signal.expiresAt)} />
         </div>
       </div>
 
-      {/* Scores Grid */}
-      <div className="grid grid-cols-4 gap-2 mb-3">
-        <SignalBadge score={formatScore(signal.riskScore)} label={t("terminal.risk")} />
-        <SignalBadge score={formatScore(signal.alphaScore)} label={t("terminal.alpha")} />
-        <SignalBadge score={formatScore(signal.liquidityScore)} label={t("terminal.liq")} />
-        <SignalBadge score={formatScore(signal.volatilityScore)} label={t("terminal.vol")} />
+      <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
+        <ScoreTile label={t("terminal.risk")} value={riskScore} tone={scoreTone(riskScore, "lower")} />
+        <ScoreTile label={t("terminal.alpha")} value={alphaScore} tone={scoreTone(alphaScore, "higher")} />
+        <ScoreTile label={t("terminal.liq")} value={liquidityScore} tone={scoreTone(liquidityScore, "higher")} />
+        <ScoreTile label={t("terminal.vol")} value={volatilityScore} tone={scoreTone(volatilityScore, "lower")} />
       </div>
 
       {signalValid && policy && (
@@ -86,22 +97,67 @@ export function SignalIndicator({ signal, policy, signalValid }: Props) {
           appliedLabel={t("terminal.hookActionApplied")}
           escalatedLabel={t("terminal.feeEscalated")}
           relaxedLabel={t("terminal.feeRelaxed")}
+          riskLabel={t("terminal.feeRiskLabel")}
         />
       )}
+    </div>
+  );
+}
 
-      {/* Fee & Expiry */}
-      <div className="flex items-center justify-between text-xs">
-        <div className="flex items-center gap-3">
-          <span className="text-zinc-500">{t("terminal.dynamicFee")}</span>
-          <span className="text-zinc-800 dark:text-zinc-200 font-medium">{formatFee(signal.recommendedFee)}</span>
-        </div>
-        {!expired && (
-          <div className="flex items-center gap-1 text-zinc-500">
-            <span className="material-icons-outlined text-xs">schedule</span>
-            <span>{timeUntilExpiry(signal.expiresAt)}</span>
-          </div>
-        )}
-      </div>
+function StatusPill({ active, label }: { active: boolean; label: string }) {
+  return (
+    <span className={`inline-flex h-[26px] items-center gap-1.5 rounded-md border px-2 text-[11px] font-semibold ${
+      active
+        ? "border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-200"
+        : "border-zinc-200 bg-white/60 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/60 dark:text-zinc-400"
+    }`}>
+      <span className={`h-1.5 w-1.5 rounded-full ${active ? "live-dot bg-emerald-500 text-emerald-500 dark:bg-emerald-300 dark:text-emerald-300" : "bg-zinc-400 dark:bg-zinc-500"}`} />
+      {label}
+    </span>
+  );
+}
+
+function SummaryTile({ label, value, tone = "zinc" }: { label: string; value: string; tone?: "emerald" | "zinc" }) {
+  return (
+    <div className={`rounded-xl border px-3 py-2 ${
+      tone === "emerald"
+        ? "border-emerald-200 bg-emerald-50/60 dark:border-emerald-500/20 dark:bg-emerald-500/10"
+        : "border-zinc-200 bg-white/60 dark:border-zinc-800 dark:bg-zinc-950/40"
+    }`}>
+      <p className={`text-[11px] font-medium ${tone === "emerald" ? "text-emerald-700 dark:text-emerald-200" : "text-zinc-500"}`}>{label}</p>
+      <p className={`mt-1 truncate text-sm font-semibold ${tone === "emerald" ? "text-emerald-800 dark:text-emerald-100" : "text-zinc-900 dark:text-zinc-100"}`}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+type ScoreTone = "emerald" | "yellow" | "red";
+
+function scoreTone(score: number, direction: "higher" | "lower"): ScoreTone {
+  if (direction === "higher") {
+    if (score >= 70) return "emerald";
+    if (score >= 40) return "yellow";
+    return "red";
+  }
+  if (score <= 30) return "emerald";
+  if (score <= 60) return "yellow";
+  return "red";
+}
+
+function ScoreTile({ label, value, tone }: { label: string; value: number; tone: ScoreTone }) {
+  const toneClasses = {
+    emerald: "border-emerald-200 bg-emerald-50/60 text-emerald-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-100",
+    yellow: "border-yellow-200 bg-yellow-50/70 text-yellow-800 dark:border-yellow-500/25 dark:bg-yellow-500/10 dark:text-yellow-100",
+    red: "border-red-200 bg-red-50/70 text-red-800 dark:border-red-500/25 dark:bg-red-500/10 dark:text-red-100",
+  }[tone];
+
+  return (
+    <div className={`rounded-xl border px-3 py-2 ${toneClasses}`}>
+      <p className="text-[11px] font-medium opacity-75">{label}</p>
+      <p className="mt-1 text-lg font-semibold leading-none">
+        <AnimatedNumber value={value} />
+      </p>
     </div>
   );
 }
@@ -113,6 +169,7 @@ function HookActionApplied({
   appliedLabel,
   escalatedLabel,
   relaxedLabel,
+  riskLabel,
 }: {
   defaultFee: number;
   dynamicFee: number;
@@ -120,12 +177,13 @@ function HookActionApplied({
   appliedLabel: string;
   escalatedLabel: string;
   relaxedLabel: string;
+  riskLabel: string;
 }) {
   const escalated = dynamicFee >= defaultFee;
 
   return (
-    <div className="hook-action scanner-panel mb-3 rounded-lg border border-emerald-500/25 bg-emerald-50/70 px-3 py-2 dark:bg-emerald-950/20">
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+    <div className="hook-action scanner-panel rounded-xl border border-emerald-500/25 bg-emerald-50/70 px-3 py-3 dark:bg-emerald-950/20">
+      <div className="flex flex-col gap-2 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center rounded-md border border-emerald-200 bg-white/70 text-emerald-600 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300">
             <span className="material-icons-outlined" style={{ fontSize: "16px", lineHeight: 1 }}>bolt</span>
@@ -140,7 +198,7 @@ function HookActionApplied({
           <span className="material-icons-outlined text-sm text-emerald-500">arrow_forward</span>
           <AnimatedFee value={dynamicFee} />
           <span className="rounded border border-zinc-200 bg-white/70 px-1.5 py-0.5 text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/50">
-            risk <AnimatedNumber value={riskScore} />
+            {riskLabel} <AnimatedNumber value={riskScore} />
           </span>
         </div>
       </div>

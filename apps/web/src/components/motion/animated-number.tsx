@@ -22,15 +22,24 @@ export function AnimatedNumber({
   duration = 0.45,
   format,
 }: AnimatedNumberProps) {
+  const [initialValue] = useState(value);
+  const formatValue = (current: number) => format ? format(current) : `${prefix}${current.toFixed(decimals)}${suffix}`;
+
   return (
     <CountUp
+      start={initialValue}
       end={value}
       decimals={decimals}
+      delay={0}
       duration={duration}
       preserveValue
-      formattingFn={(current) => format ? format(current) : `${prefix}${current.toFixed(decimals)}${suffix}`}
+      formattingFn={formatValue}
     >
-      {({ countUpRef }) => <span ref={countUpRef} className={className} />}
+      {({ countUpRef }) => (
+        <span ref={countUpRef} className={className}>
+          {formatValue(value)}
+        </span>
+      )}
     </CountUp>
   );
 }

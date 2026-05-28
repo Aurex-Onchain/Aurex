@@ -488,15 +488,8 @@ export function getMockPrices() {
         volatility1h: 1.8,
         updatedAt: now,
       },
-      {
-        token: REAL_AUREX_TOKEN,
-        symbol: "AUREX",
-        currentPrice: 0.42,
-        change1hPct: 5.6,
-        change24hPct: 12.4,
-        volatility1h: 3.1,
-        updatedAt: now,
-      },
+      // AUREX has no demo USD quote; omitting it prevents mock pricing from
+      // inflating wallet portfolio value in hosted/demo mode.
       {
         token: "0x0000000000000000000000000000000000000001",
         symbol: "PEPE",

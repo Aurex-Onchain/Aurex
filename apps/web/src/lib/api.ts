@@ -16,19 +16,25 @@ import {
  * Routes return mocked data so the UI shows a "live-looking" state.
  *
  * Detection (any of):
- * - SSR / no window: always mock (Vercel build env, Next.js prerender)
+ * - SSR / no window and no explicit advisor URL: mock (Vercel build env, Next.js prerender)
  * - Window hostname includes "vercel.app"
  * - NEXT_PUBLIC_DEMO_MODE === "true"
- * - NEXT_PUBLIC_ADVISOR_URL not set (falls back to localhost default)
+ * - NEXT_PUBLIC_ADVISOR_URL not set on a non-local hostname
  */
-function isDemoMode(): boolean {
+export function isDemoMode(): boolean {
   if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") return true;
+  const hasAdvisorUrl = Boolean(process.env.NEXT_PUBLIC_ADVISOR_URL);
+
   if (typeof window === "undefined") {
     // SSR: only use mock if no explicit advisor URL set
-    return !process.env.NEXT_PUBLIC_ADVISOR_URL;
+    return !hasAdvisorUrl;
   }
+
   if (window.location.hostname.includes("vercel.app")) return true;
-  // For other hostnames, prefer real backend if reachable
+  const isLocalHost = ["localhost", "127.0.0.1", "::1"].includes(window.location.hostname);
+  if (!hasAdvisorUrl && !isLocalHost) return true;
+
+  // For local development and explicit advisor URLs, prefer the real backend if reachable.
   return false;
 }
 
