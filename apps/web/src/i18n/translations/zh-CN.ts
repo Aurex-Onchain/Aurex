@@ -489,6 +489,10 @@ const zhCN: Translations = {
 
   "settings.onchainosTEE": "OnchainOS TEE",
   "settings.equals": "=",
+
+  "demoBanner.label": "演示预览",
+  "demoBanner.message": "这是托管的演示页面 — Aurex Advisor 设计为由你自己部署，使用你自己的密钥和数据。",
+  "demoBanner.selfHostLink": "部署你自己的实例",
 };
 
 export default zhCN;

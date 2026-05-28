@@ -487,6 +487,10 @@ const en = {
 
   "settings.onchainosTEE": "OnchainOS TEE",
   "settings.equals": "=",
+
+  "demoBanner.label": "Demo Preview",
+  "demoBanner.message": "This is a hosted showcase — Aurex Advisor is designed to be self-hosted with your own keys and data.",
+  "demoBanner.selfHostLink": "Run your own instance",
 } as const;
 
 export type TranslationKeys = keyof typeof en;

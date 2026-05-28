@@ -4,9 +4,41 @@ Open Signal Marketplace Protocol on Uniswap V4 Hooks + Self-hosted AI Trading Ap
 
 Built on X Layer Mainnet (Chain ID: 196).
 
-🌐 **Live Demo**: [web-sigma-virid-60.vercel.app](https://web-sigma-virid-60.vercel.app)
+🌐 **Live Demo (Showcase only)**: [web-sigma-virid-60.vercel.app](https://web-sigma-virid-60.vercel.app)
+
+> ⚠️ **The hosted demo is for preview purposes only.** Aurex Advisor is designed to be **self-hosted** — every user runs their own instance with their own keys, their own data, and their own AI client. The Vercel deployment exists only to showcase the UI; for real usage, follow the [Self-host Guide](#self-host-guide) below.
 
 📜 **On-chain transactions**: [contracts/deployments/demo-transactions.md](./contracts/deployments/demo-transactions.md) — 8+ signals published on X Layer
+
+🔌 **Deep integration with OKX ExchangeOS**: Aurex Advisor connects natively to OKX OnchainOS Agentic Wallet for TEE-backed signing, transaction security scanning, and seamless on-chain execution. See [OnchainOS Integration](#onchainos-agentic-wallet-signer) below.
+
+---
+
+## Self-host Guide
+
+Aurex's design principle: **your keys, your data, your AI**. Nothing should be trusted to a centralized service.
+
+```bash
+# 1. Clone and install
+git clone https://github.com/Aurex-Onchain/Aurex.git
+cd Aurex
+pnpm install
+
+# 2. Run the Advisor (self-hosted backend)
+cd apps/advisor
+cp .env.example .env
+# Configure AUREX_PRIVATE_KEY or AUREX_SIGNER_PROVIDER=onchainos
+pnpm dev          # Runs on http://localhost:3100
+
+# 3. Run the Web Dashboard (your local UI)
+cd ../web
+pnpm dev          # Runs on http://localhost:3000
+
+# 4. Connect any AI client (Claude Code, Cursor, etc.) via MCP
+# See: docs/AI_CLIENT_INTEGRATION.md
+```
+
+The `vercel.app` demo is a static UI shell — it cannot publish signals, sign transactions, or hold any keys. Only your locally-running Advisor instance can do those things.
 
 ---
 
@@ -369,6 +401,29 @@ AUREX_ONCHAINOS_ADDRESS=0x...
 ```
 
 When `AUREX_SIGNER_PROVIDER=onchainos`, Advisor encodes Aurex contract calls locally, runs an OnchainOS transaction security scan, then calls `onchainos wallet contract-call` for TEE signing and broadcasting. Keep `AUREX_ONCHAINOS_AUTO_CONFIRM=false` unless the operator has explicitly accepted the confirmation policy for unattended publishing.
+
+### Deep Integration with OKX ExchangeOS
+
+Aurex is designed to integrate natively with the **OKX ExchangeOS** ecosystem — not as a separate silo, but as a first-class participant in OnchainOS' agent + wallet stack:
+
+| ExchangeOS Capability | How Aurex Uses It |
+|------------------------|-------------------|
+| **OnchainOS Agentic Wallet** | TEE-backed signer for publishing signals, claiming revenue, executing swaps. No private keys touch user disk. |
+| **Transaction Security Scan** | Every Aurex contract call passes through `onchainos security tx-scan` before signing — phishing, malicious approvals, and risky calldata are blocked. |
+| **OKX DEX Aggregator** | Future: route Hook-pool swaps through OKX DEX for best execution across X Layer DEXes. |
+| **OKX Wallet Portfolio** | Future: pull user balance + DeFi positions from OKX OnchainOS into Advisor's `risk_check` for full-picture portfolio analysis. |
+| **OKX X Layer** | Native deployment chain — protocol contracts already live on Chain ID 196. |
+| **OKX Skills System** | Aurex Advisor exposes itself as an MCP tool server, ready to be invoked by any OKX OnchainOS skill or agent. |
+
+**Why this matters:** ExchangeOS provides a secure execution substrate (TEE wallet + security scanning + aggregated liquidity). Aurex provides the intelligence layer on top (signal marketplace + behavior monitoring + AI strategy generation). The combination gives users a fully-AI-native trading experience without ever exposing keys, leaking data, or trusting a centralized service.
+
+**Roadmap:**
+- [x] Phase 1: TEE signing via OnchainOS Agentic Wallet
+- [x] Phase 2: Transaction security scan integration
+- [ ] Phase 3: OKX DEX swap routing for non-Hook pools
+- [ ] Phase 4: OnchainOS skill registration so other OKX agents can call Aurex tools
+- [ ] Phase 5: Cross-chain signal publishing via OKX bridge aggregator
+
 
 ---
 

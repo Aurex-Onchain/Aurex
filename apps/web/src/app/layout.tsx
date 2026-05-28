@@ -5,6 +5,7 @@ import { Providers } from "@/lib/providers";
 import { Sidebar } from "@/components/layout/sidebar";
 import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomNav } from "@/components/layout/bottom-nav";
+import { DemoBanner } from "@/components/layout/demo-banner";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,7 +41,10 @@ export default function RootLayout({
       <body className="h-full flex bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100" suppressHydrationWarning>
         <Providers>
           <Sidebar />
-          <main className="flex-1 overflow-y-auto h-screen pb-16 md:pb-0">{children}</main>
+          <main className="flex-1 overflow-y-auto h-screen pb-16 md:pb-0">
+            <DemoBanner />
+            {children}
+          </main>
           <RightSidebar />
           <BottomNav />
         </Providers>
