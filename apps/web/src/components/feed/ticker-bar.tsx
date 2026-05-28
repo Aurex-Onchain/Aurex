@@ -67,7 +67,8 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
 
   const tokens = useMemo<TokenPrice[]>(() => {
     return hotTokenAddresses.map((address) => {
-      const price = priceData?.prices.find((entry) => entry.token === address.toLowerCase());
+      const normalizedAddress = address.toLowerCase();
+      const price = priceData?.prices.find((entry) => entry.token.toLowerCase() === normalizedAddress);
       return {
         symbol: resolveSymbol(address, tokenMeta),
         price: price?.currentPrice ?? null,

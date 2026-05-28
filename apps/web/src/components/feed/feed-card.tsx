@@ -344,10 +344,12 @@ function MetricChip({ metric }: { metric: Metric }) {
   const flash = useNumberFlash(roundedValue);
 
   return (
-    <div className="motion-card min-h-16 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/60">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-[11px] font-medium text-zinc-500">{metric.label}</span>
-        <span className={`text-sm font-semibold ${metricTone(metric)} ${flash}`}>
+    <div className="motion-card h-16 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/60">
+      <div className="grid h-5 grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
+        <span className="min-w-0 truncate text-[11px] font-medium text-zinc-500" title={metric.label}>
+          {metric.label}
+        </span>
+        <span className={`shrink-0 text-sm font-semibold tabular-nums ${metricTone(metric)} ${flash}`}>
           <AnimatedNumber value={roundedValue} />
         </span>
       </div>

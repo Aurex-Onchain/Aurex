@@ -35,6 +35,7 @@ export function useTokenPrices(tokenAddresses?: string[]) {
 
 export function getPriceForToken(prices: PriceChange[] | undefined, address: string): number | null {
   if (!prices) return null;
-  const entry = prices.find((p) => p.token === address.toLowerCase());
+  const normalizedAddress = address.toLowerCase();
+  const entry = prices.find((p) => p.token.toLowerCase() === normalizedAddress);
   return entry?.currentPrice ?? null;
 }

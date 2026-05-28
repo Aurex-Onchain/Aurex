@@ -3,12 +3,12 @@
 import { useMarket } from "@/hooks/use-market";
 import { formatAddress, formatFee, formatScore } from "@/lib/format";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
-import { useTranslation } from "@/i18n";
+import { useTranslation, type TranslationKeys } from "@/i18n";
 
 function riskColor(score: number): string {
-  if (score < 30) return "text-emerald-400";
-  if (score <= 60) return "text-yellow-400";
-  return "text-red-400";
+  if (score < 30) return "text-emerald-700 dark:text-emerald-300";
+  if (score <= 60) return "text-yellow-700 dark:text-yellow-300";
+  return "text-red-700 dark:text-red-300";
 }
 
 function riskBgColor(score: number): string {
@@ -17,7 +17,7 @@ function riskBgColor(score: number): string {
   return "bg-red-500";
 }
 
-function relativeTime(expiresAt: string, t: (key: any, params?: Record<string, string | number>) => string): string {
+function relativeTime(expiresAt: string, t: (key: TranslationKeys, params?: Record<string, string | number>) => string): string {
   const ts = Number(expiresAt) * 1000;
   const diff = Date.now() - (ts - 5 * 60 * 1000); // approximate publish time as 5min before expiry
   if (diff < 60_000) return t("common.justNow");
@@ -45,11 +45,11 @@ export function SignalTimeline() {
   if (signals.length === 0) {
     return (
       <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 text-center">
-        <span className="material-icons-outlined text-zinc-600 text-3xl mb-2 block">
+        <span className="material-icons-outlined mb-2 block text-3xl text-zinc-400 dark:text-zinc-600">
           sensors_off
         </span>
-        <p className="text-zinc-500 text-sm">{t("timeline.empty")}</p>
-        <p className="text-zinc-600 text-xs mt-1">{t("timeline.emptyHint")}</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("timeline.empty")}</p>
+        <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-500">{t("timeline.emptyHint")}</p>
       </div>
     );
   }
@@ -67,7 +67,7 @@ export function SignalTimeline() {
             {t("timeline.liveLabel")}
           </span>
         </div>
-        <span className="text-xs text-zinc-600">
+        <span className="text-xs text-zinc-500 dark:text-zinc-500">
           {t("timeline.refreshHint")}
         </span>
       </div>
@@ -98,7 +98,7 @@ export function SignalTimeline() {
               </span>
 
               {/* Pool */}
-              <span className="font-mono text-xs text-zinc-500 w-24 shrink-0 hidden sm:block">
+              <span className="hidden w-24 shrink-0 font-mono text-xs text-zinc-500 dark:text-zinc-400 sm:block">
                 {formatAddress(sig.poolId)}
               </span>
 
@@ -107,7 +107,7 @@ export function SignalTimeline() {
                 <span className={`text-xs font-medium ${riskColor(risk)}`}>
                   {t("dashboard.riskLabel")}:{risk}
                 </span>
-                <span className="text-xs font-medium text-emerald-400">
+                <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">
                   {t("dashboard.alphaLabel")}:{alpha}
                 </span>
                 <span className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -117,7 +117,7 @@ export function SignalTimeline() {
 
               {/* Live badge */}
               {sig.signalValid && (
-                <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] bg-emerald-900/40 text-emerald-400">
+                <span className="inline-flex items-center gap-1 rounded border border-emerald-200 bg-emerald-50 px-1.5 py-0.5 text-[10px] font-medium text-emerald-700 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
                   <span className="relative flex h-1.5 w-1.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />

@@ -84,10 +84,26 @@ const EVENT_TYPE_KEYS: Record<string, TranslationKeys> = {
 };
 
 const EVENT_STYLES: Record<string, { icon: string; color: string; bg: string }> = {
-  signal_published: { icon: "broadcast_on_personal", color: "text-emerald-400", bg: "bg-emerald-900/20" },
-  signal_expired: { icon: "timer_off", color: "text-zinc-400", bg: "bg-zinc-800/40" },
-  fee_change: { icon: "swap_vert", color: "text-amber-400", bg: "bg-amber-900/20" },
-  high_risk: { icon: "warning", color: "text-red-400", bg: "bg-red-900/20" },
+  signal_published: {
+    icon: "broadcast_on_personal",
+    color: "text-emerald-700 dark:text-emerald-300",
+    bg: "bg-emerald-50 dark:bg-emerald-900/20",
+  },
+  signal_expired: {
+    icon: "timer_off",
+    color: "text-zinc-600 dark:text-zinc-300",
+    bg: "bg-zinc-100 dark:bg-zinc-800/40",
+  },
+  fee_change: {
+    icon: "swap_vert",
+    color: "text-amber-700 dark:text-amber-300",
+    bg: "bg-amber-50 dark:bg-amber-900/20",
+  },
+  high_risk: {
+    icon: "warning",
+    color: "text-red-700 dark:text-red-300",
+    bg: "bg-red-50 dark:bg-red-900/20",
+  },
 };
 
 export function RecentPoolEvents() {
@@ -99,7 +115,7 @@ export function RecentPoolEvents() {
   if (!data?.pools?.length) {
     return (
       <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
-        <p className="text-zinc-500 text-sm">{t("advisor.noPoolEvents")}</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.noPoolEvents")}</p>
       </div>
     );
   }
@@ -109,7 +125,7 @@ export function RecentPoolEvents() {
   if (events.length === 0) {
     return (
       <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50">
-        <p className="text-zinc-500 text-sm">{t("advisor.noPoolEvents")}</p>
+        <p className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.noPoolEvents")}</p>
       </div>
     );
   }
@@ -125,12 +141,12 @@ export function RecentPoolEvents() {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-zinc-500">{formatAddress(event.poolId)}</span>
+                <span className="text-xs font-mono text-zinc-500 dark:text-zinc-400">{formatAddress(event.poolId)}</span>
                 <span className={`text-xs px-1.5 py-0.5 rounded ${style.bg} ${style.color}`}>
                   {t(EVENT_TYPE_KEYS[event.type])}
                 </span>
               </div>
-              <p className="text-sm text-zinc-300 mt-1">{event.description}</p>
+              <p className="mt-1 text-sm text-zinc-700 dark:text-zinc-300">{event.description}</p>
             </div>
           </div>
         );

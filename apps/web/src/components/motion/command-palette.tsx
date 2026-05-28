@@ -1,7 +1,6 @@
 "use client";
 
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation, type TranslationKeys } from "@/i18n";
 
@@ -91,7 +90,6 @@ const COMMANDS: CommandItem[] = [
 
 export function CommandPalette() {
   const { t } = useTranslation();
-  const router = useRouter();
   const reduceMotion = useReducedMotion();
   const inputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -110,8 +108,8 @@ export function CommandPalette() {
   const runCommand = useCallback((command: CommandItem) => {
     setOpen(false);
     setQuery("");
-    router.push(command.href);
-  }, [router]);
+    window.dispatchEvent(new CustomEvent("aurex:navigate", { detail: { href: command.href } }));
+  }, []);
 
   useEffect(() => {
     if (!open) return;

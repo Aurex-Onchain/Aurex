@@ -18,7 +18,7 @@ export default function TerminalPage() {
   const pools = market?.pools ?? [];
   const activePool = selectedPoolId
     ? pools.find((p) => p.poolId === selectedPoolId)
-    : pools.find((p) => p.signalValid) ?? pools[0];
+    : undefined;
 
   const signal = activePool?.latestSignal;
   const policy = activePool?.policy;
