@@ -60,7 +60,7 @@ export function PoolSelector({ pools, value, onChange }: Props) {
                 </p>
               </div>
               {pool.signalValid && (
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="live-dot w-2 h-2 rounded-full bg-emerald-400 text-emerald-400" />
               )}
             </button>
           ))}

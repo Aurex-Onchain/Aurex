@@ -377,7 +377,7 @@ function SignalHeader({
     <div className="flex items-center justify-between gap-3 px-4 pt-4 sm:px-5">
       <div className="flex min-w-0 items-center gap-2">
         <span className="relative flex h-2.5 w-2.5 shrink-0">
-          <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${chrome.dot} opacity-60`} />
+          <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${chrome.dot} opacity-25 [animation-duration:2.4s]`} />
           <span className={`relative inline-flex h-2.5 w-2.5 rounded-full ${chrome.dot}`} />
         </span>
         <span className="text-[11px] font-semibold text-zinc-700 dark:text-zinc-200">

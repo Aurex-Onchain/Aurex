@@ -131,12 +131,12 @@ body::before {
 @keyframes live-breathe {
   0%,
   100% {
-    opacity: 0.62;
-    transform: scale(0.92);
+    opacity: 0.35;
+    transform: scale(0.96);
   }
   50% {
-    opacity: 1;
-    transform: scale(1.08);
+    opacity: 0.7;
+    transform: scale(1.03);
   }
 }
 
@@ -223,12 +223,12 @@ body::before {
 
 .live-dot::before {
   position: absolute;
-  inset: -4px;
+  inset: -3px;
   border-radius: inherit;
   background: currentColor;
-  opacity: 0.2;
+  opacity: 0.12;
   content: "";
-  animation: live-breathe 1.2s ease-in-out infinite;
+  animation: live-breathe 2.4s ease-in-out infinite;
 }
 
 .number-flash-up,

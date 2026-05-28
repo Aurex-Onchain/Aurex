@@ -20,7 +20,7 @@ export function OpenClawStatus() {
         <div className="flex items-center gap-2">
           <span
             className={`inline-block w-2 h-2 rounded-full ${
-              advisorOnline ? "live-dot bg-green-400 text-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" : "bg-zinc-600"
+              advisorOnline ? "live-dot bg-green-400 text-green-400 shadow-[0_0_3px_rgba(74,222,128,0.35)]" : "bg-zinc-600"
             }`}
           />
           <span className={advisorOnline ? "text-green-400 text-sm" : "text-zinc-500 text-sm"}>
