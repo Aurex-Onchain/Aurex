@@ -4,6 +4,10 @@ Open Signal Marketplace Protocol on Uniswap V4 Hooks + Self-hosted AI Trading Ap
 
 Built on X Layer Mainnet (Chain ID: 196).
 
+🌐 **Live Demo**: [web-sigma-virid-60.vercel.app](https://web-sigma-virid-60.vercel.app)
+
+📜 **On-chain transactions**: [contracts/deployments/demo-transactions.md](./contracts/deployments/demo-transactions.md) — 8+ signals published on X Layer
+
 ---
 
 ## What is Aurex
