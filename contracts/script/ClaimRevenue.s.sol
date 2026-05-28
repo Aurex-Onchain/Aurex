@@ -10,7 +10,7 @@ import {AurexAlphaHook} from "../src/hooks/AurexAlphaHook.sol";
  * @dev Run: forge script script/ClaimRevenue.s.sol --rpc-url xlayer --broadcast
  */
 contract ClaimRevenue is Script {
-    address constant ALPHA_HOOK = 0x3D28D43FFB4ed9321B0d740B2B457E802259C0c0;
+    address constant ALPHA_HOOK = 0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4;
     address constant MOCK_AUREX = 0x8819A7972e17C61A4eeFe0F06e4bbef521228c82;
     address constant MOCK_USDC = 0x4229Df8c78F60D1Daf54035E01527B9B025C231d;
     address constant WETH = 0x5A77f1443D16ee5761d310e38b62f77f726bC71c;

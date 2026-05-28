@@ -119,10 +119,10 @@ AurexPolicyManagerTest: 8 tests
 | Contract | Address |
 |----------|---------|
 | PoolManager (Uniswap V4) | `0x360e68faccca8ca495c1b759fd9eee466db9fb32` |
-| AurexSignalRegistry | `0x713d8C2f1983848eDFe2F1f3730d9Ff74aBa4b7f` |
-| AurexPolicyManager | `0x025774B4e49b7Cb98D90111461B69Af98c301cD7` |
-| AurexAlphaHook | `0x3D28D43FFB4ed9321B0d740B2B457E802259C0c0` |
-| AurexPoolFactory | `0x6708213b47715771e290e41599de14e45E8C4358` |
+| AurexSignalRegistry | `0xE00f6dF218E2a3FcF9CF61421fF22ec0175E7D45` |
+| AurexPolicyManager | `0xEe55CF595586527d5ADE7065CD2766899b123E5F` |
+| AurexAlphaHook | `0xF8F9eaBAbef3eA3A4741D7F5cDc81e9BCA9500c4` |
+| AurexPoolFactory | `0xD44cE6C6f3Eb5dd093Cc99BeE7C2142368848A40` |
 | MockAUREX (Stake Token) | `0x8819A7972e17C61A4eeFe0F06e4bbef521228c82` |
 | MockUSDC | `0x4229Df8c78F60D1Daf54035E01527B9B025C231d` |
 

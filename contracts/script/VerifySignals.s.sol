@@ -14,7 +14,7 @@ import {AurexSignalRegistry} from "../src/registry/AurexSignalRegistry.sol";
  *   SIGNAL_IDS - Comma-separated bytes32 signal IDs to verify
  */
 contract VerifySignals is Script {
-    address constant SIGNAL_REGISTRY = 0x713d8C2f1983848eDFe2F1f3730d9Ff74aBa4b7f;
+    address constant SIGNAL_REGISTRY = 0xE00f6dF218E2a3FcF9CF61421fF22ec0175E7D45;
 
     function run() external {
         uint256 privateKey = vm.envUint("DEPLOYER_PRIVATE_KEY");
