@@ -15,12 +15,21 @@ import {
  * In demo mode (Vercel deployment), the Advisor backend is unreachable.
  * Routes return mocked data so the UI shows a "live-looking" state.
  *
- * Detection: hostname includes "vercel.app" OR NEXT_PUBLIC_DEMO_MODE=true
+ * Detection (any of):
+ * - SSR / no window: always mock (Vercel build env, Next.js prerender)
+ * - Window hostname includes "vercel.app"
+ * - NEXT_PUBLIC_DEMO_MODE === "true"
+ * - NEXT_PUBLIC_ADVISOR_URL not set (falls back to localhost default)
  */
 function isDemoMode(): boolean {
-  if (typeof window === "undefined") return false;
   if (process.env.NEXT_PUBLIC_DEMO_MODE === "true") return true;
-  return window.location.hostname.includes("vercel.app");
+  if (typeof window === "undefined") {
+    // SSR: only use mock if no explicit advisor URL set
+    return !process.env.NEXT_PUBLIC_ADVISOR_URL;
+  }
+  if (window.location.hostname.includes("vercel.app")) return true;
+  // For other hostnames, prefer real backend if reachable
+  return false;
 }
 
 function getMockForPath(path: string): unknown | null {
