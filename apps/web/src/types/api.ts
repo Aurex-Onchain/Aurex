@@ -123,6 +123,11 @@ export interface HealthResponse {
   version: string;
   loop: boolean;
   publisher: string | null;
+  openclaw?: {
+    configured: boolean;
+    gatewayUrl: string;
+    agentId: string;
+  };
 }
 
 export interface AdvisorConfigResponse {

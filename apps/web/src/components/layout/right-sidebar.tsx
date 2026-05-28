@@ -180,7 +180,8 @@ function ServiceStatus() {
         return (
           <div key={s.label} className="flex items-center justify-between">
             <span className="text-sm text-zinc-400">{s.label}</span>
-            <span className={`text-xs font-medium ${online === true ? "text-emerald-400" : online === false ? "text-red-400" : "text-zinc-600"}`}>
+            <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${online === true ? "text-emerald-400" : online === false ? "text-red-400" : "text-zinc-600"}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${online === true ? "live-dot bg-emerald-400 text-emerald-400" : online === false ? "bg-red-400" : "bg-zinc-600"}`} />
               {online === null || online === undefined ? "..." : online ? t("rightSidebar.serviceOnline") : t("rightSidebar.serviceOffline")}
             </span>
           </div>

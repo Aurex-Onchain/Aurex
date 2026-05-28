@@ -24,6 +24,7 @@ export function ProtocolStats() {
         icon="hub"
         tone="emerald"
         loading={marketLoading}
+        details={[`${validSignals} live`, `${Math.max(activePools - validSignals, 0)} idle`]}
       />
       <StatCard
         title={t("dashboard.validSignals")}
@@ -32,6 +33,7 @@ export function ProtocolStats() {
         icon="sensors"
         tone={validSignals > 0 ? "emerald" : "zinc"}
         loading={marketLoading}
+        details={[validSignals > 0 ? "hook-ready" : "standby", "10s refresh"]}
       />
       <StatCard
         title={t("dashboard.publishers")}
@@ -40,6 +42,7 @@ export function ProtocolStats() {
         icon="verified_user"
         tone={market?.pools.length ? "teal" : "zinc"}
         loading={marketLoading}
+        details={[market?.pools.length ? "signal flow" : "awaiting pool"]}
       />
       <StatCard
         title={t("dashboard.behaviorLevel")}
@@ -48,6 +51,7 @@ export function ProtocolStats() {
         icon="shield"
         tone={behaviorLevel === "normal" ? "emerald" : "green"}
         loading={behaviorLoading}
+        details={["policy guard", "wallet monitor"]}
       />
     </div>
   );

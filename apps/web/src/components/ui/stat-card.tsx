@@ -1,3 +1,7 @@
+"use client";
+
+import { AnimatedNumber, useNumberFlash } from "@/components/motion/animated-number";
+
 export function StatCard({
   title,
   value,
@@ -5,6 +9,7 @@ export function StatCard({
   icon,
   tone = "zinc",
   loading,
+  details,
 }: {
   title: string;
   value: string;
@@ -12,6 +17,7 @@ export function StatCard({
   icon?: string;
   tone?: "emerald" | "teal" | "green" | "zinc";
   loading?: boolean;
+  details?: string[];
 }) {
   const styles = {
     emerald: {
@@ -33,18 +39,18 @@ export function StatCard({
   }[tone];
 
   return (
-    <div className="min-h-28 overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-50/60 p-4 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60">
+    <div className="motion-card group min-h-28 overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-50/60 p-4 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <p className="truncate text-xs font-medium text-zinc-500">{title}</p>
           {loading ? (
             <div className="mt-2 h-8 w-20 animate-pulse rounded bg-zinc-200 dark:bg-zinc-800" />
           ) : (
-            <p className={`mt-2 text-2xl font-semibold leading-none ${styles.value}`}>{value}</p>
+            <AnimatedStatValue value={value} className={`mt-2 text-2xl font-semibold leading-none ${styles.value}`} />
           )}
         </div>
         {icon && (
-          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border ${styles.icon}`}>
+          <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border transition-transform duration-200 group-hover:scale-105 ${styles.icon}`}>
             <span className="material-icons-outlined" style={{ fontSize: "18px", lineHeight: 1 }}>
               {icon}
             </span>
@@ -52,6 +58,46 @@ export function StatCard({
         )}
       </div>
       {subtitle && <p className="mt-3 text-xs leading-relaxed text-zinc-500">{subtitle}</p>}
+      {details && details.length > 0 && (
+        <div className="kpi-reveal mt-2 flex flex-wrap gap-1.5">
+          {details.map((detail) => (
+            <span
+              key={detail}
+              className="rounded border border-zinc-200 bg-white/60 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500 dark:border-zinc-800 dark:bg-zinc-950/40"
+            >
+              {detail}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
+}
+
+function AnimatedStatValue({ value, className }: { value: string; className: string }) {
+  const numeric = Number(value);
+  const ratio = value.match(/^(\d+)\s*\/\s*(\d+)$/);
+  const flash = useNumberFlash(Number.isFinite(numeric) ? numeric : 0);
+
+  if (Number.isFinite(numeric)) {
+    return (
+      <p className={`${className} inline-flex px-0.5 ${flash}`}>
+        <AnimatedNumber value={numeric} />
+      </p>
+    );
+  }
+
+  if (ratio) {
+    const left = Number(ratio[1]);
+    const right = Number(ratio[2]);
+    return (
+      <p className={`${className} inline-flex items-baseline gap-1 px-0.5`}>
+        <AnimatedNumber value={left} />
+        <span className="text-zinc-400">/</span>
+        <AnimatedNumber value={right} />
+      </p>
+    );
+  }
+
+  return <p className={className}>{value}</p>;
 }

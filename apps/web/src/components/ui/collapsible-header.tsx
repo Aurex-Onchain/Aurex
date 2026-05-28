@@ -19,22 +19,39 @@ const SCROLL_THRESHOLD = 60;
 
 export function CollapsibleHeader({ title, description, children, tickerSlot }: CollapsibleHeaderProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<number | null>(null);
+  const lastProgressRef = useRef(0);
   const [progress, setProgress] = useState(0);
 
-  const onScroll = useCallback(() => {
+  const updateProgress = useCallback(() => {
     const el = scrollRef.current;
     if (!el) return;
-    const p = Math.min(el.scrollTop / SCROLL_THRESHOLD, 1);
-    setProgress(p);
+    const nextProgress = Math.min(el.scrollTop / SCROLL_THRESHOLD, 1);
+    if (Math.abs(nextProgress - lastProgressRef.current) < 0.005) return;
+    lastProgressRef.current = nextProgress;
+    setProgress(nextProgress);
   }, []);
+
+  const onScroll = useCallback(() => {
+    if (frameRef.current !== null) return;
+    frameRef.current = window.requestAnimationFrame(() => {
+      frameRef.current = null;
+      updateProgress();
+    });
+  }, [updateProgress]);
 
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
-    onScroll();
+    updateProgress();
     el.addEventListener("scroll", onScroll, { passive: true });
-    return () => el.removeEventListener("scroll", onScroll);
-  }, [onScroll]);
+    return () => {
+      el.removeEventListener("scroll", onScroll);
+      if (frameRef.current !== null) {
+        window.cancelAnimationFrame(frameRef.current);
+      }
+    };
+  }, [onScroll, updateProgress]);
 
   const fontSize = 18 - progress * 4;
   const descOpacity = 1 - progress;
@@ -90,7 +107,11 @@ export function CollapsibleHeader({ title, description, children, tickerSlot }: 
           </div>
         </div>
 
-        <div ref={scrollRef} className="flex-1 overflow-y-auto [overflow-anchor:none]">
+        <div
+          ref={scrollRef}
+          data-scroll-container="page"
+          className="flex-1 overflow-y-auto [overflow-anchor:none] [scrollbar-gutter:stable]"
+        >
           {children}
         </div>
       </div>

@@ -49,7 +49,10 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
   });
 
   const hotTokenAddresses = useMemo(
-    () => (config?.hotTokens ?? []).filter(isAddress),
+    () => {
+      const configured = (config?.hotTokens ?? []).filter(isAddress);
+      return configured.length > 0 ? configured : TOKENS.map((token) => token.address);
+    },
     [config?.hotTokens],
   );
   const { data: priceData, isLoading } = useTokenPrices(hotTokenAddresses);
@@ -96,10 +99,11 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
     return (
       <div
         key={`${token.symbol}-${idx}`}
-        className={`flex shrink-0 items-center border-r border-zinc-200/80 dark:border-zinc-800/70 ${
+        className={`flex shrink-0 items-center border-r border-zinc-200/80 transition-colors hover:bg-zinc-100/70 dark:border-zinc-800/70 dark:hover:bg-zinc-800/40 ${
           compact ? "gap-2 px-4" : "gap-3 px-5"
         }`}
       >
+        <span className="live-dot h-1.5 w-1.5 rounded-full bg-emerald-500 text-emerald-500 dark:bg-emerald-300 dark:text-emerald-300" />
         <span className={`${compact ? "text-xs" : "text-sm"} font-bold text-zinc-900 dark:text-zinc-100`}>{token.symbol}</span>
         <span className={`${compact ? "text-xs" : "text-sm"} font-semibold text-zinc-600 dark:text-zinc-300`}>
           {token.price === null ? (isLoading ? "..." : "--") : formatPrice(token.price)}
@@ -125,7 +129,7 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
 
   if (tokens.length === 0) {
     return (
-      <div className={`${collapsed ? "rounded-lg" : "rounded-xl"} overflow-hidden border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95`}>
+      <div className={`${collapsed ? "rounded-lg" : "rounded-xl"} scanner-panel overflow-hidden border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95`}>
         <div className={`${collapsed ? "h-10" : "h-12"} flex items-center px-4 text-xs font-medium text-zinc-500 dark:text-zinc-400`}>
           {t("feed.ticker.empty")}
         </div>
@@ -135,7 +139,7 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
 
   if (collapsed) {
     return (
-      <div className="overflow-hidden rounded-lg border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
+    <div className="scanner-panel overflow-hidden rounded-lg border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
         <div className="relative h-10 overflow-hidden">
           <div className="absolute inset-0 flex items-center animate-ticker">
             {displayTokens.map((token, idx) => renderToken(token, idx, true))}
@@ -146,7 +150,7 @@ export function TickerBar({ collapsed = false }: TickerBarProps) {
   }
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
+    <div className="scanner-panel overflow-hidden rounded-xl border border-zinc-200/80 bg-white/90 dark:border-zinc-800/80 dark:bg-zinc-900/95">
       <div className="relative h-12 overflow-hidden">
         <div className="absolute inset-0 flex items-center animate-ticker">
           {displayTokens.map((token, idx) => renderToken(token, idx, false))}

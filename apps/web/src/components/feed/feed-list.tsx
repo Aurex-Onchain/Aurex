@@ -6,6 +6,7 @@ import { FeedCard } from "./feed-card";
 import { useTranslation } from "@/i18n";
 import { TickerBar } from "./ticker-bar";
 import { useCollapsed } from "@/components/ui/collapsible-header";
+import { AnimatedNumber, useNumberFlash } from "@/components/motion/animated-number";
 
 interface FeedListProps {
   onAccept: (message: Message) => void;
@@ -50,10 +51,11 @@ export function FeedList({ onAccept }: FeedListProps) {
       >
         <TickerBar />
       </div>
-      {visibleMessages.map((msg) => (
+      {visibleMessages.map((msg, index) => (
         <FeedCard
           key={msg.id}
           message={msg}
+          enterIndex={index}
           onAccept={onAccept}
           onDismiss={(message) => {
             setDismissedIds((current) => {
@@ -80,7 +82,7 @@ function MarketPulse({ messages }: { messages: Message[] }) {
   }, [messages]);
 
   return (
-    <section className="rounded-2xl border border-zinc-200/80 bg-zinc-50/60 px-3 py-2 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60">
+    <section className="motion-card rounded-2xl border border-zinc-200/80 bg-zinc-50/60 px-3 py-2 backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60">
       <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex shrink-0 items-center gap-2">
           <span className="flex h-7 w-7 items-center justify-center overflow-hidden rounded-md border border-emerald-200 bg-emerald-50 text-emerald-600 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300">
@@ -110,10 +112,16 @@ function MarketPulse({ messages }: { messages: Message[] }) {
 }
 
 function PulseMetric({ label, value, tone }: { label: string; value: string; tone: string }) {
+  const numeric = Number(value);
+  const isNumeric = Number.isFinite(numeric);
+  const flash = useNumberFlash(isNumeric ? numeric : 0);
+
   return (
     <div className="inline-flex h-8 items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 px-2.5 dark:border-zinc-800 dark:bg-zinc-900/60">
       <span className="text-[11px] font-medium text-zinc-500">{label}</span>
-      <span className={`text-sm font-semibold ${tone}`}>{value}</span>
+      <span className={`text-sm font-semibold ${tone} ${flash}`}>
+        {isNumeric ? <AnimatedNumber value={numeric} /> : value}
+      </span>
     </div>
   );
 }

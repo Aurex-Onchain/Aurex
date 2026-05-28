@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useMarket } from "@/hooks/use-market";
-import { formatAddress, formatFee, formatScore, timeUntilExpiry } from "@/lib/format";
+import { formatAddress, formatScore, timeUntilExpiry } from "@/lib/format";
 import { SignalBadge } from "@/components/ui/signal-badge";
 import { LoadingSkeleton } from "@/components/ui/loading-skeleton";
 import { VerificationBadge } from "@/components/signals/verification-badge";
 import { useTranslation } from "@/i18n";
+import { AnimatedNumber, useNumberFlash } from "@/components/motion/animated-number";
 
 type Filter = "all" | "valid" | "expired";
 
@@ -84,7 +85,7 @@ export function SignalTable() {
           </thead>
           <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800">
             {signals.map((sig) => (
-              <tr key={sig.signalId} className="hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
+              <tr key={sig.signalId} className="transition-colors hover:bg-zinc-50 dark:hover:bg-zinc-900/50">
                 <td className="px-4 py-3 font-mono text-zinc-700 dark:text-zinc-300">
                   {formatAddress(sig.poolId)}
                 </td>
@@ -95,13 +96,13 @@ export function SignalTable() {
                   <SignalBadge score={formatScore(sig.alphaScore)} />
                 </td>
                 <td className="px-4 py-3 text-zinc-400">
-                  {formatScore(sig.liquidityScore)}
+                  <AnimatedScoreText value={formatScore(sig.liquidityScore)} />
                 </td>
                 <td className="px-4 py-3 text-zinc-400">
-                  {formatScore(sig.volatilityScore)}
+                  <AnimatedScoreText value={formatScore(sig.volatilityScore)} />
                 </td>
                 <td className="px-4 py-3 text-zinc-400">
-                  {formatFee(sig.recommendedFee)}
+                  <AnimatedFee value={sig.recommendedFee} />
                 </td>
                 <td className="px-4 py-3 text-zinc-400">
                   {timeUntilExpiry(sig.expiresAt)}
@@ -110,15 +111,7 @@ export function SignalTable() {
                   {formatAddress(sig.signer)}
                 </td>
                 <td className="px-4 py-3">
-                  <span
-                    className={`inline-flex items-center px-2 py-0.5 rounded text-xs ${
-                      sig.valid
-                        ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-400"
-                        : "bg-zinc-100 dark:bg-zinc-800 text-zinc-500"
-                    }`}
-                  >
-                    {sig.valid ? t("signals.statusValid") : t("signals.statusExpired")}
-                  </span>
+                  <StatusPill valid={sig.valid} validLabel={t("signals.statusValid")} expiredLabel={t("signals.statusExpired")} />
                 </td>
                 <td className="px-4 py-3">
                   <VerificationBadge
@@ -135,5 +128,41 @@ export function SignalTable() {
         </table>
       </div>
     </div>
+  );
+}
+
+function AnimatedScoreText({ value }: { value: number }) {
+  const flash = useNumberFlash(value);
+
+  return (
+    <span className={`inline-flex rounded px-1 font-mono text-zinc-500 dark:text-zinc-400 ${flash}`}>
+      <AnimatedNumber value={value} />
+    </span>
+  );
+}
+
+function AnimatedFee({ value }: { value: number }) {
+  const percent = value / 100;
+  const flash = useNumberFlash(percent);
+
+  return (
+    <span className={`inline-flex rounded px-1 font-mono text-zinc-500 dark:text-zinc-400 ${flash}`}>
+      <AnimatedNumber value={percent} decimals={2} suffix="%" />
+    </span>
+  );
+}
+
+function StatusPill({ valid, validLabel, expiredLabel }: { valid: boolean; validLabel: string; expiredLabel: string }) {
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-xs ${
+        valid
+          ? "border border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-300"
+          : "bg-zinc-100 text-zinc-500 dark:bg-zinc-800"
+      }`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${valid ? "live-dot bg-emerald-500 text-emerald-500 dark:bg-emerald-300 dark:text-emerald-300" : "bg-zinc-500"}`} />
+      {valid ? validLabel : expiredLabel}
+    </span>
   );
 }

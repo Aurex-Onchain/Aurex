@@ -36,6 +36,31 @@ body {
   font-family: var(--font-inter), Inter, sans-serif;
 }
 
+body::before {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+}
+
+body::before {
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(24, 24, 27, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(24, 24, 27, 0.06) 1px, transparent 1px);
+  background-position: 0 0;
+  background-size: 34px 34px;
+  opacity: 0.45;
+  animation: grid-drift 24s linear infinite;
+}
+
+.dark body::before {
+  background-image:
+    linear-gradient(rgba(16, 185, 129, 0.085) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 211, 238, 0.06) 1px, transparent 1px);
+  opacity: 0.32;
+}
+
 ::-webkit-scrollbar {
   width: 6px;
 }
@@ -68,4 +93,193 @@ body {
 
 .animate-ticker:hover {
   animation-play-state: paused;
+}
+
+@keyframes grid-drift {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 34px 34px;
+  }
+}
+
+@keyframes panel-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(120%);
+  }
+}
+
+@keyframes feed-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: blur(5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes live-breathe {
+  0%,
+  100% {
+    opacity: 0.62;
+    transform: scale(0.92);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes number-flash-up {
+  0% {
+    background-color: rgba(239, 68, 68, 0.28);
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.28);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+@keyframes number-flash-down {
+  0% {
+    background-color: rgba(16, 185, 129, 0.28);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.28);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+@keyframes hook-glow {
+  0%,
+  100% {
+    border-color: rgba(16, 185, 129, 0.24);
+    box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.05), 0 0 0 rgba(16, 185, 129, 0);
+  }
+  50% {
+    border-color: rgba(16, 185, 129, 0.48);
+    box-shadow: inset 0 0 0 1px rgba(16, 185, 129, 0.18), 0 18px 52px rgba(16, 185, 129, 0.1);
+  }
+}
+
+.motion-card {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    background-color 180ms ease;
+}
+
+.motion-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 44px rgba(9, 9, 11, 0.08);
+}
+
+.dark .motion-card:hover {
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.28), 0 0 28px rgba(16, 185, 129, 0.06);
+}
+
+.scanner-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.scanner-panel::after {
+  position: absolute;
+  inset: 0;
+  width: 52%;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(16, 185, 129, 0.16), transparent);
+  content: "";
+  transform: translateX(-120%);
+  animation: panel-scan 3.8s ease-in-out infinite;
+}
+
+.scanner-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+.feed-card-enter {
+  animation: feed-enter 260ms ease-out both;
+  animation-delay: var(--enter-delay, 0ms);
+}
+
+.live-dot {
+  position: relative;
+}
+
+.live-dot::before {
+  position: absolute;
+  inset: -4px;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0.2;
+  content: "";
+  animation: live-breathe 1.2s ease-in-out infinite;
+}
+
+.number-flash-up,
+.number-flash-down {
+  border-radius: 6px;
+}
+
+.number-flash-up {
+  animation: number-flash-up 520ms ease-out;
+}
+
+.number-flash-down {
+  animation: number-flash-down 520ms ease-out;
+}
+
+.kpi-reveal {
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(4px);
+  transition:
+    max-height 180ms ease,
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.group:hover .kpi-reveal {
+  max-height: 36px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.hook-action {
+  animation: hook-glow 2.4s ease-in-out infinite;
+}
+
+.command-shell {
+  background-image:
+    linear-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+.command-item {
+  min-height: 58px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -6,6 +6,7 @@ import { Sidebar } from "@/components/layout/sidebar";
 import { RightSidebar } from "@/components/layout/right-sidebar";
 import { BottomNav } from "@/components/layout/bottom-nav";
 import { DemoBanner } from "@/components/layout/demo-banner";
+import { PageTransition } from "@/components/motion/page-transition";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -41,9 +42,9 @@ export default function RootLayout({
       <body className="h-full flex bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100" suppressHydrationWarning>
         <Providers>
           <Sidebar />
-          <main className="flex-1 overflow-y-auto h-screen pb-16 md:pb-0">
+          <main className="relative flex h-screen min-w-0 flex-1 flex-col overflow-hidden pb-16 md:pb-0">
             <DemoBanner />
-            {children}
+            <PageTransition>{children}</PageTransition>
           </main>
           <RightSidebar />
           <BottomNav />

@@ -7,6 +7,7 @@ import { createAppKit } from "@reown/appkit/react";
 import { useState } from "react";
 import { I18nProvider } from "@/i18n";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { CommandPalette } from "@/components/motion/command-palette";
 
 createAppKit({
   adapters: [wagmiAdapter],
@@ -31,7 +32,10 @@ export function Providers({ children }: { children: React.ReactNode }) {
     <ThemeProvider>
       <I18nProvider>
         <WagmiProvider config={wagmiAdapter.wagmiConfig as Config}>
-          <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+          <QueryClientProvider client={queryClient}>
+            {children}
+            <CommandPalette />
+          </QueryClientProvider>
         </WagmiProvider>
       </I18nProvider>
     </ThemeProvider>

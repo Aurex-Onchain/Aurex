@@ -10,25 +10,26 @@ export function OpenClawStatus() {
 
   if (isLoading) return <LoadingSkeleton rows={2} />;
 
-  const connected = data?.status === "ok";
+  const advisorOnline = data?.status === "ok";
+  const openClawConfigured = Boolean(data?.openclaw?.configured);
 
   return (
-    <div className="p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
+    <div className="motion-card p-6 rounded-lg border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/50 space-y-4">
       <div className="flex items-center justify-between">
         <span className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.openclawStatus")}</span>
         <div className="flex items-center gap-2">
           <span
             className={`inline-block w-2 h-2 rounded-full ${
-              connected ? "bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" : "bg-zinc-600"
+              advisorOnline ? "live-dot bg-green-400 text-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" : "bg-zinc-600"
             }`}
           />
-          <span className={connected ? "text-green-400 text-sm" : "text-zinc-500 text-sm"}>
-            {connected ? t("advisor.connected") : t("advisor.disconnected")}
+          <span className={advisorOnline ? "text-green-400 text-sm" : "text-zinc-500 text-sm"}>
+            {advisorOnline ? t("advisor.running") : t("advisor.stopped")}
           </span>
         </div>
       </div>
 
-      {connected && data && (
+      {advisorOnline && data && (
         <>
           <div className="flex items-center justify-between">
             <span className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.version")}</span>
@@ -51,9 +52,36 @@ export function OpenClawStatus() {
         </>
       )}
 
-      {!connected && (
+      <div className="flex items-center justify-between border-t border-zinc-200 pt-4 dark:border-zinc-800">
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.openclawGateway")}</span>
+        <div className="flex items-center gap-2">
+          <span
+            className={`inline-block w-2 h-2 rounded-full ${
+              openClawConfigured ? "bg-green-400 shadow-[0_0_6px_rgba(74,222,128,0.5)]" : "bg-zinc-600"
+            }`}
+          />
+          <span className={openClawConfigured ? "text-green-400 text-sm" : "text-zinc-500 text-sm"}>
+            {openClawConfigured ? t("advisor.gatewayConfigured") : t("advisor.noAiClientConnected")}
+          </span>
+        </div>
+      </div>
+
+      {data?.openclaw?.gatewayUrl && (
+        <div className="flex items-center justify-between">
+          <span className="text-sm text-zinc-500 dark:text-zinc-400">{t("advisor.gatewayUrl")}</span>
+          <span className="text-zinc-800 dark:text-zinc-200 text-sm font-mono">{data.openclaw.gatewayUrl}</span>
+        </div>
+      )}
+
+      {!advisorOnline && (
         <p className="text-xs text-zinc-500">
           {t("advisor.openclawHint")}
+        </p>
+      )}
+
+      {advisorOnline && !openClawConfigured && (
+        <p className="text-xs text-zinc-500">
+          {t("advisor.openclawDisconnectedDesc")}
         </p>
       )}
     </div>

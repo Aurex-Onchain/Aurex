@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, type CSSProperties } from "react";
 import type { Message } from "@/hooks/use-messages";
 import { useTranslation, type TranslationKeys } from "@/i18n";
 import { addressToColors } from "@/lib/avatar";
 import { useAccount } from "wagmi";
+import { AnimatedNumber, useNumberFlash } from "@/components/motion/animated-number";
 
 const typeIcons: Record<Message["type"], string> = {
   recommendation: "bolt",
@@ -91,6 +92,7 @@ interface FeedCardProps {
   message: Message;
   onAccept?: (message: Message) => void;
   onDismiss?: (message: Message) => void;
+  enterIndex?: number;
 }
 
 function SignalAvatar({ address }: { address: string }) {
@@ -338,15 +340,19 @@ function buildReceipts(message: Message, t: (key: TranslationKeys) => string): R
 function MetricChip({ metric }: { metric: Metric }) {
   const range = metric.max - metric.min;
   const pct = range > 0 ? Math.min(100, Math.max(0, ((metric.value - metric.min) / range) * 100)) : 0;
+  const roundedValue = Math.round(metric.value);
+  const flash = useNumberFlash(roundedValue);
 
   return (
-    <div className="min-h-16 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/60">
+    <div className="motion-card min-h-16 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 dark:border-zinc-800 dark:bg-zinc-900/60">
       <div className="flex items-center justify-between gap-2">
         <span className="text-[11px] font-medium text-zinc-500">{metric.label}</span>
-        <span className={`text-sm font-semibold ${metricTone(metric)}`}>{Math.round(metric.value)}</span>
+        <span className={`text-sm font-semibold ${metricTone(metric)} ${flash}`}>
+          <AnimatedNumber value={roundedValue} />
+        </span>
       </div>
       <div className="mt-2 h-2 overflow-hidden rounded-full bg-zinc-200 dark:bg-zinc-800">
-        <div className={`h-full rounded-full ${metricFill(metric)}`} style={{ width: `${pct}%` }} />
+        <div className={`h-full rounded-full transition-[width] duration-500 ease-out ${metricFill(metric)}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -393,7 +399,7 @@ function SignalHeader({
   );
 }
 
-export function FeedCard({ message, onAccept, onDismiss }: FeedCardProps) {
+export function FeedCard({ message, onAccept, onDismiss, enterIndex = 0 }: FeedCardProps) {
   const { t } = useTranslation();
   const { address: userAddress } = useAccount();
   const [copied, setCopied] = useState(false);
@@ -429,7 +435,10 @@ export function FeedCard({ message, onAccept, onDismiss }: FeedCardProps) {
   }
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-50/60 font-sans backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60">
+    <article
+      className="feed-card-enter motion-card group relative overflow-hidden rounded-2xl border border-zinc-200/80 bg-zinc-50/60 font-sans backdrop-blur-sm dark:border-zinc-800/80 dark:bg-zinc-900/60"
+      style={{ "--enter-delay": `${Math.min(enterIndex, 8) * 45}ms` } as CSSProperties}
+    >
       <SignalHeader message={message} t={t} urgencyKey={urgencyKey} />
       <div className="relative p-4 pt-3 sm:p-5 sm:pt-3">
         <div className="flex items-start justify-between gap-3">

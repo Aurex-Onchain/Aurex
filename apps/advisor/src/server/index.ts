@@ -7,7 +7,7 @@ import { createChainWriter, createOnchainosChainWriter } from "../chain/index.js
 import { createSignalLoop } from "../signal/loop.js";
 import { createWalletExecutor } from "../execution/index.js";
 import type { MessageStore } from "../messages/store.js";
-import type { Notifier, AlertContext } from "../alerts/notifier.js";
+import { getNotifierConfig, type Notifier, type AlertContext } from "../alerts/notifier.js";
 import type { TokenPriceStore } from "../prices/index.js";
 
 interface ServerDeps extends McpDeps {
@@ -22,13 +22,22 @@ export async function createServer(deps: ServerDeps) {
 
   await app.register(cors, { origin: true });
 
-  app.get("/health", async () => ({
-    status: "ok",
-    timestamp: Date.now(),
-    version: "0.1.0",
-    loop: deps.loop?.isRunning() ?? false,
-    publisher: deps.writer?.getAddress() ?? null,
-  }));
+  app.get("/health", async () => {
+    const openclaw = getNotifierConfig();
+
+    return {
+      status: "ok",
+      timestamp: Date.now(),
+      version: "0.1.0",
+      loop: deps.loop?.isRunning() ?? false,
+      publisher: deps.writer?.getAddress() ?? null,
+      openclaw: {
+        configured: openclaw.enabled,
+        gatewayUrl: openclaw.openclawGatewayUrl,
+        agentId: openclaw.openclawAgentId,
+      },
+    };
+  });
 
   app.get("/api/market", async () => {
     const { reader, poolIds } = deps;
